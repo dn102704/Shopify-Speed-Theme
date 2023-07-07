@@ -1,0 +1,600 @@
+<div class="intersection-target"></div>
+<div data-section-id="{{ section.id }}" data-section-type="header">
+  <script
+    type="application/json"
+    data-section-data>
+    {
+      "settings": {
+        "layout": {{ section.settings.layout | json }},
+        "centerLogo": {{ section.settings.center_logo_desktop | json }},
+        "sticky": {{ section.settings.sticky | json }},
+        "show_border": {{ section.settings.show_border | json }},
+        "enable_live_search": {{ section.settings.enable_live_search | json }},
+        "search_results_display": {{ section.settings.search_results_display | json }}
+      }
+    }
+  </script>
+
+  {%- assign logo_desktop = section.settings.logo_desktop -%}
+  {%- assign logo_mobile = section.settings.logo_mobile -%}
+
+  {% if logo_desktop != blank and logo_mobile == blank %}
+    {%- assign logo_mobile = logo_desktop -%}
+  {% endif %}
+
+  {%- assign layout = section.settings.layout -%}
+  {%- assign logo_max_width_desktop = section.settings.logo_max_width_desktop | escape -%}
+  {%- assign logo_max_width_mobile = section.settings.logo_max_width_mobile | escape -%}
+  {%- assign main_menu = section.settings.header-main-menu -%}
+  {% assign quantity_style = section.settings.quantity_style %}
+
+  {% capture header_search %}
+    <a href="{{ routes.search_url }}" class="header-search-button" data-header-search-button>
+      <div class="header-search-icon">
+        {% render 'icon' with 'search' %}
+      </div>
+    </a>
+  {% endcapture %}
+
+  {% capture header_branding %}
+    <div class="branding" data-header-branding>
+      {% if logo_desktop != blank or logo_mobile != blank %}
+        {% if template.name == 'index' %}
+          <h1 class="site-title site-title-logo">
+        {% endif %}
+
+        <a class="logo" href="{{ routes.root_url }}">
+          {% capture logo_style_desktop %}
+            max-width: {{ logo_max_width_desktop }}px;
+          {% endcapture %}
+
+          {% capture logo_style_mobile %}
+            max-width: {{ logo_max_width_mobile }}px;
+          {% endcapture %}
+
+          {% if logo_desktop != blank %}
+            <img class="header-logo-desktop" src="{{ logo_desktop | img_url: '110x' }}" data-rimg alt="{{ shop.name }}" width="{{ logo_max_width_desktop }}" height="{{ section.settings.logo_desktop.height }}">
+          {% else %}
+            <span class="site-title header-logo-desktop">{{ shop.name }}</span>
+          {% endif %}
+          {% if logo_mobile != blank %}
+            <img class="header-logo-mobile" src="{{ logo_mobile | img_url: '75x' }}" data-rimg alt="{{ shop.name }}" width="{{ logo_max_width_mobile }}" height="{{ section.settings.logo_mobile.height }}">
+          {% else %}
+            <span class="site-title header-logo-mobile">{{ shop.name }}</span>
+          {% endif %}
+
+        </a>
+
+        {% if template.name == 'index' %}
+          </h1>
+        {% endif %}
+      {% else %}
+        {% if template.name == 'index' %}
+          <h1 class="site-title"><a href="{{ routes.root_url }}">{{ shop.name }}</a></h1>
+        {% else %}
+          <div class="site-title"><a href="{{ routes.root_url }}">{{ shop.name }}</a></div>
+        {% endif %}
+      {% endif %}
+    </div>
+  {% endcapture %}
+
+    {% capture header_branding_spacer %}
+    <div class="branding-spacer">
+      {% if logo_desktop != blank %}
+        <img class="header-logo-desktop" src="{{ logo_desktop | img_url: '110x' }}" data-rimg alt="{{ shop.name }}" width="{{ logo_max_width_desktop }}" height="{{ section.settings.logo_desktop.height }}">
+      {% endif %}
+
+      {% if logo_mobile != blank %}
+        <img class="header-logo-mobile" src="{{ logo_mobile | img_url: '75x' }}" data-rimg alt="{{ shop.name }}" width="{{ logo_max_width_mobile }}" height="{{ section.settings.logo_mobile.height }}">
+      {% endif %}
+    </div>
+  {% endcapture %}
+
+  {% capture header_tools %}
+    <div class="header-tools" data-header-tools>
+      <a class="header-tools-search" data-header-search-button href="{{ routes.search_url }}">
+          {% render 'icon' with 'search' %}
+      </a>
+
+      <a class="header-tools-account" href="{{ routes.account_url }}">
+        {% render 'icon' with 'user-account' %}
+      </a>
+
+      <a href="{{ routes.cart_url }}"
+        class="header-tools-cart
+          {% if quantity_style == 'dot' %}cart-contents-dot{% endif %}
+          {% if cart.item_count > 0 %}cart-has-content{% endif %}
+      ">
+        {% if quantity_style == 'dot' %}
+          <div class="header-tools-cart-icon">
+        {% endif %}
+          {% if section.settings.cart_icon == 'bag' %}
+            {% render 'icon' with 'shopping-basket' %}
+          {% else %}
+            {% render 'icon' with 'shopping-cart' %}
+          {% endif %}
+
+          {% if section.settings.quantity_style == 'number' %}
+            <span class="cart-item-count">{{ cart.item_count }}</span>
+          {% endif %}
+
+        {% if quantity_style == 'dot' %}
+          </div>
+
+        {% endif %}
+
+      </a>
+
+    </div>
+
+  {% endcapture %}
+
+  {% capture header_burger_button %}
+    <button class="mobile-navigation-toggle">
+      <div class="mobile-nav-toggle-wrapper" tabindex="-1">
+        {% render 'icon' with 'menu' %}
+        <div class="nav-toggle-ie-11">
+          {% render 'icon' with 'close' %}
+        </div>
+      </div>
+    </button>
+
+  {% endcapture %}
+
+  {% capture header_navigation %}
+    {% capture header_nav_arrow_icons %}
+      {% render 'icon' with 'chevron-down' %}
+      |
+      {% render 'icon' with 'chevron-right' %}
+    {% endcapture %}
+    {% assign header_nav_arrow_icons = header_nav_arrow_icons | split: '|' %}
+
+    <nav class="navigation" data-header-navigation>
+      {%
+        render 'navmenu',
+        arrow_icons: header_nav_arrow_icons,
+        main_menu: main_menu,
+        mobile_menu: false
+      %}
+    </nav>
+  {% endcapture %}
+
+  <div class="main-header-wrapper
+    {% if section.settings.show_border %}header-show-border{% endif %}"
+  >
+    <div class="mobile-nav-wrapper" data-mobile-nav>
+      <div class="mobile-nav-overlay" data-mobile-nav-overlay></div>
+      <div class="site-mobile-nav" data-mobile-nav-panel>
+        <div class="mobile-nav-close" data-mobile-nav-close>
+          {% render 'icon' with 'close' %}
+        </div>
+        {% capture mobile_nav_arrow_icons %}
+          {% render 'icon' with 'plus',
+            class: 'navmenu-svg-not-active',
+          %}
+          {% render 'icon' with 'minus',
+            class: 'navmenu-svg-active',
+          %}
+        {% endcapture %}
+        {% assign mobile_nav_arrow_icons = mobile_nav_arrow_icons | split: '|' %}
+        <nav class="mobile-nav-content">
+          {%
+            render 'navmenu',
+            arrow_icons: mobile_nav_arrow_icons,
+            main_menu: main_menu,
+            mobile_menu: true,
+          %}
+        </nav>
+
+        <div class="mobile-nav-tools" data-mobile-nav-tools>
+          <a class="mobile-nav-tools-account" href="{{ routes.account_url }}">
+            {% render 'icon' with 'user-account' %}
+            <span>{{ 'customers.login.submit' | t }} / {{ 'customers.register.submit' | t }}</span>
+          </a>
+        </div>
+
+      </div>
+
+    </div>
+
+    <header class="main-header
+      header-layout-{{ layout }}
+      {% if section.settings.center_logo_desktop %}header-center-logo-desktop{% else %}header-left-logo-desktop{% endif %}
+      {% if section.settings.center_logo_mobile %}header-center-logo-mobile{% else %}header-left-logo-mobile{% endif %}
+      {% if layout == 'traditional' and section.settings.center_logo_desktop %}header-search-left{% endif %}
+      {% if section.settings.justify_navigation %}header-justify-navigation{% endif %}
+      " role="banner"
+      data-header-container
+    >
+      {{ header_burger_button }}
+      {{ header_search }}
+      {{ header_branding }}
+      {{ header_branding_spacer }}
+      {{ header_tools }}
+      {{ header_tools_mobile }}
+      {{ header_navigation }}
+    </header>
+  </div>
+  {%
+    render 'live-search',
+    searchResultsDisplay: section.settings.search_results_display,
+    searchResultsLayout: section.settings.search_results_layout,
+    searchQuickLinks: section.settings.search_quick_links,
+  %}
+</div>
+
+{% schema %}
+{
+  "name": "Header",
+  "class": "section-header",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Navigation"
+    },
+    {
+      "type": "link_list",
+      "id": "header-main-menu",
+      "label": "Main menu",
+      "default": "main-menu"
+    },
+    {
+      "type": "header",
+      "content": "Header"
+    },
+    {
+      "type": "select",
+      "id": "layout",
+      "label": "Layout",
+      "info": "Inline layout places the navigation links inline. If the links cannot fit the screen width, they will be placed below the logo.",
+      "options": [
+         { "value": "traditional", "label": "Traditional" },
+         { "value": "inline", "label": "Inline" },
+         { "value": "minimal", "label": "Minimal" }
+      ],
+      "default": "traditional"
+    },
+    {
+      "type": "checkbox",
+      "id": "sticky",
+      "label": "Enable sticky header",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "justify_navigation",
+      "label": "Justify navigation links",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_border",
+      "label": "Show border",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Logo"
+    },
+    {
+      "type": "image_picker",
+      "id": "logo_desktop",
+      "label": "Desktop logo"
+    },
+    {
+      "type": "checkbox",
+      "id": "center_logo_desktop",
+      "label": "Center desktop logo",
+      "default": true
+    },
+    {
+      "id": "logo_max_width_desktop",
+      "type": "range",
+      "label": "Logo image width",
+      "min": 50,
+      "max": 350,
+      "step": 5,
+      "unit": "px",
+      "default": 350
+    },
+    {
+      "type": "image_picker",
+      "id": "logo_mobile",
+      "label": "Mobile logo"
+    },
+    {
+      "type": "checkbox",
+      "id": "center_logo_mobile",
+      "label": "Center mobile logo",
+      "default": true
+    },
+    {
+      "id": "logo_max_width_mobile",
+      "type": "range",
+      "label": "Mobile Logo image width",
+      "min": 50,
+      "max": 250,
+      "step": 5,
+      "unit": "px",
+      "default": 200
+    },
+    {
+      "type": "header",
+      "content": "Cart"
+    },
+    {
+      "type": "select",
+      "id": "cart_icon",
+      "label": "Icon",
+      "options": [
+         { "value": "bag", "label": "Bag"},
+         { "value": "shopping_cart", "label": "Shopping Cart"}
+      ],
+      "default": "bag"
+    },
+    {
+      "type": "select",
+      "id": "quantity_style",
+      "label": "Quantity style",
+      "options": [
+         { "value": "number", "label": "Number"},
+         { "value": "dot", "label": "Dot"}
+      ],
+      "default": "number"
+    },
+    {
+      "type": "header",
+      "content": "Search"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_live_search",
+      "label": "Enable live search",
+      "default": false
+    },
+    {
+      "type": "select",
+      "id": "search_results_layout",
+      "label": "Results layout",
+      "options": [
+        { "value": "comfortable", "label": "Comfortable"},
+        { "value": "cozy", "label": "Cozy"},
+        { "value": "compact", "label": "Compact"}
+      ],
+      "default": "cozy"
+    },
+    {
+      "type": "select",
+      "id": "search_results_display",
+      "label": "Display",
+      "options": [
+         { "value": "products", "label": "Products only"},
+         { "value": "products_pages", "label": "Products and pages"},
+         { "value": "products_posts", "label": "Products and posts"},
+         { "value": "products_pages_posts", "label": "Products, posts and pages"}
+      ],
+      "default": "products_pages_posts"
+    },
+    {
+      "type": "link_list",
+      "id": "search_quick_links",
+      "label": "Quick links",
+      "info": "This menu does not support drop-down or mega navigation."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "feature",
+      "name": "Mega nav",
+      "limit": 4,
+      "settings": [
+        {
+          "type": "header",
+          "content": "Menu"
+        },
+        {
+          "type": "text",
+          "id": "meganav_trigger",
+          "label": "Menu navigation trigger",
+          "info": "Add the title of the menu that you want to turn into a mega-nav."
+        },
+        {
+          "type": "checkbox",
+          "id": "meganav_show_images",
+          "label": "Show images for top level collections",
+          "info": "Displays the top level collection image. If no collection image is present, it will fallback to first product in collection."
+        },
+        {
+          "id": "meganav_image_style",
+          "type": "select",
+          "label": "Image aspect ratio",
+          "info": "[Learn More](https://support.pixelunion.net/hc/en-us/articles/360022296373-Setting-up-your-homepage-with-Pacific#Mega-nav)",
+          "options": [
+            { "group": "Uncropped", "value": "natural", "label": "Natural" },
+            { "group": "Uncropped", "value": "small", "label": "Short (4:3)" },
+            { "group": "Uncropped", "value": "medium", "label": "Square (1:1)" },
+            { "group": "Uncropped", "value": "large", "label": "Tall (2:3)" },
+            { "group": "Cropped", "value": "cropped-small", "label": "Short (4:3)" },
+            { "group": "Cropped", "value": "cropped-medium", "label": "Square (1:1)" },
+            { "group": "Cropped", "value": "cropped-large", "label": "Tall (2:3)" }
+          ],
+          "default": "natural"
+        },
+        {
+          "type": "header",
+          "content": "Promotional Blocks"
+        },
+        {
+          "type": "checkbox",
+          "id": "promo_show",
+          "label": "Show promotions",
+          "default": false
+        },
+        {
+          "type": "select",
+          "id": "promo_position",
+          "label": "Position",
+          "options": [
+             { "value": "last", "label": "Last column"},
+             { "value": "first", "label": "First column"}
+          ],
+          "default": "last"
+        },
+        {
+          "type": "select",
+          "id": "promo_block_column_count",
+          "label": "Promo block columns",
+          "options": [
+             { "value": "1", "label": "1 column"},
+             { "value": "2", "label": "2 columns"}
+          ],
+          "default": "2"
+        },
+        {
+          "id": "promo_area_width",
+          "type": "range",
+          "label": "Promo area minimum width",
+          "min": 30,
+          "max": 60,
+          "step": 1,
+          "unit": "%",
+          "default": 30
+        },
+        {
+          "id": "promo_image_style",
+          "type": "select",
+          "label": "Promo image aspect ratio",
+          "info": "[Learn More](https://support.pixelunion.net/hc/en-us/articles/360022296373-Setting-up-your-homepage-with-Pacific#Mega-nav)",
+          "options": [
+            { "group": "Uncropped", "value": "natural", "label": "Natural" },
+            { "group": "Uncropped", "value": "small", "label": "Short (4:3)" },
+            { "group": "Uncropped", "value": "medium", "label": "Square (1:1)" },
+            { "group": "Uncropped", "value": "large", "label": "Tall (2:3)" },
+            { "group": "Cropped", "value": "cropped-small", "label": "Short (4:3)" },
+            { "group": "Cropped", "value": "cropped-medium", "label": "Square (1:1)" },
+            { "group": "Cropped", "value": "cropped-large", "label": "Tall (2:3)" }
+          ],
+          "default": "natural"
+        },
+        {
+          "type": "select",
+          "id": "promo_text_layout",
+          "label": "Promo text layout",
+          "info": "If overlay has been activated, these settings will not apply.",
+          "options": [
+             { "value": "outside_above_left", "label": "Above left"},
+             { "value": "outside_above_center", "label": "Above center"},
+             { "value": "outside_above_right", "label": "Above right"},
+             { "value": "outside_below_left", "label": "Below left"},
+             { "value": "outside_below_center", "label": "Below center"},
+             { "value": "outside_below_right", "label": "Below right"}
+          ],
+          "default": "outside_below_left"
+        },
+        {
+          "type": "header",
+          "content": "Overlay"
+        },
+        {
+          "type": "checkbox",
+          "id": "promo_overlay_image",
+          "label": "Show overlay",
+          "default": false
+        },
+        {
+          "type": "select",
+          "id": "promo_overlay_layout",
+          "label": "Overlay text layout",
+          "options": [
+             { "value": "overlay_top_left", "label": "Top left"},
+             { "value": "overlay_top_center", "label": "Top center"},
+             { "value": "overlay_top_right", "label": "Top right"},
+             { "value": "overlay_middle_left", "label": "Middle left"},
+             { "value": "overlay_middle_center", "label": "Middle center"},
+             { "value": "overlay_middle_right", "label": "Middle right"},
+             { "value": "overlay_bottom_left", "label": "Bottom left"},
+             { "value": "overlay_bottom_center", "label": "Bottom center"},
+             { "value": "overlay_bottom_right", "label": "Bottom right"}
+          ],
+          "default": "overlay_middle_center"
+        },
+        {
+          "type": "color",
+          "id": "promo_overlay_color",
+          "label": "Color",
+          "default": "#000000"
+        },
+        {
+          "id": "promo_overlay_opacity",
+          "type": "range",
+          "label": "Opacity",
+          "min": 0,
+          "max": 100,
+          "step": 5,
+          "unit": "%",
+          "default": 50
+        },
+        {
+          "type": "color",
+          "id": "promo_overlay_text_color",
+          "label": "Text color",
+          "default": "#ffffff"
+        },
+        {
+          "type": "header",
+          "content": "Promo 1"
+        },
+        {
+          "type": "image_picker",
+          "id": "image_1",
+          "label": "Promo image 1"
+        },
+        {
+          "type": "text",
+          "id": "image_1_heading",
+          "label": "Heading",
+          "default": "Promotion"
+        },
+        {
+          "type": "text",
+          "id": "image_1_text",
+          "label": "Text",
+          "default": "Draw attention to sales, new products and more."
+        },
+        {
+          "type": "url",
+          "id": "image_1_link",
+          "label": "Link"
+        },
+        {
+          "type": "header",
+          "content": "Promo 2"
+        },
+        {
+          "type": "image_picker",
+          "id": "image_2",
+          "label": "Promo image 2"
+        },
+        {
+          "type": "text",
+          "id": "image_2_heading",
+          "label": "Heading",
+          "default": "Promotion"
+        },
+        {
+          "type": "text",
+          "id": "image_2_text",
+          "label": "Text",
+          "default": "Draw attention to sales, new products and more."
+        },
+        {
+          "type": "url",
+          "id": "image_2_link",
+          "label": "Link"
+        }
+      ]
+    }
+  ]
+}
+
+{% endschema %}

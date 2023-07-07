@@ -1,0 +1,290 @@
+<div data-section-id="{{ section.id }}" data-section-type="slideshow">
+
+  {% assign sectionBorder = section.settings.border %}
+  {% assign slideLayout = section.settings.layout %}
+  {% assign slideTransition = section.settings.transition %}
+  {% assign slideAutoplay = section.settings.autoplay_delay %}
+
+  {% unless section.settings.autoplay_enable %}
+    {% assign slideAutoplay = 0 %}
+  {% endunless %}
+
+  {% assign slideCount = 0 %}
+  {% for block in section.blocks %}
+    {% assign slideCount = slideCount | plus: 1 %}
+  {% endfor %}
+
+  <div class="home-module {{ slideLayout }} {% if sectionBorder %}has-border{% endif %}">
+    <div class="home-module-content {{ slideLayout }} {% if section.settings.title != blank %}home-module-has-heading{% endif %}">
+
+      {%
+        render 'home-section-title',
+        sectionTitle: section.settings.title,
+      %}
+
+      <div class="home-slideshow {{ slideLayout }} {{ slideTransition }}"
+        data-slideshow-autoplay="{{ slideAutoplay }}">
+
+        <div class="slideshow-slides">
+          {% if section.blocks.size > 0 %}
+            {% for block in section.blocks %}
+              {% assign alignment = block.settings.content-alignment %}
+              {% assign textShadow = block.settings.text-shadow %}
+              {% assign textColor = block.settings.text-color %}
+              {% assign textAbove = block.settings.text-above | escape %}
+              {% assign slideImage = block.settings.image %}
+              {% assign heading = block.settings.title-heading | escape %}
+              {% assign textBelow = block.settings.text-below | escape %}
+              {% assign linkUrl = block.settings.url %}
+              {% assign position = forloop.index %}
+              {% assign slide = 'slide-' | append: position %}
+
+              {%- capture image_html -%}
+                <div class="slide-image">
+                  {% if slideImage %}
+                    {%
+                      render 'rimg',
+                      img: slideImage,
+                      size: '1440x640',
+                      lazy: true
+                    %}
+                  {% else %}
+                    {% capture current %}{% cycle 1, 2 %}{% endcapture %}
+                    {{ 'lifestyle-' | append: current | placeholder_svg_tag: 'placeholder-svg' }}
+                  {% endif %}
+                </div>
+              {%- endcapture -%}
+
+              <div id="{{ slide }}"
+                class="
+                  slideshow-slide
+                  {{ slide }}
+                  text-shadows-{{ textShadow }}
+                  content-aligned-{{ alignment }}
+                  {% if forloop.first %}active{% endif %}
+                "
+                data-slide-id="{{slide}}"
+                {{ block.shopify_attributes }}
+              >
+
+                {% if linkUrl != blank %}
+                  <a class="slide-link" href="{{ linkUrl }}"></a>
+                {% endif %}
+
+                {{- image_html -}}
+
+                {% if textAbove != blank or heading != blank or textBelow != blank %}
+                  <div class="slide-content" style="color: {{ textColor }};">
+                    {% if textAbove != blank %}
+                      <p>{{ textAbove }}</p>
+                    {% endif %}
+
+                    {% if heading != blank %}
+                      <h3 class="slide-title">{{ heading }}</h3>
+                    {% endif %}
+
+                    {% if textBelow != blank %}
+                      <p>{{ textBelow }}</p>
+                    {% endif %}
+                  </div>
+                {% endif %}
+              </div>
+            {% endfor %}
+          {% else %}
+            {% for i in (1..2) %}
+              {% capture current %}{% cycle 1, 2 %}{% endcapture %}
+
+              <div
+                id="slide-{{ current }}"
+                class="
+                  slideshow-slide
+                  slide-{{ current }}
+                  content-aligned-center
+                  {% if forloop.first %}active{% endif %}
+                "
+              >
+                <div class="slide-image">
+                  {{ 'lifestyle-' | append: current | placeholder_svg_tag: 'placeholder-svg' }}
+                </div>
+
+                <div class="slide-content" style="color: {{ textColor }};">
+                  <p>{{ 'onboarding.slideshow.text_above' | t }}</p>
+                  <h3 class="slide-title">{{ 'onboarding.slideshow.slide_title' | t }}</h3>
+                  <p>{{ 'onboarding.slideshow.text_below' | t }}</p>
+                </div>
+              </div>
+            {% endfor %}
+          {% endif %}
+        </div>
+
+        {% if slideCount > 1 %}
+          <div class="slideshow-navigation previous-slide"><span>&#57361;</span></div>
+          <div class="slideshow-navigation next-slide"><span>&#57362;</span></div>
+
+          <div class="slideshow-pagination">
+            {% for block in section.blocks %}
+              {% assign position = forloop.index %}
+              {% assign slide = 'slide-' | append: position %}
+
+              <span class="{% if slide == 'slide-1' %}active{% endif %}" data-slide-id="{{slide}}"><span></span></span>
+            {% endfor %}
+          </div>
+        {% endif %}
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+{% schema %}
+{
+  "name": "Slideshow",
+  "max_blocks": 5,
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Heading"
+    },
+    {
+      "type": "checkbox",
+      "id": "border",
+      "label": "Show border",
+      "default": false
+    },
+    {
+      "type": "select",
+      "id": "layout",
+      "label": "Width",
+      "options": [
+        {
+          "value": "content-width",
+          "label": "Content width"
+        },
+        {
+          "value": "full-width",
+          "label": "Full width"
+        }
+      ],
+      "default": "content-width",
+      "info": "If the sidebar is enabled this will revert to content width."
+    },
+    {
+      "type": "select",
+      "id": "transition",
+      "label": "Slide transition",
+      "options": [
+        {
+          "value": "transition-fade",
+          "label": "Fade"
+        },
+        {
+          "value": "transition-slide",
+          "label": "Slide"
+        }
+      ],
+      "default": "transition-fade"
+    },
+    {
+      "type": "checkbox",
+      "id": "autoplay_enable",
+      "label": "Auto-rotate slides",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "autoplay_delay",
+      "label": "Rotation interval",
+      "min": 4,
+      "max": 8,
+      "step": 1,
+      "unit": "sec",
+      "default": 4
+    }
+  ],
+  "blocks": [
+    {
+      "type": "feature",
+      "name": "Slide",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image",
+          "info": "1440 x 640px .jpg recommended"
+        },
+        {
+          "type": "select",
+          "id": "content-alignment",
+          "label": "Align text",
+          "options": [
+            {
+              "value": "left",
+              "label": "Left"
+            },
+            {
+              "value": "center",
+              "label": "Center"
+            },
+            {
+              "value": "right",
+              "label": "Right"
+            }
+          ],
+          "default": "center"
+        },
+        {
+          "type": "text",
+          "id": "title-heading",
+          "label": "Heading",
+          "default": "Slideshow"
+        },
+        {
+          "type": "text",
+          "id": "text-above",
+          "label": "Subheading"
+        },
+        {
+          "type": "text",
+          "id": "text-below",
+          "label": "Text",
+          "default": "Introduce customers to your shop with lifestyle imagery and product photography."
+        },
+        {
+          "type": "url",
+          "id": "url",
+          "label": "Link"
+        },
+        {
+          "type": "color",
+          "id": "text-color",
+          "label": "Text color",
+          "default": "#ffffff"
+        },
+        {
+          "type": "checkbox",
+          "id": "text-shadow",
+          "label": "Show text shadow",
+          "default": false
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "category": "Image",
+      "name": "Slideshow",
+      "blocks": [
+        {
+          "type": "feature"
+        },
+        {
+          "type": "feature"
+        }
+      ]
+    }
+  ]
+}
+
+{% endschema %}

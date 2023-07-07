@@ -1,0 +1,227 @@
+{% assign product = all_products[section.settings.product] %}
+
+{% if section.settings.product == blank %}
+  {% assign product = nil %}
+{% endif %}
+
+{% assign enable_history = false %}
+
+<script
+  type="application/json"
+  data-section-type="featured-product"
+  data-section-id="{{ section.id }}"
+  data-section-data
+>
+  {%
+    render 'product-json',
+    enable_history: enable_history,
+    product: product
+  %}
+</script>
+
+<div
+  class="
+    home-module
+    home-featured-product
+    {% if section.settings.show_border %}has-border{% endif %}
+  "
+>
+  <div class="home-module-content {% if section.settings.title != blank %}home-module-has-heading{% endif %}">
+    <div data-section-id="{{ section.id }}">
+      {% assign productTextStyle = settings.product_text_style %}
+      {% assign productImageFlip = settings.product_image_flip %}
+      {% assign enableRelatedProducts = section.settings.enable_related_products %}
+      {% assign productsPerRow = section.settings.products_in_row %}
+      {% assign productColumnLayout = section.settings.product_column_layout %}
+      {% assign collection = collection | default: product.collections.first %}
+      {% assign selected_variant = product.selected_or_first_available_variant | default: product %}
+      {% assign selected_media = selected_variant.featured_media | default: product.featured_media %}
+
+      {% assign variant = product.selected_or_first_available_variant %}
+      {% if product.media.size > 0 %}
+        {% assign columns = section.settings.product_column_layout %}
+      {% else %}
+        {% assign columns = "single-column" %}
+      {% endif %}
+
+      <div class="product-details">
+        <h1 class="page-title" itemprop="name">
+      
+          {% if product != blank %}
+            {{ product.title }}
+       <div product-id="{{ product.id }}" class="alr-display-review-badge"></div>
+
+
+          {% else %}
+            {{ 'onboarding.featured_products.product_title' | t }}
+          {% endif %}
+        </h1>
+
+        <a
+          class="product-vendor vendor"
+          href="{{ product.vendor | url_for_vendor }}"
+        >
+          {% if product != blank %}
+            {{ product.vendor }}
+          {% else %}
+            {{ 'onboarding.featured_products.product_vendor' | t }}
+          {% endif %}
+        </a>
+      </div>
+
+      <div class="product-wrap {{columns}} clearfix" itemscope itemtype="http://schema.org/Product">
+
+        {% assign numModules = 4 %}
+
+        {% for i in (1..numModules) %}
+          {% capture moduleNames %}{{ moduleNames }}|product-module-{{i}}{% endcapture %}
+        {% endfor %}
+
+        {% assign modules = moduleNames | remove_first: "|" | split: "|" %}
+        {% assign moduleOrder = "" %}
+
+        {% for module in modules %}
+          {% capture moduleOrder %}{{ moduleOrder }}-{{ settings[module] }}{% endcapture %}
+        {% endfor %}
+
+        {% comment %}
+          Changing the following will rearrange the module order.
+          Must have the prefixed '-'.
+        {% endcomment %}
+        {% assign moduleOrder = '-A-B-C-D' %}
+
+        {% if productColumnLayout == "two-column" %}
+          {% assign moduleOrder = moduleOrder | remove: "A" | prepend: "A-" %}
+        {% endif %}
+        {% assign modules = moduleOrder | remove_first: "-" | split: "-" %}
+
+        {% for module in modules %}
+          {% case module %}
+            {% when 'A' %}
+              {%
+                render 'product-gallery',
+                product: product,
+                selected_media: selected_media,
+                enable_image_zoom: section.settings.enable_zoom,
+              %}
+            {% when 'B' %}
+              {% if product != blank %}
+                {% render 'product-form', product: product %}
+              {% endif %}
+            {% when 'C' %}
+              {% if section.settings.show_description %}
+                {% render 'product-description', product: product %}
+              {% endif %}
+
+              {% if product != blank %}
+                <div class="home-featured-product-link-container">
+                  <a
+                    href="{{ product.url | within: collection }}"
+                    class="home-featured-product-link"
+                  >
+                    {{ 'onboarding.featured_products.view_more_link' | t }}
+                  </a>
+                </div>
+              {% endif %}
+            {% when 'D' %}
+              {% render 'share-buttons' %}
+          {% endcase %}
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Featured product",
+  "settings": [
+    {
+      "type": "product",
+      "id": "product",
+      "label": "Product"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_border",
+      "label": "Show border",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_description",
+      "label": "Show description",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_product_quantity",
+      "label": "Enable cart quantity box",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_send_to_cart",
+      "label": "Enable cart redirection",
+      "info": "Automatically send users to the Cart page after adding a product.",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_spb",
+      "label": "Show dynamic checkout button",
+      "info": "Each customer will see their preferred payment method from those available on your store, such as PayPal or Apple Pay. [Learn more](https://help.shopify.com/manual/using-themes/change-the-layout/dynamic-checkout)",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "product_column_layout",
+      "label": "Layout",
+      "options": [
+        {
+          "value": "single-column",
+          "label": "Single column"
+        },
+        {
+          "value": "two-column",
+          "label": "Double column"
+        }
+      ],
+      "default": "single-column"
+    },
+    {
+      "type": "header",
+      "content": "Media"
+    },
+    {
+      "type": "paragraph",
+      "content": "Learn more about [media types](https://help.shopify.com/en/manual/products/product-media/product-media-types)"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_zoom",
+      "label": "Enable image zoom",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "gallery_enable_video_autoplay",
+      "label": "Enable video autoplay",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "gallery_enable_video_looping",
+      "label": "Enable video looping",
+      "default": true
+    }
+  ],
+  "presets": [
+    {
+      "category": "Product",
+      "name": "Featured product"
+    }
+  ]
+}
+
+{% endschema %}

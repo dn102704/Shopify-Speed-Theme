@@ -1,0 +1,215 @@
+<div data-section-id="{{ section.id }}" data-section-type="featured-images">
+
+  {% assign sectionBorder = section.settings.border %}
+  {% assign textShadow = section.settings.text-shadow %}
+
+  {% if section.blocks.size == 0 %}
+    {% assign featureCount = 2 %}
+  {% else %}
+    {% assign featureCount = 0 %}
+    {% for block in section.blocks %}
+      {% assign featureCount = featureCount | plus: 1 %}
+    {% endfor %}
+  {% endif %}
+
+  <div class="home-module home-feature-row
+    row-of-{{featureCount}} text-shadows-{{ textShadow }}
+    {% if sectionBorder %}has-border{% endif %}">
+
+    <div class="home-module-content {% if section.settings.title != blank %}home-module-has-heading{% endif %}">
+
+      {%
+        render 'home-section-title',
+        sectionTitle: section.settings.title,
+      %}
+
+      <div class="home-module-inline-items">
+        {% if section.blocks.size > 0 %}
+          {% for block in section.blocks %}
+            {% assign textAbove = block.settings.text-above | escape %}
+            {% assign heading = block.settings.title | escape %}
+            {% assign textBelow = block.settings.text-below | escape %}
+            {% assign url = block.settings.url %}
+            {% assign textColor = block.settings.text-color %}
+            {% assign textPosition = block.settings.text-position %}
+            {% assign image = block.settings.image %}
+
+            {%- capture image_html -%}
+              {% if image %}
+                {%
+                  render 'rimg',
+                  img: image,
+                  size: '1440x640',
+                  lazy: true
+                %}
+              {% else %}
+                {{ 'collection-1' | placeholder_svg_tag: 'placeholder-svg' }}
+              {% endif %}
+            {%- endcapture -%}
+
+            <div class="home-feature">
+              <div class="home-feature-image">
+                {{- image_html -}}
+              </div>
+
+              {% if url != blank %}
+                <a class="home-feature-link" href="{{ url }}"></a>
+              {% endif %}
+
+              {% if textAbove != blank or heading != blank or textBelow != blank %}
+                <div class="home-feature-content text-color-{{ textColor }} text-positioned-{{ textPosition }} rte">
+                  {% if textAbove != blank %}
+                    <p>{{ textAbove }}</p>
+                  {% endif %}
+
+                  {% if heading != blank %}
+                    <h3>{{ heading }}</h3>
+                  {% endif %}
+
+                  {% if textBelow != blank %}
+                    <p>{{ textBelow }}</p>
+                  {% endif %}
+                </div>
+              {% endif %}
+            </div>
+          {% endfor %}
+        {% else %}
+          {% for i in (1..2) %}
+            <div class="home-feature">
+              <div class="home-feature-image">
+                {% capture current %}{% cycle 1, 2 %}{% endcapture %}
+                {{ 'collection-' | append: current | placeholder_svg_tag: 'placeholder-svg' }}
+              </div>
+
+              <a class="home-feature-link" href="#"></a>
+
+              <div class="home-feature-content text-color-dark text-positioned-center rte">
+                <p>{{ 'onboarding.featured_images.text_above' | t }}</p>
+                <h3>{{ 'onboarding.featured_images.title' | t }}</h3>
+                <p>{{ 'onboarding.featured_images.text_below' | t }}</p>
+              </div>
+            </div>
+          {% endfor %}
+        {% endif %}
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+{% schema %}
+{
+  "name": "Gallery",
+  "max_blocks": 3,
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Heading",
+      "default": "Image gallery"
+    },
+    {
+      "type": "checkbox",
+      "id": "border",
+      "label": "Show border",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "text-shadow",
+      "label": "Show text shadow",
+      "info": "Only appears when \"text shade\" is set to \"light\"."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "feature",
+      "name": "Image",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image",
+          "info": "1440 x 640px .jpg recommended"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Heading",
+          "default": "Image with text"
+        },
+        {
+          "type": "text",
+          "id": "text-above",
+          "label": "Subheading",
+          "default": "Subheading"
+        },
+        {
+          "type": "text",
+          "id": "text-below",
+          "label": "Text",
+          "default": "Text"
+        },
+        {
+          "type": "url",
+          "id": "url",
+          "label": "Link"
+        },
+        {
+          "type": "select",
+          "id": "text-color",
+          "label": "Text shade",
+          "options": [
+            {
+              "value": "light",
+              "label": "Light"
+            },
+            {
+              "value": "dark",
+              "label": "Dark"
+            }
+          ],
+          "default": "light"
+        },
+        {
+          "type": "select",
+          "id": "text-position",
+          "label": "Align text",
+          "options": [
+            {
+              "value": "left",
+              "label": "Left"
+            },
+            {
+              "value": "center",
+              "label": "Center"
+            },
+            {
+              "value": "right",
+              "label": "Right"
+            }
+          ],
+          "default": "center",
+          "info": "Will default to \"center\" if three features are shown in a row."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "category": "Image",
+      "name": "Gallery",
+      "blocks": [
+        {
+          "type": "feature"
+        },
+        {
+          "type": "feature"
+        }
+      ]
+    }
+  ]
+}
+
+{% endschema %}

@@ -1,0 +1,98 @@
+<div data-section-id="{{ section.id }}" data-section-type="page-collections-list">
+
+  {% assign showDescriptions = section.settings.show_descriptions %}
+  {% assign collectionTextStyle = section.settings.text_style %}
+  {% assign collectionsPerRow = section.settings.collections_in_row %}
+  {% assign collectionsPerPage = collectionsPerRow | times: section.settings.rows %}
+
+  {% assign using-linklist = false %}
+  {% if linklists['all-collections'] and linklists['all-collections'].links.size > 0 %}
+    {% assign using-linklist = true %}
+  {% endif %}
+
+  {% paginate collections by collectionsPerPage %}
+    <div class="collections-list showing-{{collectionsPerRow}}-per-row">
+      {% if using-linklist %}
+        {% for link in linklists['all-collections'].links %}
+          {%
+            render 'collection-list-item',
+            collection: nil,
+            collection-list-item: 'linklist',
+            link: link,
+            collectionTextStyle: collectionTextStyle,
+            showDescriptions: showDescriptions
+          %}
+        {% endfor %}
+      {% else %}
+        {% for collection in collections %}
+          {%
+            render 'collection-list-item',
+            collection: collection,
+            collection-list-item: 'collection',
+            link: link,
+            collectionTextStyle: collectionTextStyle,
+            showDescriptions: showDescriptions
+          %}
+        {% endfor %}
+      {% endif %}
+    </div>
+
+    {% if paginate.previous or paginate.next and using-linklist == false %}
+      {% render 'pagination', paginate: paginate %}
+    {% endif %}
+  {% endpaginate %}
+
+</div>
+
+{% schema %}
+{
+  "name": "Collection listings",
+  "class": "section-collections-list",
+  "settings": [
+    {
+      "type": "range",
+      "id": "collections_in_row",
+      "label": "Collections per row",
+      "min": 1,
+      "max": 3,
+      "step": 1,
+      "default": 1
+    },
+    {
+      "type": "range",
+      "id": "rows",
+      "label": "Rows",
+      "min": 1,
+      "max": 10,
+      "step": 1,
+      "default": 6
+    },
+    {
+      "type": "select",
+      "id": "text_style",
+      "label": "Text style",
+      "options": [
+        {
+          "value": "overlay",
+          "label": "Overlay"
+        },
+        {
+          "value": "under",
+          "label": "Under image"
+        }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "id": "show_descriptions",
+      "label": "Show descriptions",
+      "default": true
+    },
+    {
+      "type": "paragraph",
+      "content": "Your collection descriptions will only show if your text style is set to display under the collection images."
+    }
+  ]
+}
+
+{% endschema %}

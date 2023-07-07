@@ -1,0 +1,128 @@
+<div data-section-id="{{ section.id }}" data-section-type="featured-content">
+
+  {% assign sectionBorder = section.settings.border %}
+  {% assign imageTitle = section.settings.image_title | escape %}
+  {% assign imageCaption = section.settings.caption %}
+  {% assign featuredImage = section.settings.image %}
+  {% assign imageAlignment = section.settings.image-alignment %}
+
+  {%- capture image_html -%}
+    {% if featuredImage %}
+      {%
+        render 'rimg',
+        img: featuredImage,
+        size: '1280x640',
+        lazy: true
+      %}
+    {% else %}
+      {{ 'collection-3' | placeholder_svg_tag: 'placeholder-svg' }}
+    {% endif %}
+  {%- endcapture -%}
+
+  <div class="home-module home-imported-content has-media
+    {% if sectionBorder %}has-border{% endif %}
+    media-aligned-{{ imageAlignment }}">
+
+    <div class="home-module-content {% if section.settings.title != blank %}home-module-has-heading{% endif %}">
+
+      {%
+        render 'home-section-title',
+        sectionTitle: section.settings.title,
+      %}
+
+      <div class="home-imported-content-wrapper">
+        <div class="rte">
+          {% if imageTitle != "" %}
+            <h2>{{ imageTitle }}</h2>
+          {% else %}
+            {% if featuredImage == blank %}
+              <h2>{{ 'onboarding.featured_content.page_title' | t }}</h2>
+            {% endif %}
+          {% endif %}
+
+          {% if imageCaption != "" %}
+            <p>{{ imageCaption }}</p>
+          {% else %}
+            {% if featuredImage == blank %}
+              <p>{{ 'onboarding.featured_content.page_excerpt' | t }}</p>
+            {% endif %}
+          {% endif %}
+        </div>
+
+        <div class="home-embedded-content rte">
+          {{- image_html -}}
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+{% schema %}
+{
+  "name": "Image with text",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Heading",
+      "default": "Image with text"
+    },
+    {
+      "type": "checkbox",
+      "id": "border",
+      "label": "Show border",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Text"
+    },
+    {
+      "type": "text",
+      "id": "image_title",
+      "label": "Heading",
+      "default": "Rich text"
+    },
+    {
+      "type": "richtext",
+      "id": "caption",
+      "label": "Text",
+      "default": "<p>Use this section to welcome customers to your store, say a bit about your brand, or share news and seasonal promotions.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image",
+      "info": "1280 x 640px .jpg recommended"
+    },
+    {
+      "type": "select",
+      "id": "image-alignment",
+      "label": "Image alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "right"
+    }
+  ],
+  "presets": [
+    {
+      "category": "Image",
+      "name": "Image with text"
+    }
+  ]
+}
+
+{% endschema %}

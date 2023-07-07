@@ -1,0 +1,189 @@
+<script
+  type="application/json"
+  data-section-id="{{ section.id }}"
+  data-section-type="pxs-rich-text"
+></script>
+
+<section
+  class="
+    pxs-rich-text
+    pxs-rich-text-width-{{ section.settings.width }}
+  "
+>
+  {% for block in section.blocks %}
+    <article
+      class="
+        pxs-rich-text-block
+        pxs-rich-text-heading-{{ block.settings.heading_size }}
+        {%- if block.settings.text_alignment != blank -%}
+          pxs-rich-text-alignment-{{ block.settings.text_alignment }}
+        {%- endif -%}
+      "
+      {{ block.shopify_attributes }}
+    >
+      {% if block.type == 'text' %}
+        {% if block.settings.title != blank %}
+          <h2 class="pxs-rich-text-heading">
+            {{ block.settings.title | escape }}
+          </h2>
+        {% endif %}
+
+        {% if block.settings.text != blank %}
+          <div class="pxs-rich-text-content rte">
+            {{ block.settings.text }}
+          </div>
+        {% endif %}
+      {% endif %}
+
+      {% if block.type == 'page' and block.settings.page %}
+        {% if block.settings.show_heading %}
+          <h2 class="pxs-rich-text-heading">
+            {{ pages[block.settings.page].title | escape }}
+          </h2>
+        {% endif %}
+
+        <div class="pxs-rich-text-content rte">
+          {{ pages[block.settings.page].content }}
+        </div>
+      {% endif %}
+    </article>
+  {% endfor %}
+</section>
+
+{% schema %}
+{
+  "name": "Rich Text",
+  "class": "pxs-rich-text-section",
+  "max_blocks": 2,
+  "settings": [
+    {
+      "id": "width",
+      "type": "select",
+      "label": "Section width",
+      "options": [
+        {
+          "value": "regular",
+          "label": "Regular"
+        },
+        {
+          "value": "wide",
+          "label": "Wide"
+        },
+        {
+          "value": "full-width",
+          "label": "Full width"
+        }
+      ],
+      "default": "regular"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "text",
+      "name": "Text",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Heading",
+          "default": "Rich text"
+        },
+        {
+          "type": "richtext",
+          "id": "text",
+          "label": "Text",
+          "default": "<p>Use this section to welcome customers to your store, say a bit about your brand, or share news and seasonal promotions.</p>"
+        },
+        {
+          "id": "heading_size",
+          "type": "select",
+          "label": "Heading size",
+          "options": [
+            {
+              "value": "small",
+              "label": "Small"
+            },
+            {
+              "value": "medium",
+              "label": "Medium"
+            },
+            {
+              "value": "large",
+              "label": "Large"
+            }
+          ],
+          "default": "large"
+        },
+        {
+          "id": "text_alignment",
+          "type": "select",
+          "label": "Text alignment",
+          "options": [
+            {
+              "value": "left",
+              "label": "Left"
+            },
+            {
+              "value": "center",
+              "label": "Center"
+            },
+            {
+              "value": "right",
+              "label": "Right"
+            }
+          ],
+          "default": "left"
+        }
+      ]
+    },
+    {
+      "type": "page",
+      "name": "Page",
+      "settings": [
+        {
+          "type": "checkbox",
+          "id": "show_heading",
+          "label": "Show heading"
+        },
+        {
+          "id": "heading_size",
+          "type": "select",
+          "label": "Heading size",
+          "options": [
+            {
+              "value": "small",
+              "label": "Small"
+            },
+            {
+              "value": "medium",
+              "label": "Medium"
+            },
+            {
+              "value": "large",
+              "label": "Large"
+            }
+          ],
+          "default": "large"
+        },
+        {
+          "type": "page",
+          "id": "page",
+          "label": "Page"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Rich text",
+      "category": "Text",
+      "blocks": [
+        {
+          "type": "text"
+        }
+      ]
+    }
+  ]
+}
+
+{% endschema %}

@@ -1,0 +1,99 @@
+<div data-section-id="{{ section.id }}" data-section-type="promotions">
+
+  {% assign sectionTitle = section.settings.title | escape %}
+  {% assign sectionBorder = section.settings.border %}
+
+  {% if section.blocks.size == 0 %}
+    {% assign footerImageCount = 3 %}
+  {% else %}
+    {% assign footerImageCount = 0 %}
+    {% for block in section.blocks %}
+      {% assign footerImageCount = footerImageCount | plus: 1 %}
+    {% endfor %}
+  {% endif %}
+
+  {% if section.blocks.size > 0 %}
+    <div class="main-footer-wrapper">
+      <footer class="main-footer footer-promotions
+        {% if sectionBorder %}has-border{% endif %}">
+
+        {% if sectionTitle != blank %}
+          <h2 class="section-title">{{ sectionTitle }}</h2>
+        {% endif %}
+
+        <div class="footer-promos showing-{{footerImageCount}}-ads">
+          {% for block in section.blocks %}
+            {% capture current %}{% cycle 1, 2, 3 %}{% endcapture %}
+            {% assign footerImage = block.settings.image %}
+            {% assign footerImageUrl = block.settings.url %}
+
+            <div class="footer-promo">
+              {% if footerImageUrl != blank %}
+                <a href="{{ footerImageUrl }}">
+              {% endif %}
+
+                {% if footerImage != blank %}
+                  {%
+                    render 'rimg',
+                    img: footerImage,
+                    size: '1280x1280',
+                    lazy: true,
+                    canvas: true
+                  %}
+                {% else %}
+                  {{ 'collection-' | append: current | placeholder_svg_tag: 'placeholder-svg' }}
+                {% endif %}
+
+              {% if footerImageUrl != blank %}
+                </a>
+              {% endif %}
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+
+    </footer>
+  </div>
+
+</div>
+
+{% schema %}
+{
+  "name": "Promotions",
+  "max_blocks": 3,
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Heading",
+      "default": "Promotions"
+    },
+    {
+      "type": "checkbox",
+      "id": "border",
+      "label": "Show border",
+      "default": true
+    }
+  ],
+  "blocks": [
+    {
+      "type": "feature",
+      "name": "Promotion",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image",
+          "info": "1280 x 1280px .jpg recommended"
+        },
+        {
+          "type": "url",
+          "id": "url",
+          "label": "Link"
+        }
+      ]
+    }
+  ]
+}
+
+{% endschema %}

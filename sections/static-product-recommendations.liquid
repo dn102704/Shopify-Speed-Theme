@@ -1,0 +1,81 @@
+{% if section.settings.show_product_recommendations %}
+  {% assign product_limit = section.settings.products_in_row %}
+
+  <script
+    type="application/json"
+    data-section-type="static-product-recommendations"
+    data-section-id="{{ section.id }}"
+    data-section-data
+  >
+    {
+      "settings": {
+        "limit": {{ product_limit }}
+      },
+      "productId": {{ product.id | json }}
+    }
+  </script>
+
+  <section
+    class="product-section--recommendations recommended-products"
+    data-html
+    data-product-recommendations
+  >
+    {% if recommendations.products_count > 0 %}
+      <h2 class="section-title">
+        {{ section.settings.product_recommendations_heading }}
+      </h2>
+
+      <ul
+        class="
+          product-row
+          uniform-layout
+          {{ settings.product_text_style }}-style
+          rows-of-{{ product_limit }}"
+        data-product-row
+      >
+        {% for product in recommendations.products limit: product_limit %}
+        	<script type='application/json' class='bold-product-json'>{{ product | json }}</script>
+          {%
+            render 'product-list-item',
+            elementType: 'li',
+            product: product,
+            productTextStyle: settings.product_text_style,
+            productImageFlip: settings.product_image_flip
+          %}
+        {% endfor %}
+      </ul>
+    {% endif %}
+  </section>
+{% endif %}
+
+{% schema %}
+{
+  "name": "Recommended products",
+  "class": "static-product-recommendations",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_product_recommendations",
+      "label": "Show dynamic recommendations",
+      "info": "Dynamic recommendations change and improve with time. [Learn more](https://help.shopify.com/en/themes/development/recommended-products)",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "product_recommendations_heading",
+      "label": "Heading",
+      "default": "You may also like"
+    },
+    {
+      "type": "range",
+      "id": "products_in_row",
+      "label": "Products",
+      "min": 2,
+      "max": 4,
+      "step": 1,
+      "default": 4
+    }
+  ]
+}
+
+{% endschema %}

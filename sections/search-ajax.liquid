@@ -1,0 +1,8 @@
+{% paginate search.results by 20 %}
+{%
+  render 'live-search-results-data',
+  results: search.results,
+  results_count: search.results_count,
+  terms: search.terms,
+%}
+{% endpaginate %}

@@ -1,0 +1,171 @@
+<div data-section-id="{{ section.id }}" data-section-type="collection-list">
+
+  {% assign sectionBorder = section.settings.border %}
+
+  {% if section.blocks.size == 0 %}
+    {% assign collectionCount = 3 %}
+  {% else %}
+    {% assign collectionCount = 0 %}
+    {% for block in section.blocks %}
+      {% assign collectionCount = collectionCount | plus: 1 %}
+    {% endfor %}
+  {% endif %}
+
+  <div class="home-module home-collection-list
+    row-of-{{ collectionCount }}
+    {% if sectionBorder %}has-border{% endif %}">
+
+    <div class="home-module-content {% if section.settings.title != blank %}home-module-has-heading{% endif %}">
+
+      {%
+        render 'home-section-title',
+        sectionTitle: section.settings.title,
+      %}
+
+      <div class="home-module-inline-items">
+        {% if section.blocks.size > 0 %}
+          {% for block in section.blocks %}
+            {% assign featuredCollection = block.settings.collection %}
+            {% assign collectionImage = collections[featuredCollection].image %}
+            {% assign collectionTitle = collections[featuredCollection].title %}
+            {% assign productImage = collections[featuredCollection].products.first.featured_media.preview_image %}
+            {% assign textShadow = block.settings.text-shadow %}
+            {% assign textColor = block.settings.text-color %}
+            {% capture current %}{% cycle 1, 2, 3 %}{% endcapture %}
+
+            <div class="home-collection-list-item
+              text-color-{{ textColor }}
+              text-shadows-{{ textShadow }}"
+              {{ block.shopify_attributes }}>
+
+              <a class="home-collection-list-item-link" href="{{ collections[featuredCollection].url }}"></a>
+
+              <div class="home-collection-list-item-image">
+                {% if collectionImage != blank %}
+                  {%
+                    render 'rimg',
+                    img: collectionImage,
+                    alt: featuredCollection.image.alt,
+                    size: '600x',
+                    lazy: true
+                  %}
+                {% elsif productImage != blank %}
+                  {%
+                    render 'rimg',
+                    img: productImage,
+                    alt: featuredCollection.title,
+                    size: '600x',
+                    lazy: true
+                  %}
+                {% else %}
+                  {{ 'collection-' | append: current | placeholder_svg_tag: 'placeholder-svg' }}
+                {% endif %}
+              </div>
+
+              <div class="home-collection-list-item-content">
+                <h3>
+                  {% if collectionTitle != blank %}
+                    {{ collectionTitle }}
+                  {% else %}
+                    {{ 'onboarding.featured_collections.collection_title' | t }}
+                  {% endif %}
+                </h3>
+              </div>
+            </div>
+          {% endfor %}
+        {% else %}
+          {% for i in (1..3) %}
+            <div class="home-collection-list-item text-color-dark">
+              <a class="home-collection-list-item-link" href="#"></a>
+
+              <div class="home-collection-list-item-image">
+                {% capture current %}{% cycle 1, 2, 3 %}{% endcapture %}
+                {{ 'collection-' | append: current | placeholder_svg_tag: 'placeholder-svg' }}
+              </div>
+
+              <div class="home-collection-list-item-content">
+                <h3>{{ 'onboarding.featured_collections.collection_title' | t }}</h3>
+              </div>
+            </div>
+          {% endfor %}
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+</div>
+
+{% schema %}
+{
+  "name": "Collection list",
+  "max_blocks": 3,
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Heading",
+      "default": "Collection list"
+    },
+    {
+      "type": "checkbox",
+      "id": "border",
+      "label": "Show border",
+      "default": false
+    }
+  ],
+  "blocks": [
+    {
+      "type": "feature",
+      "name": "Collection",
+      "settings": [
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Collection:"
+        },
+        {
+          "type": "checkbox",
+          "id": "text-shadow",
+          "label": "Show text shadow",
+          "info": "Only appears when \"text shade\" is set to \"light\".",
+          "default": false
+        },
+        {
+          "type": "select",
+          "id": "text-color",
+          "label": "Text shade",
+          "options": [
+            {
+              "value": "light",
+              "label": "Light"
+            },
+            {
+              "value": "dark",
+              "label": "Dark"
+            }
+          ],
+          "default": "light"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "category": "Collection",
+      "name": "Collection list",
+      "blocks": [
+        {
+          "type": "feature"
+        },
+        {
+          "type": "feature"
+        },
+        {
+          "type": "feature"
+        }
+      ]
+    }
+  ]
+}
+
+{% endschema %}

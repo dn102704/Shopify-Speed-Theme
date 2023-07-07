@@ -1,0 +1,153 @@
+<div data-section-id="{{ section.id }}" data-section-type="featured-video">
+
+  {% assign sectionBorder = section.settings.border %}
+  {% assign video = section.settings.video_url %}
+  {% assign videoType = video.type %}
+  {% assign videoId = video.id %}
+  {% assign videoImage = section.settings.image %}
+  {% assign videoTextColor = section.settings.text-color %}
+  {% assign videoTitle = section.settings.video_title | escape %}
+  {% assign videoButtonText = section.settings.button-text | escape %}
+  {% assign videoUrl = section.settings.video-url %}
+
+  {%- capture image_html -%}
+    {% if videoImage != blank %}
+      {%
+        render 'rimg',
+        img: videoImage,
+        size: '1080x640',
+        lazy: true
+      %}
+    {% elsif videoId != blank and videoType == 'youtube' %}
+      <img src="https://img.youtube.com/vi/{{ videoId }}/0.jpg">
+    {% elsif videoId != blank and videoType == 'vimeo' %}
+      <img data-vimeo-image="{{ videoId }}" src="">
+    {% else %}
+      {{ 'lifestyle-1' | placeholder_svg_tag: 'placeholder-svg' }}
+    {% endif %}
+  {%- endcapture -%}
+
+  <div class="home-module home-video
+    {% if sectionBorder %}has-border{% endif %}
+    text-color-{{ videoTextColor }}">
+
+    <div class="home-module-content {% if section.settings.title != blank %}home-module-has-heading{% endif %}">
+
+      {%
+        render 'home-section-title',
+        sectionTitle: section.settings.title,
+      %}
+
+      <div class="home-video-play play-button-{{ settings.home-video-play-button-color }}"></div>
+
+      <div class="home-video-embed-wrapper">
+        <div class="home-video-embed">
+          {% if videoType == 'youtube' %}
+            <iframe src="https://www.youtube.com/embed/{{ videoId }}" frameborder="0" allowfullscreen></iframe>
+          {% elsif videoType == 'vimeo' %}
+            <iframe src="https://player.vimeo.com/video/{{ videoId }}?color=ffffff&title=0&byline=0&portrait=0" frameborder="0" allowfullscreen></iframe>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="home-video-content-wrap">
+        <div class="home-video-screenshot">
+          <span class="home-video-play-button mobile meta">
+            {{ 'general.home_page.video_button_text' | t }}
+          </span>
+
+          {{- image_html -}}
+        </div>
+
+        <div class="home-video-content rte">
+          <span class="home-video-play-button meta">
+            {{ 'general.home_page.video_button_text' | t }}
+          </span>
+
+          {% if videoTitle != blank %}
+            <h2 class="video-title">{{ videoTitle }}</h2>
+          {% endif %}
+
+          {% if videoButtonText != blank and videoUrl != blank %}
+            <p>
+              <a class="button" href="{{ videoUrl }}">
+                {{ videoButtonText }}
+              </a>
+            </p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+{% schema %}
+{
+  "name": "Featured video",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Heading",
+      "default": "Featured video"
+    },
+    {
+      "type": "checkbox",
+      "id": "border",
+      "label": "Show border",
+      "default": false
+    },
+    {
+      "id": "video_url",
+      "type": "video_url",
+      "label": "Video URL",
+      "accept": ["youtube", "vimeo"]
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Video screenshot",
+      "info": "1080 x 640px .jpg recommended"
+    },
+    {
+      "type": "select",
+      "id": "text-color",
+      "label": "Text shade",
+      "options": [
+        {
+          "value": "light",
+          "label": "Light"
+        },
+        {
+          "value": "dark",
+          "label": "Dark"
+        }
+      ],
+      "default": "light"
+    },
+    {
+      "type": "text",
+      "id": "video_title",
+      "label": "Heading"
+    },
+    {
+      "type": "text",
+      "id": "button-text",
+      "label": "Button text"
+    },
+    {
+      "type": "url",
+      "id": "video-url",
+      "label": "Link"
+    }
+  ],
+  "presets": [
+    {
+      "category": "Video",
+      "name": "Featured video"
+    }
+  ]
+}
+
+{% endschema %}

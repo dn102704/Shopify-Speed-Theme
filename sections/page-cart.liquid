@@ -1,0 +1,127 @@
+<script
+  type="application/json"
+  data-cart-messages
+>
+  {
+    "itemRemovedText": {{ 'cart.item_removed_message' | t | json }},
+    "shippingCalculatorSubmitButton": {{ 'cart.shipping_calculator.submit' | t | json }},
+    "shippingCalculatorDisabled": {{ 'cart.shipping_calculator.disabled' | t | json }},
+    "shippingCalculatorRates": {{ 'cart.shipping_calculator.rates_html' | t | json }},
+    "shippingCalculatorRate": {{ 'cart.shipping_calculator.rate' | t | json }},
+    "shippingCalculatorNoRates": {{ 'cart.shipping_calculator.no_rates' | t | json }},
+    "shippingCalculatorRateValues": {{ 'cart.shipping_calculator.rate_values_html' | t | json }},
+    "shippingCalculatorError": {{ 'cart.shipping_calculator.error' | t | json }},
+    "cartUndo": {{ 'cart.undo' | t | json }}
+  }
+</script>
+
+<!-- Begin ReCharge code -->
+{% include 'subscription-cart-footer' %}
+<!-- End ReCharge code -->
+
+<div data-section-id="{{ section.id }}" data-section-type="page-cart">
+
+  {%- assign shippingCalculatorDefaultCountry = section.settings.shipping_calculator_default_country | escape -%}
+
+  {% if cart.item_count > 0 %}
+    <form action="{{ routes.cart_url }}" method="post">
+      {% render 'cart-table' %}
+
+      {% if section.settings.cart_special_instructions or section.settings.cart_shipping_calculator %}
+        <div class="cart-tools">
+          {% if section.settings.cart_special_instructions %}
+            <div class="cart-instructions">
+              <p>{{ 'cart.special_instructions' | t }}</p>
+              <textarea name="note" rows="4">{{ cart.note }}</textarea>
+            </div>
+          {% endif %}
+
+          {% if section.settings.cart_shipping_calculator and cart.requires_shipping %}
+            {%
+              render 'shipping-calculator',
+              shippingCalculatorDefaultCountry: shippingCalculatorDefaultCountry
+            %}
+          {% endif %}
+        </div>
+      {% endif %}
+
+      <div class="cart-checkout">
+          <ul class="cart-discounts" data-cart-discounts>
+            {% render 'cart-discounts' %}
+          </ul>
+        <p class="cart-price">
+          <span class="money" data-cart-total-price><span class="Bold-theme-hook-DO-NOT-DELETE bold_cart_total" style="display:none !important;"></span>{{ cart.total_price | money }}</span>
+        </p>
+        <p class="cart-message">{{ 'cart.tax_and_shipping' | t }}</p>
+          <button name="checkout" type="submit" class="cart-checkout-button button">
+            {% if section.settings.enable_checkout_lock_icon %}
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M2.5 11.1667C2.5 10.0622 3.39543 9.16675 4.5 9.16675H15.5C16.6046 9.16675 17.5 10.0622 17.5 11.1667V16.3334C17.5 17.438 16.6046 18.3334 15.5 18.3334H4.5C3.39543 18.3334 2.5 17.438 2.5 16.3334V11.1667Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M5.83337 9.16675V5.83341C5.83337 3.53223 7.69885 1.66675 10 1.66675C12.3012 1.66675 14.1667 3.53223 14.1667 5.83341V9.16675" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            {% endif %}
+            <span>
+              {{ 'cart.submit' | t }}
+            </span>
+          </button>
+
+        {% if additional_checkout_buttons %}
+          <div class="additional-checkout-buttons">
+            {{ content_for_additional_checkout_buttons }}
+          </div>
+        {% endif %}
+      </div>
+    </form>
+  {% else %}
+    <p class="cart-empty-message">{{ 'cart.empty' | t }}</p>
+  {% endif %}
+
+  {%- capture cartText -%}
+    {{- 'layout.header.cart_item_count.one' | t | append: '|' }}{{ 'layout.header.cart_item_count.other' | t -}}
+  {%- endcapture -%}
+
+  <script>
+    window.sectionJSON = {{ section.settings | json }};
+    window.cartTextJSON = {{ cartText | split: '|' | json }};
+  </script>
+
+</div>
+
+{% schema %}
+{
+  "name": "Cart page",
+  "class": "section-cart",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "enable_checkout_lock_icon",
+      "label": "Show lock icon on checkout button",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "cart_special_instructions",
+      "label": "Enable order notes",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Shipping rate calculator"
+    },
+    {
+      "type": "checkbox",
+      "id": "cart_shipping_calculator",
+      "label": "Enable",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "shipping_calculator_default_country",
+      "label": "Default country",
+      "info": "If a customer is logged in, their default shipping address country will be selected.",
+      "default": "United States"
+    }
+  ]
+}
+
+{% endschema %}

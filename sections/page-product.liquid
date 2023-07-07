@@ -1,0 +1,145 @@
+{% assign enable_history = true %}
+
+<script
+  type="application/json"
+  data-section-type="page-product"
+  data-section-id="{{ section.id }}"
+  data-section-data
+>
+  {%
+    render 'product-json',
+    enable_history: enable_history
+  %}
+</script>
+
+<div>
+  {% assign productTextStyle = settings.product_text_style %}
+  {% assign productImageFlip = settings.product_image_flip %}
+  {% assign productsPerRow = section.settings.products_in_row %}
+  {% assign productColumnLayout = section.settings.product_column_layout %}
+  {% assign selected_variant = product.selected_or_first_available_variant | default: product %}
+  {% assign selected_media = selected_variant.featured_media | default: product.featured_media %}
+
+  {% assign variant = product.selected_or_first_available_variant %}
+  {% if product.media.size > 0 %}
+    {% assign columns = section.settings.product_column_layout %}
+  {% else %}
+    {% assign columns = "single-column" %}
+  {% endif %}
+
+  <div class="product-wrap {{columns}} clearfix" itemscope itemtype="http://schema.org/Product">
+    {% assign numModules = 4 %}
+
+    {% for i in (1..numModules) %}
+      {% capture moduleNames %}{{ moduleNames }}|product-module-{{i}}{% endcapture %}
+    {% endfor %}
+
+    {% assign modules = moduleNames | remove_first: "|" | split: "|" %}
+    {% assign moduleOrder = "" %}
+
+    {% for module in modules %}
+      {% capture moduleOrder %}{{ moduleOrder }}-{{ settings[module] }}{% endcapture %}
+    {% endfor %}
+
+    {% comment %}
+      Changing the following will rearrange the module order.
+      Must have the prefixed '-'.
+    {% endcomment %}
+    {% assign moduleOrder = '-A-B-C-D' %}
+ 
+    {% if productColumnLayout == "two-column" %}
+      {% assign moduleOrder = moduleOrder | remove: "A" | prepend: "A-" %}
+    {% endif %}
+    {% assign modules = moduleOrder | remove_first: "-" | split: "-" %}
+
+    {% for module in modules %}
+      {% case module %}
+        {% when 'A' %}
+          {%
+            render 'product-gallery',
+            product: product,
+            selected_media: selected_media,
+            enable_image_zoom: section.settings.enable_zoom,
+          %}
+        {% when 'B' %}
+          {% render 'product-form', product: product %}
+        {% when 'C' %}
+          {% render 'product-description', product: product, section: section %}
+        {% when 'D' %}
+          {% render 'share-buttons', product: product %}
+      {% endcase %}
+    {% endfor %}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Product pages",
+  "class": "page-product",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "enable_product_quantity",
+      "label": "Enable cart quantity box",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_send_to_cart",
+      "label": "Enable cart redirection",
+      "info": "Automatically send users to the Cart page after adding a product.",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_spb",
+      "label": "Show dynamic checkout button",
+      "info": "Each customer will see their preferred payment method from those available on your store, such as PayPal or Apple Pay. [Learn more](https://help.shopify.com/manual/using-themes/change-the-layout/dynamic-checkout)",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "product_column_layout",
+      "label": "Layout",
+      "options": [
+        {
+          "value": "single-column",
+          "label": "Single column"
+        },
+        {
+          "value": "two-column",
+          "label": "Double column"
+        }
+      ],
+      "default": "single-column"
+    },
+    {
+      "type": "header",
+      "content": "Media"
+    },
+    {
+      "type": "paragraph",
+      "content": "Learn more about [media types](https://help.shopify.com/en/manual/products/product-media/product-media-types)"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_zoom",
+      "label": "Enable image zoom",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "gallery_enable_video_autoplay",
+      "label": "Enable video autoplay",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "gallery_enable_video_looping",
+      "label": "Enable video looping",
+      "default": true
+    }
+  ]
+}
+
+{% endschema %}

@@ -1,0 +1,46 @@
+<div id="mini-cart" class="hc-cartDrawer">
+  <h4>Cart</h4>
+  <span class="hc-close" aria-hidden="true">&times;</span>
+  <div class="count">
+    <span class="hc-items-count">{{cart.item_count }}</span> item(s) in your cart
+  </div>
+
+  <form action="/cart" method="post" novalidate class="cart">
+
+    <div class="hc-append"></div>
+
+    <table class="hc-mini-table">
+      {% for item in cart.items %}
+      <tr class="item-details" data-id="{{ item.id }}">
+        <td class="td-image">
+          <img src="{{ item | img_url: 'x100' }}" />
+        </td>
+        <td>
+          <div class="mini_cart_title_price">
+            <div>{{ item.title }}</div>
+            <span class="item-price">{{item.price | money }}</span>
+          </div>
+          <a href class="minus-quantity">&minus;</a>
+          <input type="text" class="quantity-input" value="{{item.quantity}}">
+          <a href class="plus-quantity">&plus;</a>
+          <a class="hc-remove" href="">Remove</a>
+        </td>
+      </tr>  
+      {% endfor %}
+    </table>
+
+    <div class="hc-buttons action buttons">
+      <div class="subtotal">
+        <strong class="float-left">Subtotal </strong>
+        <strong class="amount">{{ cart.total_price | money }}</strong>
+      </div>
+
+      <a href="/cart" rel="nofollow" class="cart-grey-btn">View Cart</a>
+      <a class="checkout" href="/checkout" rel="nofollow">Checkout</a>
+
+    </div>
+
+  </form>
+</div>
+
+<div class="custom-overlay"></div>

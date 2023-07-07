@@ -1,0 +1,110 @@
+<aside class="meganav-promo-container
+  meganav-promo-{{ block.settings.promo_block_column_count }}-column
+  meganav-promo-position-{{ block.settings.promo_position }}"
+  {% if mobile_menu != true %}style="width: {{ block.settings.promo_area_width }}%"{% endif %}
+>
+  {% assign column_count = block.settings.promo_block_column_count | times : 1 %}
+  {% assign image_style = block.settings.promo_image_style | default: 'small' %}
+
+  {% for promo in (1..2) %}
+    {% assign image_key = 'image_#' | replace: '#', forloop.index %}
+    {% assign image = block.settings[image_key] %}
+    {% assign promo_text_layout = block.settings.promo_text_layout %}
+    {% assign promo_overlay_layout = block.settings.promo_overlay_layout %}
+    {% assign promo_text_alignment = block.settings.promo_text_alignment %}
+    {% assign show_overlay = block.settings.promo_overlay_image %}
+
+    {% if image == blank and forloop.index > column_count %}
+      {% break %}
+    {% endif %}
+
+    {% assign image_heading_key = 'image_#_heading' | replace: '#', forloop.index %}
+    {% assign image_text_key = 'image_#_text' | replace: '#', forloop.index %}
+    {% assign image_link_key = 'image_#_link' | replace: '#', forloop.index %}
+
+    {% assign image_heading = block.settings[image_heading_key] %}
+    {% assign image_text = block.settings[image_text_key] %}
+    {% assign image_link = block.settings[image_link_key] %}
+
+    {% capture promo_caption %}
+      <figcaption class="promo-item-caption">
+        <h4>{{ image_heading }}</h4>
+        <p>{{ image_text }}</p>
+      </figcaption>
+    {% endcapture %}
+
+    <figure class="meganav-promo-item
+      {% if show_overlay == true %}
+        meganav-promo-item-layout-{{ promo_overlay_layout | replace: '_', '-'}}
+      {% else %}
+        meganav-promo-item-layout-{{ promo_text_layout | replace: '_', '-'}}
+      {% endif %}
+    ">
+
+      {% if show_overlay == true %}
+        <div class="meganav-promo-overlay"></div>
+      {% endif %}
+
+      {% unless image_link == blank %}
+        <a href="{{ image_link }}">
+      {% endunless %}
+
+      {% if promo_text_layout == 'outside_above_left' or promo_text_layout == 'outside_above_center' or promo_text_layout == 'outside_above_right' %}
+        {{ promo_caption }}
+      {% endif %}
+
+      {% if image != blank %}
+        {% if image_style == 'natural' %}
+          {% capture image_css %}padding-bottom: {{- 100 | divided_by: image.aspect_ratio -}}%;{% endcapture %}
+        {% else %}
+          {% assign image_css = blank %}
+        {% endif %}
+        <div
+          class="meganav-promo-item-image {{ image_style }}"
+          role="img"
+          aria-label="{{- image_heading -}}"
+          {%
+            render 'rimg',
+            img: image,
+            size: '600x',
+            background: true,
+            style: image_css,
+            alt: image_heading,
+          %}
+        >
+        </div>
+      {% else %}
+        {% comment %} Render sample images if there are no images loaded yet {% endcomment %}
+        {% capture current %}{% cycle 1, 2 %}{% endcapture %}
+        <div
+          class="meganav-promo-item-image placeholder-image {{ image_style }}"
+          aria-label="{{- image_heading -}}"
+        >
+          {{ 'product-' | append: current | placeholder_svg_tag: 'placeholder-svg' }}
+        </div>
+      {% endif %}
+
+      {% if promo_text_layout == 'outside_below_left' or promo_text_layout == 'outside_below_center' or promo_text_layout == 'outside_below_right' %}
+        {{ promo_caption }}
+      {% endif %}
+
+      {% unless image_link == blank %}
+        </a>
+      {% endunless %}
+
+    </figure>
+
+  {% endfor %}
+  <style>
+    {% if show_overlay == true %}
+      [data-meganav-id-{{ block.id }}] .meganav-promo-container .meganav-promo-item h4,
+      [data-meganav-id-{{ block.id }}] .meganav-promo-container .meganav-promo-item p {
+        color: {{ block.settings.promo_overlay_text_color }};
+      }
+      [data-meganav-id-{{ block.id }}] .meganav-promo-container .meganav-promo-overlay {
+        opacity: {{ block.settings.promo_overlay_opacity | divided_by: 100.00 }};
+        background: {{ block.settings.promo_overlay_color }};
+      }
+    {% endif %}
+  </style>
+</aside>

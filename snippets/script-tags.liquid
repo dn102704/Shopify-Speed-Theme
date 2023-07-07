@@ -1,0 +1,31 @@
+<script
+  id="pacific_js"
+  type="lazyload2"
+  data-src="{{ 'pacific.js' | asset_url }}"
+  data-scripts
+  data-shopify-api-url="{{ 'api.jquery.js' | shopify_asset_url }}"
+  data-shopify-common-url="{{ 'shopify_common.js' | shopify_asset_url }}"
+  data-jquery-currencies-url="{{ 'jquery.currencies.js' | asset_url }}"
+  data-jquery-templates-url="//ajax.aspnetcdn.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js"
+  data-jquery-cart-url="{{ 'jquery.cart.min.js' | asset_url }}"
+  data-countries-url="/services/javascripts/countries.js"
+  data-customer-area-url="{{ 'customer_area.js'  | shopify_asset_url }}"
+  defer>
+</script>
+
+{% if template contains 'customers' %}
+  <script src="{{ 'shopify_common.js' | shopify_asset_url }}" defer></script>
+  <script src="{{ 'customer_area.js'  | shopify_asset_url }}" defer></script>
+{% endif %}
+
+<script>
+  (function () {
+    function handleFirstTab(e) {
+      if (e.keyCode === 9) { // the "I am a keyboard user" key
+        document.body.classList.add('user-is-tabbing');
+        window.removeEventListener('keydown', handleFirstTab);
+      }
+    }
+    window.addEventListener('keydown', handleFirstTab);
+  })();
+</script>

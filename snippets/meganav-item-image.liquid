@@ -1,0 +1,34 @@
+{% assign image_style = meganav_block.settings.meganav_image_style | default: 'small' %}
+{% assign show_images = meganav_block.settings.meganav_show_images %}
+
+{% if show_images %}
+  {% assign current_image = blank %}
+  {% if menu_item.object.featured_media != blank %}
+    {% assign current_image = menu_item.object.featured_media.preview_image %}
+  {% elsif menu_item.object.image != blank %}
+    {% assign current_image = menu_item.object.image %}
+  {% elsif menu_item.type == 'collection_link' and menu_item.object.products[0].media[0].preview_image %}
+    {% assign current_image = menu_item.object.products[0].media[0].preview_image %}
+  {% endif %}
+
+  {% unless current_image == blank %}
+    {% if image_style == 'natural' and mobile != true %}
+      {% capture image_css %}padding-bottom: {{- 100 | divided_by: current_image.aspect_ratio -}}%;{% endcapture %}
+    {% else %}
+      {% assign image_css = blank %}
+    {% endif %}
+    <div
+      class="navmenu-meganav-item-image {{ image_style }}"
+      role="img"
+      aria-label="{{- menu_item.title -}}"
+      {%
+        render 'rimg',
+        img: current_image,
+        size: '450x',
+        background: true,
+        style: image_css,
+      %}
+    >
+    </div>
+  {% endunless %}
+{% endif %}

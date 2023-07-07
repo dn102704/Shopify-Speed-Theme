@@ -1,0 +1,75 @@
+<div class="product-options {{ class }}" {{ block.shopify_attributes }}>
+  {% if product.has_only_default_variant %}
+    <input
+      name="id"
+      value="{{ product.variants[0].id }}"
+      type="hidden"
+    >
+  {% else %}
+    {% comment %}
+      Option inputs
+    {% endcomment %}
+    {%- for option in product.options_with_values -%}
+      <div class="inline-field-wrapper js-required">
+        <label class="product-options__label"><strong>{{ option.name }}:</strong></label>
+
+        <div class="selector-wrapper select-wrapper">
+          {% assign optionIndex = forloop.index %}
+
+          {% comment %}
+            Select dropdown options
+          {% endcomment %}
+          <div class="option-select">
+            <select
+              class="single-option-selector"
+              name=""
+              id="product-select-{{ form_id }}-{{ optionIndex }}"
+              tabindex="0"
+              data-product-option="{{ 'option' | append: optionIndex }}"
+            >
+              {% for value in option.values %}
+                <option
+                  value="{{ value | escape }}"
+                  {% if option.selected_value == value %}selected{% endif %}
+                >{{ value }}</option>
+              {% endfor %}
+            </select>
+            {% render 'icon' with 'chevron-down' %}
+          </div>
+
+        </div>
+      </div>
+    {%- endfor -%}
+
+    <div class="selector-wrapper no-js-required">
+      <label class="product-options__label" for="product-select-{{ form_id }}-no-js">Product Options</label>
+      {% comment %}
+        Variant select. This is the source-of-truth for which variant to add and serves double purpose
+        as the select if js is disabled.
+      {% endcomment %}
+      <select
+        class="product-select inline-field-wrapper"
+        name="id"
+        id="product-select-{{ form_id }}-no-js"
+        data-variants
+      >
+        {% for variant in product.variants %}
+          {% if variant.available %}
+            <option
+              {% if variant.selected %}selected="selected"{% endif %}
+              value="{{ variant.id }}"
+              data-variant-id="{{ variant.id }}">
+              {{ variant.title }} - {{ variant.price | money }}
+            </option>
+          {% else %}
+            <option disabled="disabled"
+              value="{{ variant.id }}"
+              data-variant-id="{{ variant.id }}">
+              {{ variant.title }} - {{ 'products.product.sold_out' | t }}
+            </option>
+          {% endif %}
+        {% endfor %}
+      </select>
+    </div>
+  {% endif %}
+</div>

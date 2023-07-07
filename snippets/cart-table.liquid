@@ -1,0 +1,158 @@
+<table class="cart-items clean" data-cart-table>
+  <thead>
+    <tr>
+      <th class="first">{{ 'general.general.product' | t }}</th>
+      <th class="price">{{ 'general.general.price' | t }}</th>
+      <th>{{ 'general.general.quantity' | t }}</th>
+      <th class="last">{{ 'general.general.total' | t }}</th>
+    </tr>
+  </thead>
+  <tbody data-cart-table-body>
+    {% for item in cart.items %}
+      {%- assign item_has_discounts = false -%}
+      {%- if item.line_level_discount_allocations.size > 0 -%}
+        {%- assign item_has_discounts = true -%}
+      {%- endif -%}
+      <tr
+        class="cart-item variant-{{ item.variant.id }}"
+        data-variant="{{ item.variant.id }}"
+        data-line-item-key="{{ item.key }}"
+        data-title="{{ item.product.title }}"
+        data-url="{{ item.product.url }}"
+      >
+        <td class="cart-item-product first">
+          <a class="cart-item-image" href="{{ item.product.url }}">
+            {% if item.image != blank %}
+              {%
+                render 'rimg',
+                img: item.image,
+                alt: item.title,
+                lazy: true
+              %}
+            {% else %}
+              {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+            {% endif %}
+          </a>
+
+          <span class="cart-item-vendor vendor">
+            <a href="{{ shop.url  }}/collections/vendors?q={{ item.vendor  }}">
+              {{ item.vendor }}
+            </a>
+          </span>
+
+          <span class="cart-item-title">
+            {{ item.product.title | link_to: item.product.url }}
+          </span>
+
+          {% for option in item.variant.options %}
+            {% unless option == 'Default Title' %}
+              <span class="cart-item-option">{{ option }}</span>
+            {% endunless %}
+          {% endfor %}
+
+          {% if item.properties %}
+                {% assign recurringchecked = "false" %} 
+            <div class="cart-line-item-properties">
+              {% for property in item.properties %}
+                {% if property.first.first == "_" %}{% continue %}{% endif%}
+                {% if property.last != blank and property.first != "subscription_id" and property.first != "shipping_interval_frequency" and property.first != "shipping_interval_unit_type" %}
+                  <span class="cart-item-property">
+                    <strong>{{ property.first }}</strong>:
+
+                    {% if property.last contains "/uploads/" %}
+                      <span class="cart-item-property-value cart-item-upload" data-file="{{ property.last }}">
+                        {{ property.last | split: '/' | last }}
+                      </span>
+                    {% else %}
+                      <span class="cart-item-property-value">
+                        {{ property.last }}
+                      </span>
+                    {% endif %}
+                  </span>
+                {% endif %}
+              
+                            {% for p in item.properties  %}   
+                    {% if p.first == 'shipping_interval_frequency' %}
+                        {% assign frequency = p.last %}
+                        {% assign recurringchecked = "true" %} 
+                    {% endif %}
+              		
+                    {% if p.first == 'shipping_interval_unit_type' %}
+                        {% if frequency == '1'%}
+                            {% if p.last == 'Days' %}
+                                {% assign frequency_unit = 'Day' %}
+                            {% elsif p.last == 'Months'%}
+                                {% assign frequency_unit = 'Month' %}
+                            {% elsif p.last == 'Weeks'%}
+                                {% assign frequency_unit = 'Week' %}
+                            {% endif %}
+                        {% else %}
+                            {% assign frequency_unit = p.last %}
+                        {% endif %}
+                    {% endif %}
+                  {% endfor %}
+              {% endfor %}
+            </div>
+          	
+          	{% if recurringchecked == "true" %}
+            	<span> Recurring Delivery every {{frequency}} {{frequency_unit}}. Change or cancel anytime </span><br>
+            {% endif %}
+          {% endif %}
+
+          <a class="cart-item-remove" href="{{ routes.cart_change_url }}?line={{ forloop.index }}&amp;quantity=0">
+            {% render 'icon' with 'close' %}
+          </a>
+        </td>
+        <td class="cart-item-price">
+          {%- if item_has_discounts -%}
+            <s class="original-price"><span class="money">{{ item.original_price | money }}</span></s>
+          {%- endif -%}
+          <span class="final-price money">
+            <span class="Bold-theme-hook-DO-NOT-DELETE bold_cart_item_price" data-item-key="{{item.key}}" style="display:none !important;"></span>
+            {{ item.final_price | money }}</span>
+          {%- if item_has_discounts -%}
+            <ul class="cart-item-discounts">
+              {% for discount_allocation in item.line_level_discount_allocations %}
+                <li>
+                  {% render 'icon' with 'sale-tag' %}
+                  {{ discount_allocation.discount_application.title }}
+                  (-<span class="money">{{ discount_allocation.amount | money }}</span>)
+                </li>
+              {% endfor %}
+            </ul>
+          {%- endif -%}
+        </td>
+
+        <td class="cart-item-quantity">
+          <input class="cart-item-quantity-display" type="text" name="updates[]" value="{{ item.quantity }}" size="1">
+          <span class="cart-item-decrease">
+            {% render 'icon' with 'minus' %}
+          </span>
+          <span class="cart-item-increase">
+            {% render 'icon' with 'plus' %}
+          </span>
+        </td>
+        <td class="cart-item-total last">
+          {%- if item_has_discounts -%}
+            <s class="original-price"><span class="money">{{ item.original_line_price | money }}</span></s>
+          {%- endif -%}
+          <span class="final-price money">
+            <span class="Bold-theme-hook-DO-NOT-DELETE bold_cart_item_total" data-item-key="{{item.key}}" style="display:none !important;"></span>
+            {{ item.final_line_price | money }}</span>
+        </td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<script>
+  window.addEventListener("load", function(){
+    if(typeof BOLD === "object"
+       && typeof BOLD.pre === "object"
+       && typeof BOLD.pre.getTotalDiscount === "function"){
+        var totalPREDiscount = BOLD.pre.getTotalDiscount();
+        if(totalPREDiscount > 0)
+          document.querySelector(".additional-checkout-buttons").remove();
+    }
+  });
+</script>

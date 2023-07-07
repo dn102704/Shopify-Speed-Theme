@@ -1,0 +1,93 @@
+{% comment %}
+  This is the meganav block that displays on desktop.
+
+  @param menu LinkedList
+      The menu handle to look up.
+
+  @param meganav_block Block
+      The block we are using for the meganav.
+
+  @param max_depth Number
+      The maximum depth that navigation can go.
+
+  @param show_arrows Boolean
+      Determines whether to display arrow icons or not.
+
+  @param arrow_icons Array
+      Array of arrow_icon strings to apply different icons
+      to different depths of menus, mapped to Array[depth - 1].
+      If array is not provided, arrow_icon will be used for all icons
+
+{% endcomment %}
+
+{% assign menu_links = menu.links %}
+{% assign menu_title = menu.title %}
+{% assign show_promo_container = meganav_block.settings.promo_show  %}
+
+<div class="navmenu-submenu-container"
+  data-navmenu-submenu
+  data-meganav-id-{{ meganav_block.id }}
+>
+  {% if meganav_block.settings.promo_position == 'first' and show_promo_container %}
+    {%
+      render 'meganav-promo',
+      block: meganav_block,
+      mobile_menu: true,
+    %}
+  {% endif %}
+
+  <ul
+    class="navmenu navmenu-depth-2 navmenu-submenu"
+    {% if menu_title %}aria-label="{{ menu_title }}"{% endif %}
+    data-navmenu
+  >
+    {% for menu_item in menu_links %}
+      {% assign show_subnav = true %}
+      {% if linklists[menu_item.handle] == blank %}
+        {% assign show_subnav = false %}
+      {% endif %}
+
+      <li class="navmenu-item navmenu-item-parent navmenu-id-{{ menu_item.handle }}">
+        <a
+          class="navmenu-link {% if show_subnav %}navmenu-link-parent{% endif %} {% if menu_item.active %}navmenu-link-active{% endif %}"
+          href="{{ menu_item.url }}"
+        >
+          {%
+            render 'meganav-item-image',
+            mobile: true,
+            meganav_block: meganav_block,
+            menu_item: menu_item
+          %}
+          {{ menu_item.title }}
+          {% if show_subnav and show_arrows %}
+            <span class="navmenu-icon navmenu-icon-depth-2"
+              data-navmenu-trigger
+            >
+              {{ arrow_icons[1] }}
+            </span>
+          {% endif %}
+        </a>
+        {% if show_subnav %}
+          {%
+            render 'navlist',
+            menu: menu_item,
+            depth: 3,
+            max_depth: max_depth,
+            show_arrows: true,
+            aria_expanded: false,
+            arrow_icons: arrow_icons,
+            menu_title: menu_title
+          %}
+        {% endif %}
+      </li>
+    {% endfor %}
+  </ul>
+
+  {% if meganav_block.settings.promo_position == 'last' and show_promo_container %}
+    {%
+      render 'meganav-promo',
+      block: meganav_block,
+      mobile_menu: true,
+    %}
+  {% endif %}
+</div>

@@ -1,0 +1,41 @@
+<article class="collection-item">
+
+  {% if collection-list-item == 'linklist' %}
+    {% assign collection = collections[link.handle] %}
+  {% endif %}
+
+  {% if collection.image %}
+    {% assign image = collection.image %}
+    {% assign image_alt = collection.image.alt | escape %}
+  {% else %}
+    {% assign image = collection.products.first.featured_media.preview_image %}
+    {% assign image_alt = collection.products.first.featured_media.alt | escape %}
+  {% endif %}
+
+  <figure class="collection-item-image">
+    <a href="{{ collection.url }}">
+      {% if image and image_alt %}
+        {%
+          render 'rimg',
+          img: image,
+          alt: image_alt,
+          size: '600x',
+          lazy: true
+        %}
+      {% else %}
+        {{ 'collection-1' | placeholder_svg_tag: 'placeholder-svg' }}
+      {% endif %}
+    </a>
+  </figure>
+
+  <div class="collection-item-details {{collectionTextStyle}}-style">
+    <h3><a href="{{ collection.url }}">{{ collection.title }}</a></h3>
+
+    {% if collection.description != blank and showDescriptions %}
+      <div class="rte">
+        {{ collection.description | strip_html | truncatewords: 20 }}
+      </div>
+    {% endif %}
+  </div>
+
+</article>

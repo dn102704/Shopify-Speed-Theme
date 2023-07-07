@@ -1,0 +1,45 @@
+<script>
+
+  window.Shop = {};
+
+  Shop.version = "4.7.0";
+
+  Shop.cartQuantityError = {
+    title: {{ 'cart.quantity_error.title' | t | json }},
+    message: {{ 'cart.quantity_error.message' | t: quantity: '** quantity **', title: '** title **' | json }},
+    button: {{ 'cart.quantity_error.button' | t | json }},
+  };
+
+  Shop.moneyFormat = {{ shop.money_format | json }};
+
+  {% if shop.customer_accounts_enabled and customer %}
+    Shop.customerLoggegdIn = true;
+  {% endif %}
+
+  {% if cart.requires_shipping %}
+    Shop.requiresShipping = true
+  {% endif %}
+
+  {% if shop.customer_accounts_enabled and customer and customer.default_addresses %}
+    Shop.customerAddress = {{ customer.default_address | json }};
+  {% endif %}
+
+  window.Theme = {
+    routes: {
+      "root_url": "{{ routes.root_url }}",
+      "account_url": "{{ routes.account_url }}",
+      "account_login_url": "{{ routes.account_login_url }}",
+      "account_logout_url": "{{ routes.account_logout_url }}",
+      "account_register_url": "{{ routes.account_register_url }}",
+      "account_addresses_url": "{{ routes.account_addresses_url }}",
+      "collections_url": "{{ routes.collections_url }}",
+      "all_products_collection_url": "{{ routes.all_products_collection_url }}",
+      "search_url": "{{ routes.search_url }}",
+      "cart_url": "{{ routes.cart_url }}",
+      "cart_add_url": "{{ routes.cart_add_url }}",
+      "cart_change_url": "{{ routes.cart_change_url }}",
+      "cart_clear_url": "{{ routes.cart_clear_url }}",
+      "product_recommendations_url": "{{ routes.product_recommendations_url }}"
+    }
+  };
+</script>

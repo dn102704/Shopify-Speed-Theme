@@ -1,0 +1,48 @@
+{% assign section_onboarding = false %}
+{% if product == blank %}
+  {% assign section_onboarding = true %}
+{% endif %}
+
+{% assign variant = product.selected_or_first_available_variant %}
+
+<div class="product__price {{ class }}" {{ block.shopify_attributes }}>
+  <meta itemprop="price" content="{{ variant.price | divided_by: 100.00 }}" />
+  <meta itemprop="priceCurrency" content="{{ cart.currency.iso_code }}" />
+
+  <span class="product-price">
+    <span
+      class="product-price-minimum money"
+      data-variant-price
+    >
+      {% if section_onboarding %}
+        {{ 1999 | money }}
+      {% else %}
+        {{ variant.price | money }}
+      {% endif %}
+    </span>
+
+    <span
+      class="
+        product-price-compare
+        money
+        original
+        {% unless variant.compare_at_price and variant.compare_at_price > variant.price %}
+          hidden
+        {% endunless %}
+      "
+      data-variant-compare-at-price
+    >
+      {{ variant.compare_at_price | money }}
+    </span>
+  </span>
+
+  {%
+    render 'unit-price',
+    item: variant,
+    class: 'product-details__unit-price'
+  %}
+
+  <div data-payment-terms-reference style="display: none;">
+    {{ form | payment_terms }}
+  </div>
+</div>

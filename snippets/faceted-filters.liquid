@@ -1,0 +1,19 @@
+{% comment %}
+  @param filters {Iterable}
+    Filters object - collection.filters or search.filters
+  @param class_prefix {String}
+    Classname prefix
+{% endcomment %}
+
+<div class="{{ class_prefix }}__filters-wrapper" data-faceted-filter>
+  <div class="{{ class_prefix }}__filters">
+    {%- for filter in filters -%}
+      {%
+        render 'faceted-filter-group',
+        filter: filter,
+        class_prefix: class_prefix.
+        forloop: forloop
+      %}
+    {%- endfor -%}
+  </div>
+</div>

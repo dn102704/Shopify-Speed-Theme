@@ -1,0 +1,19 @@
+<div class="footer-module footer-tweet
+  {% if block.settings.twitter-id != blank %}twitter-enabled{% endif %}"
+  data-twitter-id="{{ block.settings.twitter-id | escape }}"
+  data-twitter-retweets="{{ block.settings.twitter-retweets }}">
+
+  {% if block.settings.title != blank %}
+    <h4>{{ block.settings.title | escape }}</h4>
+  {% endif %}
+
+  {% if block.settings.twitter-id == blank %}
+    <div class="user">
+      <a href="#">
+        <span data-scribe="element:name">{{ 'general.general.name' | t }}</span>
+        <span data-scribe="element:screen_name">@{{ 'general.general.name' | t }}</span>
+      </a>
+    </div>
+    <p class="tweet">{{ 'onboarding.twitter_widget.tweet' | t }}</p>
+  {% endif %}
+</div>

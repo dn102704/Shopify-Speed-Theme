@@ -1,0 +1,42 @@
+{% assign productTextStyle = settings.product_text_style %}
+
+{% assign item = product %}
+{% capture current %}{% cycle 1, 2, 3, 4, 5, 6 %}{% endcapture %}
+
+<div class="product-list-item demo">
+
+  {% if productTextStyle == 'overlay' %}
+    <a class="product-list-item-overlay-link" href="#"></a>
+  {% endif %}
+
+  <figure class="product-list-item-thumbnail product-list-item-no-image">
+    <a href="#">
+      {{ 'product-' | append: current | placeholder_svg_tag: 'placeholder-svg' }}
+    </a>
+  </figure>
+
+  {% if productTextStyle == 'overlay' %}
+    <div class="product-list-item-details-wrapper">
+  {% endif %}
+
+    <div class="product-list-item-details">
+      <p class="product-list-item-vendor vendor meta">
+        {{ 'onboarding.product.vendor' | t }}
+      </p>
+
+      <h4 class="product-list-item-title">
+        <a href="#">{{ 'onboarding.product.title' | t }}</a>
+      </h4>
+
+      <p class="product-list-item-price">
+        <span class="price">
+          {{ 'products.product.from' | t }} <span class="money">$19.99</span>
+        </span>
+      </p>
+    </div>
+
+  {% if productTextStyle == 'overlay' %}
+    </div>
+  {% endif %}
+
+</div>

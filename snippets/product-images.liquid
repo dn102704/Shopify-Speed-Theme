@@ -1,0 +1,65 @@
+{% if product.images.size > 0 %}
+  {% assign featured_image = product.featured_image %}
+
+  {% if product.selected_or_first_available_variant.image %}
+    {% assign featured_image = product.selected_or_first_available_variant.image %}
+  {% endif %}
+
+  <div class="product-images clearfix">
+    <div class="product-main-image {% if section.settings.enable_zoom %}zoom-active{% endif %}">
+      <div class="product-image-wrapper" data-product-image>
+        {%
+          include 'rimg',
+          img: featured_image,
+          size: '1280x1280',
+          lazy: true
+        %}
+      </div>
+
+      {% if section.settings.enable_zoom %}
+        <div class="product-zoom"></div>
+      {% endif %}
+    </div>
+
+    {% if product.images.size > 1 %}
+    <div class="product-thumbnails">
+      {% for image in product.images %}
+        {% capture image_id %}
+          data-image-id="{{ image.id }}"
+        {% endcapture %}
+
+        {%
+          include 'rimg',
+          img: image,
+          size: '60x',
+          attr: image_id
+        %}
+      {% endfor %}
+    </div>
+    {% endif %}
+  </div>
+{% else %}
+  <div class="product-images clearfix">
+    <div class="product-main-image">
+      {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+    </div>
+  </div>
+{% endif %}
+<script type="application/json" data-images>
+  {
+    "defaultImageId": {{- product.featured_image.id | json -}}{%- unless product.images.size == 0 %},{%- endunless -%}
+    {%- for image in product.images %}
+      {%- capture rimg_string -%}
+        <div class="product-image-wrapper" data-product-image>
+          {%
+            include 'rimg',
+            img: image,
+            size: '1280x1280',
+            lazy: true
+          %}
+        </div>
+      {%- endcapture -%}
+      "{{ image.id }}": {{ rimg_string | strip_newlines | json }}{%- unless forloop.last %},{%- endunless -%}
+    {%- endfor -%}
+  }
+</script>

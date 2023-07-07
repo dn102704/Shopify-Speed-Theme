@@ -1,0 +1,102 @@
+{% comment %}
+  @param seachResultsDisplay {String}
+    Header setting - types of results to show
+    Possible values: products, products_pages, products_posts, products_pages_posts
+  @param searchResultsLayout {String}
+    Header setting.
+    Possible values: cozy, compact, comfortable
+  @param searchQuickLinks {Linklist}
+    Header setting. Quick link menu
+{% endcomment %}
+
+{% capture products_placeholder %}
+  <li class="livesearch-product livesearch-product-placeholder">
+    <div class="livesearch-product-link livesearch-product-link-placeholder">
+      <figure class="livesearch-product-figure livesearch-product-figure-placeholder"></figure>
+
+      <div class="livesearch-product-content livesearch-product-content-placeholder">
+        <div class="livesearch-product-title"></div>
+        <div class="livesearch-product-price"></div>
+        <div class="livesearch-product-vendor"></div>
+      </div>
+    </div>
+  </li>
+{% endcapture %}
+
+{% capture postspages_placeholder %}
+  <li class="livesearch-page livesearch-page-placeholder">
+    <div class="livesearch-page-link livesearch-page-link-placeholder">
+      <div></div>
+      <div></div>
+    </div>
+  </li>
+{% endcapture %}
+
+{% capture livesearch_classes %}
+  livesearch-results
+  {% if searchResultsDisplay == 'products_posts' or searchResultsDisplay == 'products_pages_posts' %}
+    livesearch-display-posts
+  {% endif %}
+  {% if searchResultsDisplay == 'products_pages' or searchResultsDisplay == 'products_pages_posts' %}
+    livesearch-display-pages
+  {% endif %}
+  livesearch-results-layout-{{ searchResultsLayout }}
+{% endcapture %}
+<div class="{{ livesearch_classes }}" data-livesearch-results>
+  <div class="livesearch-dropdown-wrapper">
+    {% if linklists[searchQuickLinks].links.size > 0 %}
+      <div class="livesearch-quicklinks">
+        <h3 class="livesearch-quicklinks-heading meta">{{ 'general.livesearch.quicklinks_heading' | t }}</h3>
+        <ul class="livesearch-quicklinks-list">
+          {% for quickLink in linklists[searchQuickLinks].links %}
+            <li><a href="{{ quickLink.url }}">{{ quickLink.title }}</a></li>
+          {% endfor %}
+        </ul>
+      </div>
+    {% endif %}
+    <div class="livesearch-results-wrapper" data-livesearch-results-wrapper>
+      <div class="livesearch-results-products" data-livesearch-products>
+        <ul
+          class="livesearch-products-list livesearch-products-list-placeholder"
+          data-livesearch-products-placeholder
+        >
+          {% comment %} Add 2 extra placeholders if compact {% endcomment %}
+          {% if searchResultsLayout == 'compact' %}
+            {% for i in (1..2) %}
+              {{ products_placeholder }}
+            {% endfor %}
+          {% endif %}
+          {% for i in (1..2) %}
+            {{ products_placeholder }}
+          {% endfor %}
+        </ul>
+      </div>
+      <div class="livesearch-results-pages">
+        <h2 class="livesearch-pages-header meta">
+          {% case searchResultsDisplay %}
+            {% when 'products_pages_posts' %}
+              {{ 'general.livesearch.posts_pages_results_header' | t }}
+            {% when 'products_posts' %}
+              {{ 'general.livesearch.posts_results_header' | t }}
+            {% when 'products_pages' %}
+              {{ 'general.livesearch.pages_results_header' | t }}
+          {% endcase %}
+        </h2>
+        <div class="livesearch-results-pages-wrapper" data-livesearch-pages>
+          <ul
+            class="livesearch-pages-list livesearch-pages-list-placeholder"
+            data-livesearch-pages-placeholder
+          >
+            {% for i in (1..2) %}
+              {{ postspages_placeholder }}
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <a class="livesearch-viewall" data-livesearch-viewall>
+    {{ 'general.livesearch.results_viewall' | t }}
+    (<span class="livesearch-results-count" data-livesearch-results-count>0</span>)
+  </a>
+</div>

@@ -1,0 +1,84 @@
+<div class="footer-module footer-connect">
+<h4 style="color:#822E2D;"> Newsletter Sign Up</h4>
+  <p style="color:#000000;"> Enter your email to receive our best offers and discounts</p>
+  {% if block.settings.show-mailing-list %}
+    {% render 'newsletter' %}
+  {% endif %}
+
+  {% if block.settings.show-social-links %}
+    <div class="social-networks">
+      <ul>
+        {% if settings.social-facebook-url != blank %}
+          <li class="social-link facebook">
+            <a href="{{ settings.social-facebook-url | escape }}" target="_blank">
+              {% render 'icon' with 'facebook' %}
+            </a>
+          </li>
+        {% endif %}
+        {% if settings.social-twitter-url != blank %}
+          <li class="social-link twitter">
+            <a href="{{ settings.social-twitter-url | escape }}" target="_blank">
+              {% render 'icon' with 'twitter' %}
+            </a>
+          </li>
+        {% endif %}
+        {% if settings.social-tumblr-url != blank %}
+          <li class="social-link tumblr">
+            <a href="{{ settings.social-tumblr-url | escape }}" target="_blank">
+              <svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><title>Tumblr</title><path d="M23.853 25.559c-.595.284-1.733.53-2.583.553-2.56.069-3.058-1.799-3.08-3.155v-9.962h6.426V8.151h-6.402V0h-4.688c-.077 0-.212.067-.23.239C13.022 2.734 11.853 7.112 7 8.862v4.133h3.239v10.457c0 3.579 2.64 8.665 9.612 8.546 2.35-.04 4.962-1.026 5.541-1.874l-1.54-4.565" fill="#000" fill-rule="evenodd"/></svg>
+            </a>
+          </li>
+        {% endif %}
+        {% if settings.social-pinterest-url != blank %}
+          <li class="social-link pinterest">
+            <a href="{{ settings.social-pinterest-url | escape }}" target="_blank">
+              {% render 'icon' with 'pinterest' %}
+            </a>
+          </li>
+        {% endif %}
+        {% if settings.social-instagram-url != blank %}
+          <li class="social-link instagram">
+            <a href="{{ settings.social-instagram-url | escape }}" target="_blank">
+              {% render 'icon' with 'instagram' %}
+            </a>
+          </li>
+        {% endif %}
+        {% if settings.social-kickstarter-url != blank %}
+          <li class="social-link kickstarter">
+            <a href="{{ settings.social-kickstarter-url | escape }}" target="_blank">
+              {% render 'icon' with 'kickstarter' %}
+            </a>
+          </li>
+        {% endif %}
+        {% if settings.social-vimeo-url != blank %}
+          <li class="social-link vimeo">
+            <a href="{{ settings.social-vimeo-url | escape }}" target="_blank">
+              {% render 'icon' with 'vimeo' %}
+            </a>
+          </li>
+        {% endif %}
+        {% if settings.social-youtube-url != blank %}
+          <li class="social-link youtube-logo">
+            <a href="{{ settings.social-youtube-url | escape }}" target="_blank">
+              {% render 'icon' with 'youtube' %}
+            </a>
+          </li>
+        {% endif %}
+        {% if settings.social-email-address != blank %}
+          <li class="social-link email">
+            <a href="mailto:{{ settings.social-email-address | escape }}" target="_blank">
+              {% render 'icon' with 'mail' %}
+            </a>
+          </li>
+        {% endif %}
+        {% if settings.social-rss-url != blank %}
+          <li class="social-link rss">
+            <a href="{{ settings.social-rss-url | escape }}" target="_blank">
+              {% render 'icon' with 'rss' %}
+            </a>
+          </li>
+        {% endif %}
+      </ul>
+    </div>
+  {% endif %}
+</div>

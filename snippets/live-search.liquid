@@ -1,0 +1,50 @@
+{% comment %}
+  @param seachResultsDisplay {String}
+    Header setting - types of results to show
+    Possible values: products, products_pages, products_posts, products_pages_posts
+  @param searchResultsLayout {String}
+    Header setting.
+    Possible values: cozy, compact, comfortable
+  @param searchQuickLinks {Linklist}
+    Header setting. Quick link menu
+{% endcomment %}
+
+<div
+  class="header-livesearch"
+  data-search
+>
+  <div class="header-search-overlay" data-search-overlay></div>
+  <form
+    action="{{ routes.search_url }}"
+    method="get"
+    name="search-form"
+    autocomplete="off"
+    class="livesearch-form"
+    data-search-form
+  >
+    <div class="livesearch-form-wrapper">
+      <input
+        type="text"
+        name="q"
+        placeholder="{{ 'general.search.input_placeholder' | t }}"
+        class="livesearch-input"
+        data-search-form-input
+      />
+      <button
+        class="livesearch-button-close button"
+        type="button"
+        aria-label="{{ 'general.search.form_close' | t }}"
+        data-search-form-button-close
+      >
+        {% render 'icon' with 'close' %}
+      </button>
+    </div>
+  </form>
+
+  {%
+    render 'live-search-results',
+    searchResultsDisplay: searchResultsDisplay,
+    searchResultsLayout: searchResultsLayout,
+    searchQuickLinks: searchQuickLinks
+  %}
+</div>

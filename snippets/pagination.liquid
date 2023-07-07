@@ -1,0 +1,39 @@
+{% if paginate.previous or paginate.next %}
+  <ul class="pagination">
+
+    <li class="pagination-previous">
+      {% if paginate.previous %}
+        {{ 'general.pagination.previous' | t | link_to: paginate.previous.url }}
+      {% else %}
+        <span>{{ 'general.pagination.previous' | t }}</span>
+      {% endif %}
+    </li>
+
+    {% if section.settings.products_pagination_method == 'standard-pagination' %}
+      <li class="pagination-position">
+        {{ 'general.pagination.summary' | t: current_page: paginate.current_page, total_pages: paginate.pages }}
+      </li>
+    {% else %}
+      {% for part in paginate.parts %}
+        {% if part.is_link %}
+          <li><a href="{{ part.url }}"><span>{{ part.title }}</span></a></li>
+        {% else %}
+          {% if part.title == '&hellip;' %}
+            <li class="pagination-ellipsis">{{ part.title }}</li>
+          {% else %}
+            <li class="pagination-current"><span>{{ part.title }}</span></li>
+          {% endif %}
+        {% endif %}
+      {% endfor %}
+    {% endif %}
+
+    <li class="pagination-next">
+      {% if paginate.next %}
+        {{ 'general.pagination.next' | t | link_to: paginate.next.url }}
+      {% else %}
+        <span>{{ 'general.pagination.next' | t }}</span>
+      {% endif %}
+    </li>
+
+  </ul>
+{% endif %}

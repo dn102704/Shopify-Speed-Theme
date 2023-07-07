@@ -1,0 +1,62 @@
+{% render 'breadcrumbs' %}
+
+{% if template contains 'product' %}
+  <div class="product-details">
+    <h1 class="page-title" itemprop="name">{{ product.title }}</h1>
+    <a class="product-vendor vendor" href="{{ product.vendor | url_for_vendor }}">{{ product.vendor }}</a>
+  </div>
+{% elsif template contains 'collections' %}
+  <h1 class="page-title">
+    {{ 'collections.listing.title' | t }}
+  </h1>
+{% elsif template contains 'collection' %}
+  {% comment %} do nothing {% endcomment %}
+{% elsif template contains 'blog' %}
+  <h1 class="page-title">
+    {% if current_tags %}<a href="{{ blog.url }}">{% endif %}
+    {{ blog.title }}
+    {% if current_tags %}</a>{% endif %}
+  </h1>
+
+  {% unless settings.social-rss-url == blank %}
+    <p class="blog-subscribe"><a href="{{ blog.url }}.atom">{{ 'blogs.blog.subscribe' | t }}</a></p>
+  {% endunless %}
+{% elsif template contains 'article' %}
+  <h1 class="page-title article-title">{{ article.title }}</h1>
+
+  {% unless settings.social-rss-url == blank %}
+    <p class="blog-subscribe"><a href="{{ blog.url }}.atom">{{ 'blogs.blog.subscribe' | t }}</a></p>
+  {% endunless %}
+{% elsif template contains 'search' %}
+  <h1 class="page-title">
+    {% if search.performed %}
+      {{ 'general.search.title_after_search' | t }}
+    {% else %}
+      {{ 'general.search.title' | t }}
+    {% endif %}
+  </h1>
+{% elsif template contains '404' %}
+  <h1 class="page-title">{{ 'general.404.title' | t }}</h1>
+{% elsif template contains 'customer' %}
+  <h1 class="page-title">
+    {% if template contains 'account' %}
+      {{ 'customers.account.title' | t }}
+    {% elsif template contains 'activate' %}
+      {{ 'customers.activate_account.title' | t }}
+    {% elsif template contains 'addresses' %}
+      {{ 'customers.addresses.title' | t }}
+    {% elsif template contains 'login' %}
+      {{ 'customers.login.title' | t }}
+    {% elsif template contains 'order' %}
+      {{ 'customers.order.title' | t: order_number: order.name }}
+    {% elsif template contains 'register' %}
+      {{ 'customers.register.title' | t }}
+    {% elsif template contains 'reset' %}
+      {{ 'customers.reset_password.title' | t }}
+    {% endif %}
+  </h1>
+{% elsif template contains 'cart' %}
+  <h1 class="page-title">{{ 'cart.title' | t }}</h1>
+{% else %}
+  <h1 class="page-title">{{ page.title }}</h1>
+{% endif %}

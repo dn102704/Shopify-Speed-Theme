@@ -1,0 +1,52 @@
+<ul
+  id="mega-menu-item-{{ link.handle }}"
+  class="mega-nav-dropdown"
+>
+  {% if link.links %}
+    {% for link in link.links %}
+      <li class="mega-nav-item">
+        {% if megaNavImages %}
+          {% if link.object.featured_image != blank %}
+            <a class="mega-nav-item-image-wrapper" href="{{ link.url }}">
+              {%
+                include 'rimg',
+                img: link.object.featured_image,
+                size: '900x900',
+                lazy: true
+              %}
+            </a>
+          {% elsif link.object.image != blank %}
+            <a class="mega-nav-item-image-wrapper" href="{{ link.url }}">
+              {%
+                include 'rimg',
+                img: link.object.image,
+                size: '900x900',
+                lazy: true
+              %}
+            </a>
+          {% endif %}
+        {% endif %}
+
+        {% assign list = link.links %}
+        {% include 'has-dropdown' %}
+        <a href="{{ link.url }}" class="meta tier-toggle-wrap">{{ link.title }} {% if has-dropdown %}<span class="mobile-tier-toggle"></span>{% endif %}</a>
+        {% assign firstTierTitle = link.title %}
+
+        <ul class="mega-nav-tier-1">
+          {% for link in link.links %}
+            {% assign list = link.links %}
+            {% include 'has-dropdown' %}
+            <li class="{% if has-dropdown %}has-children{% endif %}">
+              <a href="{{ link.url }}">{{ link.title }} {% if has-dropdown %}<span class="mobile-tier-toggle"></span>{% endif %}</a>
+
+              {% if has-dropdown %}
+                {% assign index = 2 %}
+                {% include 'mega-navigation-links' with index %}
+              {% endif %}
+            </li>
+          {% endfor %}
+        </ul>
+      </li>
+    {% endfor %}
+  {% endif %}
+</ul>

@@ -1,0 +1,9 @@
+<div class="footer-module footer-text-box">
+  {% if block.settings.title != blank %}
+    <h4>{{ block.settings.title | escape }}</h4>
+  {% endif %}
+
+  <div class="rte">
+    {{ block.settings.footer-text-box }}
+  </div>
+</div>

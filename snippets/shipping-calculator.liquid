@@ -1,0 +1,91 @@
+{% assign default_country = '' %}
+{% assign default_province = '' %}
+{% assign default_zip = '' %}
+
+{% if shippingCalculatorDefaultCountry != '' %}
+  {% assign default_country = shippingCalculatorDefaultCountry %}
+{% endif %}
+
+{% if customer %}
+  {% if customer.default_address.country != '' %}
+    {% assign default_country = customer.default_address.country %}
+  {% endif %}
+
+  {% if customer.default_address.province != '' %}
+    {% assign default_province = customer.default_address.province %}
+  {% endif %}
+
+  {% if customer.default_address.zip != '' %}
+    {% assign default_zip = customer.default_address.zip %}
+  {% endif %}
+{% endif %}
+
+{% assign shop_country = shop.address.country %}
+
+<div class="cart-shipping-calculator">
+
+  <h4>{{ 'cart.shipping_calculator.header' | t }}</h4>
+
+  <div class="cart-shipping-calculator-wrap rte">
+    <div class="input-wrapper">
+      <label for="address_country">{{ 'cart.shipping_calculator.country' | t }}</label>
+      <div class="country-select select-wrapper">
+        <select
+          id="address_country"
+          class="address-country"
+          name="address[country]"
+          data-default="{% if default_country != blank %}{{ default_country }}{% else %}{{ shop_country }}{% endif %}">
+            {{ country_option_tags }}
+        </select>
+        {% render 'icon' with 'chevron-down' %}
+      </div>
+    </div>
+
+    <div class="input-wrapper" id="address_province_container">
+      <label for="address_province" id="address_province_label">{{ 'cart.shipping_calculator.province' | t }}</label>
+      <div class="province-select select-wrapper">
+        <select
+          id="address_province"
+          class="address-province address_form"
+          name="address[province]"
+          data-default="{{ default_province }}">
+        </select>
+        {% render 'icon' with 'chevron-down' %}
+      </div>
+    </div>
+
+    <div class="zip-code input-wrapper">
+      <label for="address_zip">{{ 'cart.shipping_calculator.zip' | t }}</label>
+      <input
+        id="address_zip"
+        type="text"
+        class="address-zip"
+        class="field"
+        name="address[zip]"
+        {% if default_zip != blank %}value="{{ default_zip }}"{% endif %} />
+    </div>
+
+    <div class="input-wrapper">
+      <input
+        type="button"
+        class="secondary"
+        value="{{ 'cart.shipping_calculator.submit' | t }}"
+        data-shipping-calc-submit
+      />
+    </div>
+  </div>
+
+  <div class="cart-shipping-calculator-response rte">
+    <p>{{ 'cart.shipping_calculator.prompt' | t }}</p>
+  </div>
+
+</div>
+
+<script type="application/json" data-shipping-calculator-strings>
+  {
+    "customerIsLoggedIn": {{ customer.default_address.country | default: false | json }},
+    "submitButton": {{ 'cart.shipping_calculator.submit' | t | json }},
+    "submitButtonDisabled": {{ 'cart.shipping_calculator.disabled' | t | json}},
+    "moneyFormat": {{ shop.money_with_currency_format | json }}
+  }
+</script>

@@ -1,0 +1,32 @@
+{% assign success_message = '' %}
+{% assign error_message = '' %}
+
+<div class="newsletter-subscription">
+  {% if block.settings.title != blank %}
+    <h4>{{ block.settings.title | escape }}</h4>
+  <p style="color:#000000;"> Sign up here for our hottest discounts and deals!</p>
+  {% endif %}
+
+  {% form 'customer', class: 'newsletter-subscription-form' %}
+      <input class="newsletter-email" name="contact[email]" type="email" placeholder="your@email.com" value="">
+      <input type="hidden" id="contact_tags" name="contact[tags]" value="prospect,newsletter"/>
+      <button class="newsletter-submit button" type="submit">{% render 'icon' with 'mail' %}</button>
+      {% if form.posted_successfully? %}
+        {% capture success_message %}
+          <p class="newsletter-success">
+            {{ 'general.general.newsletter_success' | t }}
+          </p>
+        {% endcapture %}
+    {% endif %}
+    {% if form.errors.size > 0 %}
+      {% capture error_message %}
+        <p class="newsletter-error">
+          {{ form.errors | default_errors }}
+        </p>
+      {% endcapture %}
+    {% endif %}
+  {% endform %}
+
+  {{ success_message }}
+  {{ error_message }}
+</div>

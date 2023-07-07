@@ -1,0 +1,91 @@
+{% comment %}
+  This is the meganav block that displays on desktop.
+
+  @param menu LinkedList
+      The menu handle to look up.
+
+  @param meganav_block Block
+      The block we are using for the meganav.
+
+  @param max_depth Number
+      The maximum depth that navigation can go.
+
+  @param arrow_icons Array
+      Array of arrow_icon strings to apply different icons
+      to different depths of menus, mapped to Array[depth - 1].
+
+{% endcomment %}
+
+{% assign menu_links = menu.links %}
+{% assign menu_title = menu.title %}
+{% assign show_promo_container = meganav_block.settings.promo_show  %}
+
+<div
+  class="navmenu-submenu navmenu-meganav"
+  data-navmenu-submenu
+  data-meganav-menu
+  data-meganav-id="{{ meganav_block.id }}"
+  data-meganav-id-{{ meganav_block.id }}
+>
+  <div class="navmenu-meganav-wrapper">
+    {% if meganav_block.settings.promo_position == 'first' and show_promo_container %}
+      {%
+        render 'meganav-promo',
+        block: meganav_block,
+        mobile_menu: false
+      %}
+    {% endif %}
+
+    <nav class="meganav-nav-container">
+      <ul
+        class="navmenu-meganav navmenu-meganav-depth-2 navmenu-meganav-submenu"
+        data-navmenu
+        {% if menu_title %}aria-label="{{ menu_title }}"{% endif %}
+      >
+        {% for menu_item in menu_links %}
+          {% assign show_subnav = true %}
+          {% if linklists[menu_item.handle] == blank %}
+            {% assign show_subnav = false %}
+          {% endif %}
+
+          <li
+            class="navmenu-meganav-item navmenu-meganav-item-parent"
+          >
+            <a
+              class="navmenu-meganav-link {% if show_subnav %}navmenu-meganav-link-parent{% endif %} {% if menu_item.active %}navmenu-meganav-link-active{% endif %}"
+              href="{{ menu_item.url }}"
+            >
+              {%
+                render 'meganav-item-image',
+                meganav_block: meganav_block,
+                menu_item: menu_item,
+                mobile: false
+              %}
+              {{ menu_item.title }}
+            </a>
+            {% if show_subnav %}
+              {%
+                render 'navlist',
+                menu_title: menu_title,
+                menu: menu_item,
+                depth: 3,
+                max_depth: max_depth,
+                show_arrows: true,
+                aria_expanded: false,
+                arrow_icons: arrow_icons,
+              %}
+            {% endif %}
+          </li>
+        {% endfor %}
+      </ul>
+    </nav>
+
+    {% if meganav_block.settings.promo_position == 'last' and show_promo_container %}
+      {%
+        render 'meganav-promo',
+        block: meganav_block,
+        mobile_menu: false
+      %}
+    {% endif %}
+  </div>
+</div>

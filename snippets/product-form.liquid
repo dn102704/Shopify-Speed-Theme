@@ -1,0 +1,164 @@
+{% unless form_id %}
+  {% assign form_id = product.id %}
+{% endunless %}
+
+{% assign variant = product.selected_or_first_available_variant %}
+
+<div
+  class="
+    product-form
+    {% if section.settings.show_spb %}
+      smart-payment-buttons
+    {% endif %}
+  "
+  data-product-form="{{ form_id }}"
+>
+
+  <meta itemprop="name" content="{{ product.title }}">
+  <meta itemprop="brand" content="{{ product.vendor }}">
+  <meta itemprop="url" content="{{ shop.url }}{{ product.url }}">
+  <meta itemprop="image" content="{{ product.featured_media.preview_image | img_url: 'grande' }}">
+
+  {% capture product_form_id %}{{- 'product-form-' | append: section.id -}}{% endcapture %}
+
+  {% form 'product', product, data-productid: product.id, id: product_form_id %}
+    <!-- Begin ReCharge code -->
+    {% if product.available %}{% render 'subscription-product' with product as product %}{% endif %}
+    <!-- End ReCharge code -->
+
+    <div id="infiniteoptions-container"></div>
+    <div id="uploadery-container"></div>
+
+    <div class="product-options">
+      {% if product.has_only_default_variant %}
+        <input
+          name="id" data-productid="{{ product.id }}"
+          value="{{ variant.id }}"
+          type="hidden"
+        >
+      {% else %}
+        {% comment %}
+          Option inputs
+        {% endcomment %}
+        {%- for option in product.options_with_values -%}
+          <div class="inline-field-wrapper js-required">
+            <label><strong>{{ option.name }}:</strong></label>
+
+            <div class="selector-wrapper select-wrapper">
+              {% assign optionIndex = forloop.index %}
+
+              {% comment %}
+                Select dropdown options
+              {% endcomment %}
+              <div class="option-select">
+                <select
+                  class="single-option-selector"
+                  name=""
+                  id="product-select-{{ form_id }}"
+                  tabindex="0"
+                  data-product-option="{{ 'option' | append: optionIndex }}"
+                >
+                  {% for value in option.values %}
+                    <option
+                      value="{{ value | escape }}"
+                      {% if option.selected_value == value %}selected{% endif %}
+                    >{{ value }}</option>
+                  {% endfor %}
+                </select>
+                {% render 'icon' with 'chevron-down' %}
+              </div>
+
+            </div>
+          </div>
+        {%- endfor -%}
+
+        <div class="selector-wrapper no-js-required">
+          <label for="product-select-{{ form_id }}-no-js">Product Options</label>
+          {% comment %}
+            Variant select. This is the source-of-truth for which variant to add and serves double purpose
+            as the select if js is disabled.
+          {% endcomment %}
+          <select
+            class="product-select inline-field-wrapper"
+            name="id" data-productid="{{ product.id }}"
+            id="product-select-{{ form_id }}-no-js"
+            data-variants
+          >
+            {% for variant in product.variants %}
+              {% if variant.available %}
+                <option
+                  {% if variant.selected %}selected="selected"{% endif %}
+                  value="{{ variant.id }}"
+                  data-variant-id="{{ variant.id }}">
+                  {{ variant.title }} - <span class="money" data-product-id="{{ product.id }}">{{ variant.price | money }}</span>
+                </option>
+              {% else %}
+                <option disabled="disabled"
+                  value="{{ variant.id }}"
+                  data-variant-id="{{ variant.id }}">
+                  {{ variant.title }} - {{ 'products.product.sold_out' | t }}
+                </option>
+              {% endif %}
+            {% endfor %}
+          </select>
+        </div>
+      {% endif %}
+    </div>
+
+    {% if section.settings.enable_product_quantity %}
+      <div class="product-quantity">
+        <div class="input-wrapper">
+          <label for="quantity">{{ 'general.general.quantity' | t }}</label>
+          <input type="text" name="quantity" id="quantity" value="1" />
+        </div>
+      </div>
+    {% endif %}
+
+  {% render 'shappify-sales-clock' %}
+
+    <div class="product-submit" itemprop="offers" itemscope itemtype="http://schema.org/Offer">
+      <meta itemprop="price" content="{{ variant.price | divided_by: 100.00 }}" />
+      <meta itemprop="priceCurrency" content="{{ cart.currency.iso_code }}" />
+
+      <span class="product-price">
+        <span
+          class="product-price-minimum money"
+          data-variant-price
+        >
+          <span class="money" data-product-id="{{ product.id }}">{{ variant.price | money }}</span>
+        </span>
+
+        <span
+          class="
+            product-price-compare
+            money
+            original
+            {% unless variant.compare_at_price and variant.compare_at_price > variant.price %}
+              hidden
+            {% endunless %}
+          "
+          data-variant-compare-at-price
+        >
+          <span class="bold-compare-at-money" data-product-id="{{ product.id }}">{{ variant.compare_at_price | money }}</span>
+        </span>
+      </span>
+
+      <span class="payment-buttons-container">
+        {% if variant.available %}
+          <input class="add-to-cart" type="submit" value="{{ 'products.product.add_to_cart' | t }}" />
+          <link itemprop="availability" href="http://schema.org/InStock">
+
+          {% if section.settings.show_spb %}
+            {{ form | payment_button }}
+          {% endif %}
+        {% else %}
+          <input type="button" class="add-to-cart disabled" disabled="disabled" value="{{ 'products.product.sold_out' | t }}" />
+          <link itemprop="availability" href="http://schema.org/OutOfStock">
+        {% endif %}
+      </span>
+    </div>
+  {% endform %}
+  <div class="product-message"></div>
+  <div class="surface-pick-up" data-surface-pick-up></div>
+
+</div>

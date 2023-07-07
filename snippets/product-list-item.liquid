@@ -1,0 +1,145 @@
+{% assign item = item | default: product %}
+{% assign prod = prod | default: product %}
+{% assign productTextStyle = settings.product_text_style %}
+{% assign productImageFlip = productImageFlip | default: settings.product_image_flip %}
+{% assign stockLevelOverlay = stockLevelOverlay | default: false %}
+{% assign stockLevelOverlayThreshold = stockLevelOverlayThreshold | default: nil %}
+
+{% if template contains 'product' %}
+  {% assign item = prod %}
+{% endif %}
+
+{% if elementType == blank %}
+  {% assign elementType = 'div' %}
+{% endif %}
+
+{% assign saleText = 'products.product.sale' | t %}
+{% capture percentage %}{{ item.compare_at_price_max | minus: item.price | times: 100.0 | divided_by: item.compare_at_price_max | money_without_currency | times: 100 | remove: '.0' }}%{% endcapture %}
+{% assign saleText = saleText | replace: '{PCT}', percentage %}
+
+{% if stockLevelOverlay and item.available %}
+  {% assign total = 0 %}
+  {% assign threshold = stockLevelOverlayThreshold | times: 1 %}
+  {% assign infinity = false %}
+  {% for variant in item.variants %}
+    {% if variant.inventory_management == null %}
+      {% assign infinity = true %}
+    {% elsif variant.inventory_management == '' %}
+      {% assign infinity = true %}
+    {% elsif variant.inventory_management == 'shopify' and variant.inventory_policy == 'continue' %}
+      {% assign infinity = true %}
+    {% elsif infinity == false %}
+      {% capture temp %}{{ total | plus: variant.inventory_quantity }}{% endcapture %}
+      {% assign total = temp | times: 1 %}
+    {% endif %}
+  {% endfor %}
+  {% assign stockText = 'products.product.stock_indicator_message' | t: num: total %}
+{% endif %}
+
+{% assign onSale = false %}
+{% if item.compare_at_price_min > item.price_min %}
+  {% assign onSale = true %}
+{% endif %}
+
+<{{ elementType }} class="product-list-item">
+
+
+  {% assign isSearch = false %}
+  {% if template contains 'search' %}
+    {% assign isSearch = true %}
+  {% endif %}
+
+  {% if productTextStyle == 'overlay' and isSearch == false %}
+  <a class="product-list-item-overlay-link" href="{{ item.url | within: collection }}"></a>
+  {% endif %}
+
+  {% assign secondaryImage = false %}
+  {% if item.media.size > 1 and productImageFlip %}
+    {% assign secondaryImage = true %}
+  {% endif %}
+
+  {%- capture item_class -%}
+    {%- if secondaryImage -%}
+      primary-image
+    {%- else -%}
+      only-image
+    {%- endif -%}
+  {%- endcapture -%}
+
+  <figure class="product-list-item-thumbnail
+    {% unless item.featured_media %}product-list-item-no-image{% endunless %}"
+    {% if secondaryImage %}style="background-image:url({{ item.media[1].preview_image | img_url: '600x600' }})"{% endif %}
+    >
+    <a href="{{ item.url | within: collection }}">
+    {% if item.featured_media %}
+      {%
+        render 'rimg',
+        img: item.featured_media.preview_image,
+        size: '600x600',
+        class: item_class,
+        lazy: true
+      %}
+    {% else %}
+      {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+    {% endif %}
+
+    </a>
+
+    {% if item.available %}
+      {% if stockLevelOverlay
+        and infinity == false
+        and total < threshold
+        and onSale
+      %}
+        <span class="product-list-item-badge meta sale">{{ saleText }}<br>{{ stockText }}</span>
+      {% elsif stockLevelOverlay
+        and infinity == false
+        and total < threshold
+      %}
+        <span class="product-list-item-badge meta inventory">{{ stockText }}</span>
+      {% elsif onSale %}
+        <span class="product-list-item-badge meta sale">{{ saleText }}</span>
+      {% endif %}
+    {% else %}
+      <span class="product-list-item-badge inventory">{{ 'products.product.sold_out' | t }}</span>
+    {% endif %}
+  </figure>
+
+  {% if productTextStyle == 'overlay' and isSearch == false %}
+  <div class="product-list-item-details-wrapper">
+  {% endif %}
+
+  <div class="product-list-item-details">
+
+   
+    <h4 class="product-list-item-title"><a href="{{ item.url | within: collection }}">{{ item.title }}</a></h4>
+    <span class="shopify-product-reviews-badge" data-id="{{ product.id }}"></span>
+
+    <div product-id="{{ product.id }}" class="alr-display-review-badge"></div>
+    <p class="product-list-item-price">
+      {% if item.available %}
+        {% if item.price_varies %}
+          <span class="price">
+            {{ 'products.product.from' | t }} <span class="money"><span class="money" data-product-id="{{ product.id }}">{{ item.price_min | money }}</span></span>
+          </span>
+        {% else %}
+          {% if onSale %}
+            <span class="price on-sale">
+              <span class="money"><span class="money" data-product-id="{{ product.id }}">{{ item.price_min | money }}</span></span>
+              <span class="original money"><span class="bold-compare-at-money" data-product-id="{{ product.id }}">{{ item.compare_at_price_min | money }}</span></span>
+            </span>
+          {% else %}
+            <span class="price money"><span class="money" data-product-id="{{ product.id }}">{{ item.price_min | money }}</span></span>
+          {% endif %}
+        {% endif %}
+      {% else %}
+        {{ 'products.product.sold_out' | t }}
+      {% endif %}
+    </p>
+  </div>
+
+  {% if productTextStyle == 'overlay' and isSearch == false %}
+  </div>
+  {% endif %}
+
+</{{ elementType }}>

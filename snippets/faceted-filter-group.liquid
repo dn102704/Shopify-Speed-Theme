@@ -1,0 +1,158 @@
+{% comment %}
+  @param filter
+  @param class_prefix
+  @param forloop
+{% endcomment %}
+
+<div class="{{ class_prefix }}-filters__details-wrapper">
+<details
+  class="
+    {{ class_prefix }}-filters__filter-group
+  "
+  aria-label="{{ filter.label }}"
+  data-filter-group
+>
+  <summary
+    class="{{ class_prefix }}-filters__filter-group-title"
+    data-filter-group-summary
+    data-filter-group-index="{{ forloop.index0 }}"
+  >
+    <span class="{{ class_prefix }}-filters__filter-title">
+      {{ filter.label }}
+      {%- if filter.type == 'list' and filter.active_values.size > 0 -%}
+        ({{ filter.active_values.size | strip }})
+      {% elsif filter.type == 'price_range' %}
+        {%- if filter.max_value.value or filter.min_value.value -%}
+          {% comment %}
+            If there are any price filters applied, just indicate that there is a single
+            active filter in this dropdown
+          {% endcomment %}
+          (1)
+        {%- endif -%}
+      {%- endif -%}
+    </span>
+    <span class="{{ class_prefix }}-filters__filter-chevron">
+      {% render 'icon' with 'chevron-down' %}
+    </span>
+  </summary>
+
+
+  {% case filter.type %}
+    {% when 'list' %}
+      <ul
+        class="
+          {{ class_prefix }}-filters__filter
+          {{ class_prefix }}-filters__filter-list
+        "
+        data-filter-group-list
+        data-filter-group-content
+        aria-expanded="false"
+        data-accordion-content
+      >
+        {%- for value in filter.values -%}
+          <li
+            class="
+              {{ class_prefix }}-filters__filter-list-item
+              {% if value.active %}
+                {{ class_prefix }}-filters__filter-list-item--active
+              {% endif %}
+            "
+          >
+            <a
+              class="{{ class_prefix }}-filters__filter-link"
+              data-name="{{ value.param_name }}"
+              data-value="{{ value.value }}"
+              data-handle="filter-{{ filter.label | escape | replace: ' ', '-'}}-{{ forloop.index0 }}"
+
+              {% if value.active -%}
+                {% assign animation_state = 'checked' %}
+                data-filter-active
+                data-url="{{ value.url_to_remove | replace: '%2C', ',' }}"
+                href="{{ value.url_to_remove | replace: '%2C', ',' }}"
+              {% else %}
+                  {% assign animation_state = 'unchecked' %}
+                data-url="{{ value.url_to_add | replace: '%2C', ',' }}"
+                href="{{ value.url_to_add | replace: '%2C', ',' }}"
+              {%- endif %}
+              {% if value.count == 0 and value.active == false -%}
+                data-disabled
+                tabindex="-1"
+              {%- endif %}
+              data-filter-input
+            >
+              <span
+                class="{{ class_prefix }}-filters__filter-checkbox"
+                {% if value.active %}data-checked{% endif %}
+                data-handle="filter-{{ filter.label | escape | replace: ' ', '-'}}-{{ forloop.index0 }}"
+              >
+                {% render 'icon' with 'check' %}
+              </span>
+              <span class="{{ class_prefix }}-filters__filter-list-item-text">
+                {{ value.label | escape }}
+                ({{ value.count }})
+              </span>
+            </a>
+          </li>
+        {%- endfor -%}
+      </ul>
+    {% when 'price_range' %}
+      <div
+        class="{{ class_prefix }}-filters__filter"
+        data-filter-group-content
+      >
+        <form
+          class="{{ class_prefix }}-filters__price-range-from">
+          <div
+            class="
+              {{ class_prefix }}-filters__filter-range
+            "
+            data-filter-group-range
+            aria-expanded="false"
+          >
+            <div class="{{ class_prefix }}-filters__filter-range--from">
+              <span class="{{ class_prefix }}-filters__filter-range-currency">{{ cart.currency.symbol }}</span>
+              <input
+                class="
+                  field
+                  {{ class_prefix }}-filters__filter-range-input
+                "
+                name="{{ filter.min_value.param_name }}"
+                id="filter-{{ filter.label }}-{{ forloop.index0 }}-from"
+                {% if filter.min_value.value -%}
+                  value="{{ filter.min_value.value | money_without_currency | replace: ',', '' }}"
+                {%- endif %}
+                type="number"
+                inputmode="decimal"
+                placeholder="{{ 'collections.collection.range_from' | t }}"
+                min="0"
+                max="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
+                data-filter-range
+              >
+            </div>
+            <div class="{{ class_prefix }}-filters__filter-range--to">
+              <span class="{{ class_prefix }}-filters__filter-range-currency">{{ cart.currency.symbol }}</span>
+              <input
+                class="
+                  field
+                  {{ class_prefix }}-filters__filter-range-input
+                "
+                name="{{ filter.max_value.param_name }}"
+
+                id="filter-{{ filter.label }}-{{ forloop.index0 }}-to"
+                {% if filter.max_value.value -%}
+                  value="{{ filter.max_value.value | money_without_currency | replace: ',', '' }}"
+                {%- endif %}
+                type="number"
+                inputmode="decimal"
+                placeholder="{{ 'collections.collection.range_to' | t }}"
+                min="0"
+                max="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
+                data-filter-range
+              >
+            </div>
+          </div>
+        </form>
+      </div>
+  {% endcase %}
+</details>
+</div>

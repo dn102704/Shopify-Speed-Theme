@@ -1,0 +1,52 @@
+{{ '//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.3/css/font-awesome.css' | stylesheet_tag }}
+
+<script type="text/javascript">
+  function fetchConfig(type = 'json') {
+    return {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': `application/${type}` }
+    };
+  }
+  $(document).ready(function(){
+    var productForm = $('form[action="/cart/add"]');
+    var submitCTA = '[type="submit"]';
+
+    // productForm.submit(function(e){
+    //   e.preventDefault();
+
+    //   var $addToCartForm = $(this);
+    //   var $addToCartBtn = $addToCartForm.find(submitCTA);
+
+    //   $addToCartBtn.text('Adding...');
+    //   $addToCartBtn.addClass('disabled').prop('disabled', true);
+
+    //   const config = fetchConfig('javascript');
+    //   config.headers['X-Requested-With'] = 'XMLHttpRequest';
+    //   delete config.headers['Content-Type'];
+
+    //   const formData = new FormData($addToCartForm[0]);
+    //   formData.append('sections', "cart-drawer");
+    //   formData.append('sections_url', window.location.pathname);
+    //   config.body = formData;
+
+    //   fetch("/cart/add", config)
+    //     .then((response) => response.json())
+    //     .then((response) => {
+    //       console.log(response);
+    //       if (response.status) {
+    //         return;
+    //       }
+    //       $addToCartBtn.addClass('inverted');
+    //       $addToCartBtn.text('Thank you!');
+
+    //     })
+    //     .catch((e) => {
+    //       console.error(e);
+    //     })
+    //     .finally(() => {
+    //       $addToCartBtn.prop('disabled', false).removeClass('disabled').removeClass('inverted');
+    //       $addToCartBtn.text('Add to cart');
+    //     });
+    // })
+  })
+</script>

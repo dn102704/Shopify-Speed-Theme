@@ -1,0 +1,20 @@
+{%- capture cartText -%}
+{{- 'layout.header.cart_item_count.one' | t | append: '|' }}{{ 'layout.header.cart_item_count.other' | t -}}
+{%- endcapture -%}
+{
+  "product": {{ product | json }},
+  "sectionSettings": {{ section.settings | json }},
+  "cartText": {{ cartText | split: '|' | json }},
+  "enableHistory": {{ enable_history | json }},
+  "message": {{ 'products.product.success_html' | t | json }},
+  "cartLink": {{ 'products.product.cart_link' | t | json }},
+  "continueLink": {{ 'products.product.continue_link' | t | json }},
+  "checkoutLink": {{ 'products.product.checkout_link' | t | json }},
+  "settings": {
+    "gallery_enable_video_autoplay": {{ section.settings.gallery_enable_video_autoplay | json }},
+    "gallery_enable_video_looping": {{ section.settings.gallery_enable_video_looping | json }},
+    "gallery_enable_zoom": {{ section.settings.enable_zoom | json }},
+    "enable_send_to_cart": {{ section.settings.enable_send_to_cart | json }}
+  }
+}
+

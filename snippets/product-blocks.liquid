@@ -1,0 +1,204 @@
+{% comment %}
+  @param product {Product}
+    Current product
+  @param section {Section}
+    Current section
+  @param form {Form}
+    product form
+{% endcomment %}
+
+{% assign rendered_quantity_selector = false %}
+{% assign rendered_variant_selection = false %}
+
+{% assign positions = 'top,left,right,bottom' | split: ',' %}
+{% for position in positions %}
+  {% if product == blank %}
+    {% assign onboarding = true %}
+  {% endif %}
+
+  {% assign first_block_class = 'product__block--first' %}
+  {% assign border_class = 'product__block--border' %}
+  {% capture product_blocks %}
+    {% for block in section.blocks %}
+      {% if forloop.first and block.type == '@app' %}
+        {% assign app_block_position = 'top' %}
+      {% elsif block.type != '@app' %}
+        {% assign app_block_position = block.settings.position %}
+      {% endif %}
+
+      {% unless block.settings.position == position or app_block_position == position %}
+        {% continue %}
+      {% endunless %}
+
+      {% case block.type %}
+        {% when '@app' %}
+          <div class="product__app" {{ block.shopify_attributes }}>
+            {% render block %}
+          </div>
+        {% when 'title' %}
+          {% assign heading_element = 'h2' %}
+          {% if template.name == 'product' %}
+            {% assign heading_element = 'h1' %}
+          {% endif %}
+
+          <{{ heading_element }}
+            class="product__title {{ first_block_class }}"
+            itemprop="name"
+            {{ block.shopify_attributes }}
+          >
+              {% if onboarding %}
+                {{ 'onboarding.featured_products.product_title' | t }}
+              {% else %}
+                {{ product.title }}
+              {% endif %}
+          </{{ heading_element }}>
+        {% when 'vendor' %}
+          <a
+            href="{{ product.vendor | url_for_vendor }}"
+            class="
+              product__vendor
+              {{ first_block_class }}
+            "
+            {{ block.shopify_attributes }}
+          >
+            {% if onboarding %}
+              {{ 'onboarding.featured_products.product_vendor' | t }}
+            {% else %}
+              {{ product.vendor }}
+            {% endif %}
+          </a>
+        {% when 'price' %}
+          {%
+            render 'product-price',
+            product: product,
+            block: block,
+            class: first_block_class,
+            form: form,
+          %}
+        {% when 'quantity' %}
+          {%
+            render 'product-quantity',
+            product: product,
+            block: block,
+            class: first_block_class,
+          %}
+
+          {% assign rendered_quantity_selector = true %}
+        {% when 'gallery' %}
+          {% assign selected_variant = product.selected_or_first_available_variant | default: product %}
+          {% assign selected_media = selected_variant.featured_media | default: product.featured_media %}
+          {%
+            render 'product-gallery',
+            product: product,
+            selected_media: selected_media,
+            enable_image_zoom: section.settings.enable_zoom,
+            class: first_block_class,
+            block: block,
+          %}
+        {% when 'variant_selection' %}
+          {% if onboarding %}
+            {% continue %}
+          {% endif %}
+
+          {%
+            render 'product-options',
+            product: product,
+            block: block,
+            class: first_block_class,
+            form_id: form_id,
+          %}
+          {% assign rendered_variant_selection = true %}
+        {% when 'form' %}
+          {% unless onboarding %}
+            {%
+              render 'product-form',
+              product: product,
+              block: block,
+              class: first_block_class,
+              form_id: form_id,
+              form: form,
+            %}
+          {% endunless %}
+        {% when 'description' %}
+          {% assign next_block_type = section.blocks[forloop.index].type %}
+          {% assign class = first_block_class %}
+          {% unless next_block_type == 'callout' %}
+            {% assign class = first_block_class | append: border_class %}
+          {% endunless %}
+          {%
+            render 'product-description',
+            product: product,
+            block: block,
+            section: section,
+            class: class,
+          %}
+        {% when 'callout' %}
+          {% unless onboarding %}
+            <div class="product__callout {{ border_class }}">
+              <a
+                href="{{ product.url | within: collection }}"
+                class="product__description-cta"
+              >
+                {{ 'onboarding.featured_products.view_more_link' | t }}
+              </a>
+            </div>
+          {% endunless %}
+        {% when 'share' %}
+          {% assign class = first_block_class | append: ' product__share' %}
+          {%
+            render 'share-buttons',
+            product: product,
+            block: block,
+            class: class,
+          %}
+        {% when 'text' %}
+          <div
+            class="
+              product__text
+              rte
+              {{ first_block_class }}
+            "
+            {{ block.shopify_attributes }}
+          >
+            {{ block.settings.text }}
+          </div>
+        {%- when 'rating' -%}
+          {%- if product.metafields.reviews.rating.value != blank -%}
+            <div class="product__rating rating {{ first_block_class }}" {{ block.shopify_attributes }}>
+              {%
+                render 'rating-stars',
+                value: product.metafields.reviews.rating.value.rating,
+                scale_max: product.metafields.reviews.rating.value.scale_max,
+              %}
+              <p class="rating__text">
+                <span aria-hidden="true">{{ product.metafields.reviews.rating.value }} / {{ product.metafields.reviews.rating.value.scale_max }}</span>
+              </p>
+              <p class="rating__count">
+                <span aria-hidden="true">({{ product.metafields.reviews.rating_count }})</span>
+                <span class="visually-hidden">{{ product.metafields.reviews.rating_count }} {{ "general.accessibility.total_reviews" | t }}</span>
+              </p>
+            </div>
+          {%- endif -%}
+      {% endcase %}
+      {% assign first_block_class = '' %}
+    {% endfor %}
+  {% endcapture %}
+
+  {% unless product_blocks == blank %}
+    <div class="product__grid-{{ position }}">
+      {{ product_blocks }}
+    </div>
+  {% endunless %}
+{% endfor %}
+
+{% unless rendered_quantity_selector %}
+  <input type="hidden" name="quantity" value="1">
+{% endunless %}
+
+{% unless rendered_variant_selection %}
+  <input
+  name="id"
+  value="{{ product.selected_or_first_available_variant.id }}"
+  type="hidden"
+  >
+{% endunless %}

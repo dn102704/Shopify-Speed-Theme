@@ -1,0 +1,18 @@
+{% assign footerLinkLists = "footer-link-list-1|footer-link-list-2" | split: "|" %}
+<div class="footer-module footer-link-lists">
+  {% for list in footerLinkLists %}
+
+    {% assign name = block.settings[list] %}
+
+    {% if linklists[name].links.size > 0 %}
+      <div class="footer-link-list">
+        <h4>{{ linklists[name].title | escape }}</h4>
+        <ul>
+          {% for link in linklists[name].links %}
+            <li><a href="{{ link.url }}">{{ link.title | escape }}</a></li>
+          {% endfor %}
+        </ul>
+      </div>
+    {% endif %}
+  {% endfor %}
+</div>

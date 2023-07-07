@@ -1,0 +1,58 @@
+<div class="sidebar">
+
+  {% assign sidebarLinkLists = "sidebar-link-list-1|sidebar-link-list-2|sidebar-link-list-3" | split: "|" %}
+
+  {% for sidebarList in sidebarLinkLists %}
+
+    {% assign name = settings[sidebarList] %}
+
+    {% if linklists[name].links.size > 0 %}
+      <div class="sidebar-link-list">
+        <h4 class="sidebar-link-list-title meta">{{ linklists[name].title }}</h4>
+
+        <ul>
+          {% for link in linklists[name].links %}
+            {% assign list = link.links %}
+            {% assign has-dropdown = false %}
+            {% if list.size > 0 %}
+                {% assign has-dropdown = true %}
+              {% endif %}
+
+            {% unless link.title == 'Mega Nav' %}
+              <li class="{% if link.active %}active{% endif %} {% if has-dropdown %}has-children{% endif %}">
+                <a href="{{ link.url }}">{{ link.title }}</a>
+                {% if has-dropdown %}
+                  <ul>
+                    <li class="{% if link.active %}active{% endif %} sidebar-link-list-mobile"><a href="{{ link.url }}">All {{ link.title}}</a></li>
+                    {% for link in link.links %}
+                      <li class="{% if link.active %}active{% endif %} {% if has-dropdown %}has-children{% endif %}">
+                        <a href="{{ link.url }}">{{ link.title }}</a>
+                        {% assign list = link.links %}
+                        {% assign has-dropdown = false %}
+                        {% if list.size > 0 %}
+                            {% assign has-dropdown = true %}
+                          {% endif %}
+
+                        {% if has-dropdown %}
+                          <ul>
+                            <li class="{% if link.active %}active{% endif %} sidebar-link-list-mobile"><a href="{{ link.url }}">All {{ link.title}}</a></li>
+                            {% for link in link.links %}
+                              <li {% if link.active %}class="active"{% endif %}>
+                                <a href="{{ link.url }}">{{ link.title }}</a>
+                              </li>
+                            {% endfor %}
+                          </ul>
+                        {% endif %}
+                      </li>
+                    {% endfor %}
+                  </ul>
+                {% endif %}
+              </li>
+            {% endunless %}
+          {% endfor %}
+        </ul>
+      </div>
+    {% endif %}
+  {% endfor %}
+
+</div>

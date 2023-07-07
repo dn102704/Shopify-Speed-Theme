@@ -1,0 +1,30 @@
+{% comment %}
+  Loop through navigation to display all nested links.
+
+  @param list
+  The current group of links we are looping through.
+{% endcomment %}
+
+{% if list.size > 0 %}
+  <ul
+    id="menu-item-{% if index == 2 %}{{ link.handle }}{% else %}{{ sublink.handle }}{% endif %}"
+    class="navigation-tier tier-{{ index }}"
+  >
+    {% for sublink in list %}
+      {% assign list = sublink.links %}
+      {% include 'has-dropdown' %}
+      <li
+        class="{% if has-dropdown %}has-dropdown{% endif %} regular-nav"
+        aria-haspopup="true"
+        aria-expanded="false"
+        aria-controls="menu-item-{{ sublink.handle }}"
+      >
+        <a href="{{ sublink.url }}">{{ sublink.title }} {% if has-dropdown %}<span class="mobile-tier-toggle"></span>{% endif %}</a>
+        {% if has-dropdown %}
+          {% assign index = 3 %}
+          {% include 'navigation-links' with list and index %}
+        {% endif %}
+      </li>
+    {% endfor %}
+  </ul>
+{% endif %}

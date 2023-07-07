@@ -1,0 +1,122 @@
+{% assign results = results | default: false %}
+{% assign terms = '' %}
+{% assign products_results_count = 0 %}
+{% assign posts_results_count = 0 %}
+{% assign pages_results_count = 0 %}
+{% assign products = false %}
+{% assign postspages = false %}
+
+{% if results %}
+  {% for result in results %}
+    {% if result.object_type == 'product' %}
+      {% assign products_results_count = products_results_count | plus: 1 %}
+    {% elsif result.object_type == 'article' %}
+      {% assign posts_results_count = posts_results_count | plus: 1 %}
+    {% elsif result.object_type == 'page' %}
+      {% assign pages_results_count = pages_results_count | plus: 1 %}
+    {% endif %}
+  {% endfor %}
+{% endif %}
+
+{% assign pages_posts_count = posts_results_count | plus: pages_results_count %}
+
+{% capture products %}
+  {% if products_results_count > 0 %}
+    <h2 class="livesearch-products-header meta">{{ 'general.livesearch.products_results_header' | t }}</h2>
+    <ul class="livesearch-products-list">
+    {% assign found_products_count = 0 %}
+    {% for result in results %}
+      {% if result.object_type == 'product' and found_products_count < 10 %}
+        {% assign found_products_count = found_products_count | plus: 1 %}
+
+        <li class="livesearch-product">
+          <a class="livesearch-product-link" href="{{ result.url }}">
+            {% if result.featured_media %}
+              <figure class="livesearch-product-figure">
+                {%
+                  render 'rimg'
+                  img: result.featured_media.preview_image,
+                  size: '70x',
+                  lazy: true,
+                %}
+              </figure>
+            {% endif %}
+
+            <div class="livesearch-product-content">
+              <h4 class="livesearch-product-title">
+                {{ result.title }}
+              </h4>
+
+              <div class="livesearch-product-price product-price sale">
+                <span class="money">{{ result.price | money }}</span>
+                {% if result.compare_at_price > result.price %}
+                  <span class="product-price-compare original money">{{ result.compare_at_price | money }}</span>
+                {% endif %}
+              </div>
+
+              {% if result.vendor %}
+                <span class="livesearch-product-vendor meta">
+                  {{ result.vendor }}
+                </span>
+              {% endif %}
+            </div>
+          </a>
+        </li>
+      {% endif %}
+    {% endfor %}
+    </ul>
+  {% else %}
+    <h4 class="livesearch-products-empty">{{ 'general.livesearch.products_empty_header' | t: search_terms: terms }}</h4>
+    <p class="livesearch-products-empty-text">{{ 'general.livesearch.products_empty_text' | t }}</p>
+    <a class="livesearch-products-viewall" href="{{ routes.collections_url }}">{{ 'general.livesearch.products_viewall' | t }}</a>
+  {% endif %}
+{% endcapture %}
+
+{% capture postspages %}
+  {% if pages_posts_count > 0 %}
+    {% assign found_postspages_count = 0 %}
+    <ul class="livesearch-pages-list">
+    {% for result in results %}
+      {% if result.object_type == 'article' or result.object_type == 'page' %}
+          {% if found_postspages_count < 5 %}
+          {% assign found_postspages_count = found_postspages_count | plus: 1 %}
+          {% if result.object_type == 'page' %}
+            <li class="livesearch-page">
+              <a class="livesearch-page-link" href="{{ result.url }}">
+                <h4 class="livesearch-page-title">{{ result.title }}</h4>
+                <p class="livesearch-page-content">{{ result.content | strip_html | slice: 0, 200 }}...</p>
+              </a>
+            </li>
+          {% elsif result.object_type == 'article' %}
+            <li class="livesearch-post">
+              <a class="livesearch-post-link" href="{{ result.url }}">
+                <div class="livesearch-post-date meta">{{ result.published_at | date: "%d %b %Y" }}</div>
+                <div class="livesearch-post-author meta">{{ result.author }}</div>
+                <h4 class="livesearch-post-title">{{ result.title }}</h4>
+              </a>
+            </li>
+          {% endif %}
+        {% endif %}
+      {% endif %}
+    {% endfor %}
+  {% else %}
+    <p class="livesearch-pages-empty">{{ 'general.livesearch.pages_empty_text' | t }}</p>
+  {% endif %}
+{% endcapture %}
+
+{% assign view = 'view=' | append: template.suffix %}
+<template data-options>
+  {
+    "sha256": {{ terms | json }},
+    "search_url": {{ canonical_url | remove: view | json }},
+    "search_results_count": {{ results_count | json }}
+  }
+</template>
+
+<template data-html="products">
+  {{ products }}
+</template>
+
+<template data-html="pages">
+  {{ postspages }}
+</template>

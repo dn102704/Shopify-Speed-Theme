@@ -1,0 +1,820 @@
+{%- comment -%}font_body{%- endcomment -%}
+
+{%- assign fonts_font_body_display = "swap" | default: 'auto' -%}
+
+  {%- comment -%}Normal{%- endcomment -%}
+
+  {%- assign fonts_font_body_family = settings.font_body.family | append: ',' | append: settings.font_body.fallback_families -%}
+  {%- assign fonts_font_body_style = settings.font_body.style -%}
+  {%- assign fonts_font_body_weight = settings.font_body.weight | times: 1 -%}
+  {{ settings.font_body | font_face: font_display: fonts_font_body_display }}
+
+  {%- comment -%}Italic{%- endcomment -%}
+
+  {%- assign fonts_font_body_style_italic = settings.font_body | font_modify: 'style', 'italic' | map: 'style' | default: 'italic' -%}
+  {{ settings.font_body | font_modify: 'style', 'italic' | font_face: font_display: fonts_font_body_display }}
+
+  {%- comment -%}Bolder{%- endcomment -%}
+
+  {%- assign fonts_weight_adjustment_default = 700 -%}
+  {%- if fonts_font_body_weight > 700 -%}
+    {%- assign fonts_weight_adjustment_default = fonts_font_body_weight -%}
+  {%- endif -%}
+  {%- assign fonts_font_body_bolder = settings.font_body | font_modify: 'weight', 'bolder' -%}
+  {%- assign fonts_font_body_weight_bolder = fonts_font_body_bolder.weight | default: fonts_weight_adjustment_default -%}
+  {{ fonts_font_body_bolder | font_face: font_display: fonts_font_body_display }}
+  {{ fonts_font_body_bolder | font_modify: 'style', 'italic' | font_face: font_display: fonts_font_body_display }}
+
+
+{%- comment -%}font_heading{%- endcomment -%}
+
+{%- assign fonts_font_heading_display = "swap" | default: 'auto' -%}
+
+  {%- comment -%}Normal{%- endcomment -%}
+
+  {%- assign fonts_font_heading_family = settings.font_heading.family | append: ',' | append: settings.font_heading.fallback_families -%}
+  {%- assign fonts_font_heading_style = settings.font_heading.style -%}
+  {%- assign fonts_font_heading_weight = settings.font_heading.weight | times: 1 -%}
+  {{ settings.font_heading | font_face: font_display: fonts_font_heading_display }}
+
+  {%- comment -%}Italic{%- endcomment -%}
+
+  {%- assign fonts_font_heading_style_italic = settings.font_heading | font_modify: 'style', 'italic' | map: 'style' | default: 'italic' -%}
+  {{ settings.font_heading | font_modify: 'style', 'italic' | font_face: font_display: fonts_font_heading_display }}
+
+  {%- comment -%}Bolder{%- endcomment -%}
+
+  {%- assign fonts_weight_adjustment_default = 700 -%}
+  {%- if fonts_font_heading_weight > 700 -%}
+    {%- assign fonts_weight_adjustment_default = fonts_font_heading_weight -%}
+  {%- endif -%}
+  {%- assign fonts_font_heading_bolder = settings.font_heading | font_modify: 'weight', 'bolder' -%}
+  {%- assign fonts_font_heading_weight_bolder = fonts_font_heading_bolder.weight | default: fonts_weight_adjustment_default -%}
+  {{ fonts_font_heading_bolder | font_face: font_display: fonts_font_heading_display }}
+  {{ fonts_font_heading_bolder | font_modify: 'style', 'italic' | font_face: font_display: fonts_font_heading_display }}
+
+
+{%- comment -%}font_menu{%- endcomment -%}
+
+{%- assign fonts_font_menu_display = "swap" | default: 'auto' -%}
+
+  {%- comment -%}Normal{%- endcomment -%}
+
+  {%- assign fonts_font_menu_family = settings.font_menu.family | append: ',' | append: settings.font_menu.fallback_families -%}
+  {%- assign fonts_font_menu_style = settings.font_menu.style -%}
+  {%- assign fonts_font_menu_weight = settings.font_menu.weight | times: 1 -%}
+  {{ settings.font_menu | font_face: font_display: fonts_font_menu_display }}
+
+  {%- comment -%}Italic{%- endcomment -%}
+
+  {%- assign fonts_font_menu_style_italic = settings.font_menu | font_modify: 'style', 'italic' | map: 'style' | default: 'italic' -%}
+  {{ settings.font_menu | font_modify: 'style', 'italic' | font_face: font_display: fonts_font_menu_display }}
+
+
+{%- comment -%}font_button{%- endcomment -%}
+
+{%- assign fonts_font_button_display = "swap" | default: 'auto' -%}
+
+  {%- comment -%}Normal{%- endcomment -%}
+
+  {%- assign fonts_font_button_family = settings.font_button.family | append: ',' | append: settings.font_button.fallback_families -%}
+  {%- assign fonts_font_button_style = settings.font_button.style -%}
+  {%- assign fonts_font_button_weight = settings.font_button.weight | times: 1 -%}
+  {{ settings.font_button | font_face: font_display: fonts_font_button_display }}
+
+  {%- comment -%}Italic{%- endcomment -%}
+
+  {%- assign fonts_font_button_style_italic = settings.font_button | font_modify: 'style', 'italic' | map: 'style' | default: 'italic' -%}
+  {{ settings.font_button | font_modify: 'style', 'italic' | font_face: font_display: fonts_font_button_display }}
+
+
+{%- comment -%}font_caption{%- endcomment -%}
+
+{%- assign fonts_font_caption_display = "swap" | default: 'auto' -%}
+
+  {%- comment -%}Normal{%- endcomment -%}
+
+  {%- assign fonts_font_caption_family = settings.font_caption.family | append: ',' | append: settings.font_caption.fallback_families -%}
+  {%- assign fonts_font_caption_style = settings.font_caption.style -%}
+  {%- assign fonts_font_caption_weight = settings.font_caption.weight | times: 1 -%}
+  {{ settings.font_caption | font_face: font_display: fonts_font_caption_display }}
+
+  {%- comment -%}Italic{%- endcomment -%}
+
+  {%- assign fonts_font_caption_style_italic = settings.font_caption | font_modify: 'style', 'italic' | map: 'style' | default: 'italic' -%}
+  {{ settings.font_caption | font_modify: 'style', 'italic' | font_face: font_display: fonts_font_caption_display }}
+{% comment %}Inject font-sizes begin{% endcomment %}
+{%- assign font_size_types = 'heading-1|heading-2|heading-3|heading-4|heading-5|heading-6|heading-1-capitalize|heading-2-capitalize|heading-3-capitalize|heading-4-capitalize|heading-5-capitalize|heading-6-capitalize|body|body-small|body-smaller|body-smallest|body-large|body-large-capitalize|body-menu|body-smaller-caption' | split: '|' -%}
+{%- assign font_size_types_forloop_iterations = font_size_types | size | times: 2 | minus: 1 -%}
+{%- assign font_size_half_iterations_minus_one = font_size_types.size | minus: 1 -%}
+{%- assign font_size_half_iterations_plus_one = font_size_types.size | plus: 1 -%}
+
+{%- assign bp_l = '1020px' -%}
+{%- assign bp_m = '720px' -%}
+{%- assign bp_s = '540px' -%}
+
+{%- for i in (0..font_size_types_forloop_iterations) -%}
+  {%- assign font_size_types_index = i | modulo: font_size_types.size -%}
+  {%- assign font_size_type = font_size_types[font_size_types_index] -%}
+  {%- case font_size_type -%}
+  {%- when 'heading-1' -%}
+    {%- assign font_size_constant_scale = 2.5 -%}
+    {%- assign font_size_capitalize = false -%}
+    {%- assign font_size_capitalize_adjustment = -1 -%}
+    {%- assign font_size_mobile_breakpoint = bp_l -%}
+    {%- assign font_size_mobile_capitalize_adjustment = -1 -%}
+    {%- assign font_size_mobile_scale = 0.8 -%}
+    {%- assign font_size_mobile_adjustment = 0 -%}
+  {%- when 'heading-2' -%}
+    {%- assign font_size_constant_scale = 2 -%}
+    {%- assign font_size_capitalize = false -%}
+    {%- assign font_size_capitalize_adjustment = -1 -%}
+    {%- assign font_size_mobile_breakpoint = bp_m -%}
+    {%- assign font_size_mobile_capitalize_adjustment = -1 -%}
+    {%- assign font_size_mobile_scale = 0.75 -%}
+    {%- assign font_size_mobile_adjustment = 0 -%}
+  {%- when 'heading-3' -%}
+    {%- assign font_size_constant_scale = 1.5 -%}
+    {%- assign font_size_capitalize = false -%}
+    {%- assign font_size_capitalize_adjustment = -1 -%}
+    {%- assign font_size_mobile_breakpoint = false -%}
+    {%- assign font_size_mobile_capitalize_adjustment = -1 -%}
+    {%- assign font_size_mobile_scale = 1 -%}
+    {%- assign font_size_mobile_adjustment = 0 -%}
+  {%- when 'heading-4' -%}
+    {%- assign font_size_constant_scale = 1.125 -%}
+    {%- assign font_size_capitalize = false -%}
+    {%- assign font_size_capitalize_adjustment = -1 -%}
+    {%- assign font_size_mobile_breakpoint = bp_s -%}
+    {%- assign font_size_mobile_capitalize_adjustment = -1 -%}
+    {%- assign font_size_mobile_scale = 1 -%}
+    {%- assign font_size_mobile_adjustment = 0 -%}
+  {%- when 'heading-5' -%}
+    {%- assign font_size_constant_scale = 1 -%}
+    {%- assign font_size_capitalize = false -%}
+    {%- assign font_size_capitalize_adjustment = -1 -%}
+    {%- assign font_size_mobile_breakpoint = false -%}
+    {%- assign font_size_mobile_capitalize_adjustment = -1 -%}
+    {%- assign font_size_mobile_scale = 1 -%}
+    {%- assign font_size_mobile_adjustment = 0 -%}
+  {%- when 'heading-6' -%}
+    {%- assign font_size_constant_scale = 0.875 -%}
+    {%- assign font_size_capitalize = false -%}
+    {%- assign font_size_capitalize_adjustment = -1 -%}
+    {%- assign font_size_mobile_breakpoint = false -%}
+    {%- assign font_size_mobile_capitalize_adjustment = -1 -%}
+    {%- assign font_size_mobile_scale = 1 -%}
+    {%- assign font_size_mobile_adjustment = 0 -%}
+  {%- when 'heading-1-capitalize' -%}
+    {%- assign font_size_constant_scale = 2.5 -%}
+    {%- assign font_size_capitalize = settings.font_heading_capitalize -%}
+    {%- assign font_size_capitalize_adjustment = -1 -%}
+    {%- assign font_size_mobile_breakpoint = bp_l -%}
+    {%- assign font_size_mobile_capitalize_adjustment = -1 -%}
+    {%- assign font_size_mobile_scale = 0.8 -%}
+    {%- assign font_size_mobile_adjustment = 0 -%}
+  {%- when 'heading-2-capitalize' -%}
+    {%- assign font_size_constant_scale = 2 -%}
+    {%- assign font_size_capitalize = settings.font_heading_capitalize -%}
+    {%- assign font_size_capitalize_adjustment = -1 -%}
+    {%- assign font_size_mobile_breakpoint = bp_m -%}
+    {%- assign font_size_mobile_capitalize_adjustment = -1 -%}
+    {%- assign font_size_mobile_scale = 0.75 -%}
+    {%- assign font_size_mobile_adjustment = 0 -%}
+  {%- when 'heading-3-capitalize' -%}
+    {%- assign font_size_constant_scale = 1.5 -%}
+    {%- assign font_size_capitalize = settings.font_heading_capitalize -%}
+    {%- assign font_size_capitalize_adjustment = -1 -%}
+    {%- assign font_size_mobile_breakpoint = false -%}
+    {%- assign font_size_mobile_capitalize_adjustment = -1 -%}
+    {%- assign font_size_mobile_scale = 1 -%}
+    {%- assign font_size_mobile_adjustment = 0 -%}
+  {%- when 'heading-4-capitalize' -%}
+    {%- assign font_size_constant_scale = 1.125 -%}
+    {%- assign font_size_capitalize = settings.font_heading_capitalize -%}
+    {%- assign font_size_capitalize_adjustment = -1 -%}
+    {%- assign font_size_mobile_breakpoint = bp_s -%}
+    {%- assign font_size_mobile_capitalize_adjustment = -1 -%}
+    {%- assign font_size_mobile_scale = 1 -%}
+    {%- assign font_size_mobile_adjustment = 0 -%}
+  {%- when 'heading-5-capitalize' -%}
+    {%- assign font_size_constant_scale = 1 -%}
+    {%- assign font_size_capitalize = settings.font_heading_capitalize -%}
+    {%- assign font_size_capitalize_adjustment = -1 -%}
+    {%- assign font_size_mobile_breakpoint = false -%}
+    {%- assign font_size_mobile_capitalize_adjustment = -1 -%}
+    {%- assign font_size_mobile_scale = 1 -%}
+    {%- assign font_size_mobile_adjustment = 0 -%}
+  {%- when 'heading-6-capitalize' -%}
+    {%- assign font_size_constant_scale = 0.875 -%}
+    {%- assign font_size_capitalize = settings.font_heading_capitalize -%}
+    {%- assign font_size_capitalize_adjustment = -1 -%}
+    {%- assign font_size_mobile_breakpoint = false -%}
+    {%- assign font_size_mobile_capitalize_adjustment = -1 -%}
+    {%- assign font_size_mobile_scale = 1 -%}
+    {%- assign font_size_mobile_adjustment = 0 -%}
+  {%- when 'body-large' -%}
+    {%- assign font_size_constant_scale = 1.125 -%}
+    {%- assign font_size_capitalize = false -%}
+    {%- assign font_size_capitalize_adjustment = -1 -%}
+    {%- assign font_size_mobile_breakpoint = bp_l -%}
+    {%- assign font_size_mobile_capitalize_adjustment = -1 -%}
+    {%- assign font_size_mobile_scale = 0.8 -%}
+    {%- assign font_size_mobile_adjustment = 0 -%}
+  {%- when 'body-large-capitalize' -%}
+    {%- assign font_size_constant_scale = 1.125 -%}
+    {%- assign font_size_capitalize = settings.font_menu_capitalize -%}
+    {%- assign font_size_capitalize_adjustment = -1 -%}
+    {%- assign font_size_mobile_breakpoint = bp_l -%}
+    {%- assign font_size_mobile_capitalize_adjustment = -1 -%}
+    {%- assign font_size_mobile_scale = 0.8 -%}
+    {%- assign font_size_mobile_adjustment = 0 -%}
+  {%- when 'body' -%}
+    {%- assign font_size_constant_scale = 1 -%}
+    {%- assign font_size_capitalize = false -%}
+    {%- assign font_size_capitalize_adjustment = -1 -%}
+    {%- assign font_size_mobile_breakpoint = bp_s -%}
+    {%- assign font_size_mobile_capitalize_adjustment = -1 -%}
+    {%- assign font_size_mobile_scale = 0.875 -%}
+    {%- assign font_size_mobile_adjustment = 0 -%}
+  {%- when 'body-small' -%}
+    {%- assign font_size_constant_scale = 0.875 -%}
+    {%- assign font_size_capitalize = false -%}
+    {%- assign font_size_capitalize_adjustment = -1 -%}
+    {%- assign font_size_mobile_breakpoint = false -%}
+    {%- assign font_size_mobile_capitalize_adjustment = -1 -%}
+    {%- assign font_size_mobile_scale = 1 -%}
+    {%- assign font_size_mobile_adjustment = 0 -%}
+  {%- when 'body-smaller' -%}
+    {%- assign font_size_constant_scale = 0.75 -%}
+    {%- assign font_size_capitalize = false -%}
+    {%- assign font_size_capitalize_adjustment = -1 -%}
+    {%- assign font_size_mobile_breakpoint = false -%}
+    {%- assign font_size_mobile_capitalize_adjustment = -1 -%}
+    {%- assign font_size_mobile_scale = 1 -%}
+    {%- assign font_size_mobile_adjustment = 0 -%}
+  {%- when 'body-smallest' -%}
+    {%- assign font_size_constant_scale = 0.625 -%}
+    {%- assign font_size_capitalize = false -%}
+    {%- assign font_size_capitalize_adjustment = -1 -%}
+    {%- assign font_size_mobile_breakpoint = false -%}
+    {%- assign font_size_mobile_capitalize_adjustment = -1 -%}
+    {%- assign font_size_mobile_scale = 1 -%}
+    {%- assign font_size_mobile_adjustment = 0 -%}
+  {%- when 'body-menu' -%}
+    {%- assign font_size_constant_scale = 1 -%}
+    {%- assign font_size_capitalize = settings.font_menu_capitalize -%}
+    {%- assign font_size_capitalize_adjustment = -1 -%}
+    {%- assign font_size_mobile_breakpoint = bp_s -%}
+    {%- assign font_size_mobile_capitalize_adjustment = -1 -%}
+    {%- assign font_size_mobile_scale = 0.875 -%}
+    {%- assign font_size_mobile_adjustment = 0 -%}
+  {%- when 'body-smaller-caption' -%}
+    {%- assign font_size_constant_scale = 0.75 -%}
+    {%- assign font_size_capitalize = settings.font_caption_capitalize -%}
+    {%- assign font_size_capitalize_adjustment = -1 -%}
+    {%- assign font_size_mobile_breakpoint = bp_s -%}
+    {%- assign font_size_mobile_capitalize_adjustment = -1 -%}
+    {%- assign font_size_mobile_scale = 1 -%}
+    {%- assign font_size_mobile_adjustment = 0 -%}
+  {%- endcase -%}
+
+  {%- unless font_size_body -%}
+    {%- assign font_size_body = settings.font_size_base -%}
+  {%- endunless -%}
+  {%- unless font_size_mobile_body -%}
+    {%- assign font_size_mobile_body = font_size_body %}
+  {%- endunless -%}
+  {%- unless font_size_capitalize -%}
+    {%- assign font_size_capitalize_adjustment = 0 -%}
+    {%- assign font_size_mobile_capitalize_adjustment = 0 -%}
+  {%- endunless -%}
+
+  {%- assign font_size_rem = font_size_body | times: font_size_constant_scale | plus: font_size_capitalize_adjustment | divided_by: 16.0 -%}
+  {%- assign font_size_mobile_rem = font_size_mobile_body | times: font_size_constant_scale | times: font_size_mobile_scale | plus: font_size_mobile_capitalize_adjustment | plus: font_size_mobile_adjustment | divided_by: 16.0 -%}
+  {%- if forloop.first %}
+    :root {
+  {%- endif -%}
+  {%- if font_size_mobile_breakpoint and forloop.index0 >= font_size_types.size -%}
+    @media screen and (max-width: {{ font_size_mobile_breakpoint }}) {
+      :root {
+  {%- endif -%}
+
+  {%- if font_size_mobile_breakpoint or forloop.index < font_size_types.size -%}
+    --font-size-{{ font_size_type }}: {% if forloop.index < font_size_types.size %}{{ font_size_rem }}{% else %}{{ font_size_mobile_rem }}{% endif %}rem;
+  {%- endif -%}
+
+  {%- if forloop.index0 == font_size_half_iterations_minus_one -%}
+    }
+  {%- endif -%}
+  {%- if font_size_mobile_breakpoint and forloop.index0 >= font_size_types.size -%}
+    }}
+  {%- endif -%}
+{%- endfor -%}
+{% comment %}Inject font-sizes end{% endcomment %}
+
+/* Spacing */
+.gift-card-template {
+  font-family: {{ fonts_font_body_family }};
+  font-style: {{ fonts_font_body_style }};
+  font-weight: {{ fonts_font_body_weight }};
+  margin: 0;
+}
+.gift-card-template a {
+  text-decoration: none;
+}
+.gift-card-template .btn {
+  font-family: {{ fonts_font_caption_family }};
+  font-style: {{ fonts_font_caption_style }};
+  font-weight: {{ fonts_font_caption_weight }};
+  background-color: #58686f;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: 1.5em;
+  font-size: 0.875em;
+  line-height: 1;
+  border-radius: 4px;
+  display: inline-block;
+  vertical-align: baseline;
+  zoom: 1;
+  *display: inline;
+  *vertical-align: auto;
+}
+.gift-card-template .btn:hover {
+  background-color: #414d53;
+}
+.gift-card-template .wrap {
+  width: 95%;
+  max-width: 540px;
+  margin: 0 auto;
+}
+.gift-card-template .wrap:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+@keyframes slideup {
+  0% {
+    -webkit-transform: translateY(2000px) rotate(10deg);
+    opacity: 0;
+  }
+  60% {
+    -webkit-transform: translateY(-30px);
+    opacity: 1;
+  }
+  80% {
+    -webkit-transform: translateY(10px);
+  }
+  100% {
+    -webkit-transform: translateY(0) rotate(0deg);
+  }
+}
+@keyframes popup {
+  0% {
+    -webkit-transform: translateY(30px);
+    opacity: 0;
+  }
+  60% {
+    -webkit-transform: translateY(-10px);
+    opacity: 1;
+  }
+  80% {
+    -webkit-transform: translateY(2px);
+  }
+  100% {
+    -webkit-transform: translateY(0);
+  }
+}
+@keyframes container-slide {
+  0% {
+    -webkit-transform: rotate(0deg);
+    opacity: 0;
+  }
+  100% {
+    -webkit-transform: rotate(0deg);
+  }
+}
+@keyframes fadein {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+.gift-card-template header {
+  text-align: center;
+  padding: 3em 0;
+  animation: fadein 0.5s ease-in-out both 0.4s;
+}
+.gift-card-template .shop-title {
+  font-family: {{ fonts_font_heading_family }};
+  font-style: {{ fonts_font_heading_style }};
+  font-weight: {{ fonts_font_heading_weight }};
+  font-size: 2.25em;
+  color: #bfbfbf;
+  max-width: 300px;
+  display: block;
+  margin: 0 auto;
+}
+.gift-card-template .shop-title:hover {
+  color: #999999;
+}
+.gift-card-template .shop-title img {
+  max-height: 100%;
+  margin: 0 auto;
+}
+.gift-card-template main {
+  padding-bottom: 3em;
+  animation: slideup 0.8s ease-in-out;
+}
+.gift-card-template .gift-card-outer-container {
+  background-color: #34aadc;
+  border-radius: 4px;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1) inset;
+  padding: 1em;
+  animation: container-slide 0.8s ease-in-out;
+}
+.gift-card-template .gift-card-inner-container {
+  background-color: #fff;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
+  border-radius: 2px;
+  animation: cardslide 0.8s ease-in-out;
+}
+.gift-card-template .gift-card-inner-container:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+.gift-card-template .gift-card-header {
+  border-bottom: 1px solid #f2f2f2;
+  padding: 0.75em;
+  display: block;
+  overflow: hidden;
+  position: relative;
+}
+.gift-card-template .gift-card-header h2 {
+  float: left;
+  margin: 0.12em 0;
+}
+.gift-card-template .gift-card-header .tag {
+  float: right;
+}
+.gift-card-template .tag {
+  background-color: #bfbfbf;
+  padding: 0.5em;
+  padding-bottom: 0.35em;
+  border-radius: 4px;
+  font-size: 0.75em;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #fff;
+  line-height: 1;
+}
+.gift-card-template .tag.light {
+  background: transparent;
+  color: #bfbfbf;
+  border: 1px solid #d9d9d9;
+}
+.gift-card-template .gift-card-holder {
+  margin: 0.75em;
+  margin-bottom: 1.25em;
+  margin-top: 1.25em;
+  position: relative;
+}
+.gift-card-template .gift-card-holder .corner {
+  display: block;
+  width: 47px;
+  height: 47px;
+  position: absolute;
+  z-index: 2;
+}
+.gift-card-template .gift-card-holder .corner.top-left {
+  background: url("//cdn.shopify.com/s/assets/gift-card/corner-top-left-1585103bdd46bf1297b88f31bdfce999.png") 0 0 no-repeat;
+  top: -1px;
+  left: -1px;
+}
+.gift-card-template .gift-card-holder .corner.bottom-right {
+  background: url("//cdn.shopify.com/s/assets/gift-card/corner-bottom-right-ba899b18631cb91859e186c2cc1c6970.png") 0 0 no-repeat;
+  bottom: -1px;
+  right: -1px;
+}
+.gift-card-template .gift-card {
+  position: relative;
+  box-sizing: border-box;
+  position: relative;
+}
+.gift-card-template .gift-card:before {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  box-shadow: inset 0px 0px 0px 1px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  z-index: 1;
+  pointer-events: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  display: block;
+}
+.gift-card-template .gift-card img {
+  border-radius: 10px;
+  max-width: 100%;
+}
+.gift-card-template .gift-card-code-outer {
+  position: absolute;
+  bottom: 1em;
+  text-align: center;
+  width: 100%;
+}
+.gift-card-template .gift-card-code-outer.medium {
+  font-size: 0.875em;
+}
+.gift-card-template .gift-card-code-outer.small {
+  font-size: 0.75em;
+}
+.gift-card-template .gift-card-code-inner {
+  display: inline-block;
+  vertical-align: baseline;
+  zoom: 1;
+  *display: inline;
+  *vertical-align: auto;
+  background-color: #fff;
+  padding: 0.5em;
+  border-radius: 4px;
+  max-width: 450px;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
+}
+.gift-card-template .gift-card-code-inner strong {
+  font-family: {{ fonts_font_body_family }};
+  font-style: {{ fonts_font_body_style }};
+  font-weight: {{ fonts_font_body_weight }};
+  font-size: 1.875em;
+  text-transform: uppercase;
+  border-radius: 2px;
+  border: 1px dashed #e5e5e5;
+  padding: 0.4em 0.5em;
+  display: inline-block;
+  vertical-align: baseline;
+  zoom: 1;
+  *display: inline;
+  *vertical-align: auto;
+  color: #777;
+  line-height: 1;
+}
+.gift-card-template .small .gift-card-code-inner {
+  overflow: auto;
+}
+.gift-card-template .disabled .gift-card-code-inner strong {
+  color: #999;
+  text-decoration: line-through;
+}
+.gift-card-template .gift-card-code-inner span + span {
+  margin-left: 0.25em;
+}
+.gift-card-template .gift-card-amount {
+  position: absolute;
+  top: 0;
+  right: 0;
+  color: #fff;
+  font-size: 2.75em;
+  padding: 0.4em 0.5em;
+}
+.gift-card-template .gift-card-amount.medium {
+  font-size: 2.25em;
+}
+.gift-card-template .gift-card-amount strong {
+  text-shadow: 3px 3px 0 rgba(0, 0, 0, 0.1);
+  display: block;
+}
+.gift-card-template .tooltip {
+  position: relative;
+}
+.gift-card-template .tooltip:hover .tooltip-container {
+  display: block;
+}
+.gift-card-template .tooltip-container {
+  display: block;
+  position: absolute;
+  top: -100%;
+  right: 50%;
+  z-index: 3;
+  color: #fff;
+  text-align: center;
+  white-space: nowrap;
+  animation: popup 0.5s ease-in-out both 0.7s;
+  top: -50%;
+  margin-top: 0.25em;
+}
+.gift-card-template .tooltip-triangle {
+  content: "";
+  display: block;
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-top: 5px solid #333;
+  border-top: 5px solid rgba(51, 51, 51, 0.9);
+  position: absolute;
+  left: 100%;
+  bottom: 0;
+  margin-left: -5px;
+  margin-bottom: -5px;
+}
+.gift-card-template .tooltip-label {
+  display: block;
+  position: relative;
+  right: -50%;
+  border: none;
+  border-radius: 4px;
+  background: #333;
+  background: rgba(51, 51, 51, 0.9);
+  color: #fff;
+  min-height: 14px;
+  font-size: 0.4em;
+  text-decoration: none;
+  line-height: 16px;
+  text-shadow: none;
+  padding: 0.5em 0.75em;
+  margin-left: 0.25em;
+}
+.gift-card-template .gift-card-instructions {
+  font-size: 0.875em;
+  text-align: center;
+  color: #999;
+  margin: 0 0.75em 1.5em;
+}
+.gift-card-template .gift-card-qr-code {
+  display: block;
+}
+.gift-card-template .gift-card-qr-code img {
+  padding: 1.25em;
+  border: 1px solid #f2f2f2;
+  border-radius: 10px;
+  margin: 0 auto 1.25em;
+}
+.gift-card-template .gift-card-actions {
+  border-top: 1px solid #f2f2f2;
+  padding: 1.25em 0.75em;
+  text-align: center;
+  position: relative;
+  display: block;
+  overflow: hidden;
+}
+.gift-card-template .action-link {
+  font-size: 0.875em;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: #bfbfbf;
+  margin-top: 1.75em;
+  position: absolute;
+  left: 1.25em;
+  top: 1.25em;
+}
+.gift-card-template .action-link:hover {
+  color: #999;
+}
+.gift-card-template .action-link:hover .ico-16 {
+  opacity: 0.4;
+}
+.gift-card-template .ico-16 {
+  display: inline-block;
+  vertical-align: baseline;
+  zoom: 1;
+  *display: inline;
+  *vertical-align: auto;
+  width: 17px;
+  height: 17px;
+  vertical-align: bottom;
+  margin-bottom: -1px;
+  background-position: 0 0;
+  background-repeat: no-repeat;
+  margin-right: 0.5em;
+  opacity: 0.25;
+  opacity: 0.3s ease-in-out;
+}
+.gift-card-template .ico-16.print {
+  background-image: url("//cdn.shopify.com/s/assets/gift-card/icon-print-164daa1ae32d10d1f9b83ac21b6f2c70.png");
+}
+.gift-card-template footer[role=contentinfo] {
+  padding-bottom: 3em;
+  text-align: center;
+  animation: fadein 0.5s ease-in-out both 0.4s;
+}
+.gift-card-template .gift-card-apple-wallet-badge {
+  display: inline-block;
+}
+.gift-card-template .gift-card-apple-wallet-badge-image {
+  display: block;
+}
+@media screen and (max-width: 580px) {
+  .gift-card-template body {
+    font-size: 12px;
+  }
+  .gift-card-template h2 {
+    font-size: 1.5em;
+  }
+  .gift-card-template .gift-card-outer-container {
+    padding: 0.5em;
+  }
+  .gift-card-template .tooltip-container {
+    top: -65%;
+  }
+  .gift-card-template .gift-card-actions .btn {
+    width: 100%;
+    padding-left: 0;
+    padding-right: 0;
+    font-size: 1.125em;
+  }
+  .gift-card-template .action-link {
+    position: relative !important;
+    left: auto !important;
+    right: auto !important;
+    top: auto !important;
+    font-size: 1.125em;
+    display: none;
+  }
+  .gift-card-template .action-link + .action-link {
+    margin-left: 1.5em;
+  }
+}
+@media screen and (max-width: 400px) {
+  .gift-card-template h2 {
+    font-size: 1.25em;
+  }
+  .gift-card-template .gift-card {
+    font-size: 10px;
+  }
+  .gift-card-template .gift-card-holder .corner {
+    display: none;
+  }
+  .gift-card-template .gift-card-holder .corner.bottom-right {
+    background-position: bottom right !important;
+  }
+  .gift-card-template .gift-card-amount strong {
+    text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.1);
+  }
+  .gift-card-template .tooltip-container {
+    top: -75%;
+  }
+}
+@media screen and (max-height: 800px) {
+  .gift-card-template .shop-title {
+    max-height: 100px;
+  }
+}
+@media screen and (max-height: 750px) {
+  .gift-card-template .shop-title {
+    max-height: 80px;
+  }
+  .gift-card-template header {
+    padding: 2em 0;
+  }
+  .gift-card-template footer[role=contentinfo],
+.gift-card-template main {
+    padding-bottom: 2em;
+  }
+}
+@media print {
+  @page {
+    .gift-card-template {
+      margin: 0.5cm;
+    }
+  }
+  .gift-card-template p,
+.gift-card-template h2,
+.gift-card-template h3 {
+    orphans: 3;
+    widows: 3;
+  }
+  .gift-card-template h2,
+.gift-card-template h3 {
+    page-break-after: avoid;
+  }
+  .gift-card-template body {
+    background-color: #fff;
+  }
+  .gift-card-template .gift-card-actions,
+.gift-card-template .gift-card-holder .corner,
+.gift-card-template .tooltip-container,
+.gift-card-template .gift-card:before {
+    display: none;
+  }
+  .gift-card-template .gift-card-code-inner strong {
+    color: #555;
+  }
+  .gift-card-template .gift-card-amount .tooltip {
+    color: #fff !important;
+  }
+  .gift-card-template .shop-title {
+    color: #58686f;
+  }
+  .gift-card-template .gift-card-outer-container,
+.gift-card-template .gift-card-inner-container,
+.gift-card-template .gift-card-code-inner,
+.gift-card-template .gift-card:before {
+    box-shadow: none;
+  }
+}

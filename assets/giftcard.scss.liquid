@@ -1,0 +1,1625 @@
+// {% assign font_settings = 'font_heading:bolder|font_body:bolder|font_button:bolder|font_meta:bolder' %}
+{% assign font_settings = font_settings | split: '|' %}
+{% assign font_scss_variables = '' %}
+{% for font_setting in font_settings %}
+  {% assign font_info = font_setting | split: ':' %}
+
+  {% comment %}Get setting name{% endcomment %}
+  {% assign font_setting_name = font_info[0] %}
+
+  {% comment %}Get additional weights{% endcomment %}
+  {% assign font_additional_weights = font_info[1] | split: ',' | uniq %}
+
+  {% comment %}Create variables for use in SCSS{% endcomment %}
+  {% assign font_scss_base = font_setting_name | replace: '_', '-' | prepend: '$' %}
+  {% assign font_scss_reference = font_scss_base %}
+  {% assign font_scss_family = font_scss_base | append: '-family' %}
+  {% assign font_scss_weights = font_scss_base | append: '-weights' %}
+  {% assign font_scss_named_weights = font_scss_base | append: '-named-weights' %}
+  {% assign font_scss_styles = font_scss_base | append: '-styles' %}
+  {% assign font_scss_named_styles = font_scss_base | append: '-named-styles' %}
+
+  {% comment %}Add the current setting to a list of reference variables{% endcomment %}
+  {% assign font_scss_variables = font_scss_variables | append: '|' | append: font_scss_reference %}
+
+  {% comment %}Get the initial FontDrop, and an italic style FontDrop{% endcomment %}
+  {% assign font_initial = settings[font_setting_name] %}
+  {% assign font_initial_weight = font_initial.weight | times: 1 %}
+  {% assign font_italic = font_initial | font_modify: 'style', 'italic' %}
+  {% assign font_styles = '(' | append: font_initial.style %}
+  {% assign font_named_styles = '(initial' %}
+  {% assign font_weights = font_initial_weight %}
+  {% assign font_named_weights = 'initial' %}
+
+  {{ font_initial | font_face }}
+  {{ font_italic | font_face }}
+
+  {% comment %}Use the font face italic style if possible, otherwise use something browser friendly{% endcomment %}
+  {% assign font_initial_italic_style = font_italic.style | default: 'italic' %}
+  {% assign font_styles = font_styles | append: ', ' | append: font_initial_italic_style %}
+  {% assign font_named_styles = font_named_styles | append: ', italic' %}
+
+  {% assign font_styles = font_styles | append: ')' %}
+  {% assign font_named_styles = font_named_styles | append: ')' %}
+
+  {% comment %}Iterate over each additional weight to load font face, and weights{% endcomment %}
+  {% for font_adjustment in font_additional_weights %}
+    {% assign font_weighted = font_initial | font_modify: 'weight', font_adjustment %}
+    {% assign font_styled = font_weighted | font_modify: 'style', 'italic' %}
+    {% assign font_weighted_styles = blank %}
+    {% assign font_weighted_named_styles = blank %}
+
+    {% comment %}If additional weight exists, generate font face{% endcomment %}
+    {{ font_weighted | font_face }}
+
+    {% comment %}Create a default value of the weight adjustment is not possible{% endcomment %}
+    {% assign font_adjustment_default = '' %}
+    {% case font_adjustment %}
+      {% when 'lighter' %}
+        {% comment %}Shopify requirement: If lighter variant is not found, use default value of 300{% endcomment %}
+        {% assign font_adjustment_default = 300 %}
+        {% if font_initial_weight < 300 %}
+          {% assign font_adjustment_default = font_initial_weight %}
+        {% endif %}
+      {% when 'bolder' %}
+        {% comment %}Shopify requirement: If bolder variant is not found, use default value of 700{% endcomment %}
+        {% assign font_adjustment_default = 700 %}
+        {% if font_initial_weight > 700 %}
+          {% assign font_adjustment_default = font_initial_weight %}
+        {% endif %}
+      {% else %}
+        {% assign font_adjustment_default = font_adjustment %}
+    {% endcase %}
+    {% assign font_weighted_value = font_weighted.weight | default: font_adjustment_default %}
+    {% assign font_weighted_style = font_weighted.style | default: 'normal' %}
+
+    {% assign font_weights = font_weights | append: '|' | append: font_weighted_value %}
+    {% assign font_named_weights = font_named_weights | append: '|' | append: font_adjustment %}
+    {% assign font_weighted_styles = font_weighted_styles | append: font_weighted_style %}
+    {% assign font_weighted_named_styles = font_weighted_named_styles | append: 'initial' %}
+
+    {% comment %}If italic exists for weight, generate font face{% endcomment %}
+    {{ font_styled | font_face }}
+    {% assign font_weighted_italic_style = font_styled.style | default: 'italic' %}
+    {% assign font_weighted_styles = font_weighted_styles | append: '|' | append: font_weighted_italic_style %}
+    {% assign font_weighted_named_styles = font_weighted_named_styles | append: '|italic' %}
+
+    {% if font_weighted_styles != blank %}
+      {% assign font_weighted_styles = font_weighted_styles | split: '|' | join: ', ' %}
+      {% assign font_weighted_named_styles = font_weighted_named_styles | split: '|' | join: ', ' %}
+
+      {% assign font_styles = font_styles | append: '|(' | append: font_weighted_styles | append: ')'%}
+      {% assign font_named_styles = font_named_styles | append: '|(' | append: font_weighted_named_styles | append: ')'%}
+    {% endif %}
+
+    {% assign font_weighted = blank %}
+    {% assign font_styled = blank %}
+    {% assign font_weighted_styles = blank %}
+
+    {% assign font_adjustment_default = blank %}
+    {% assign font_weighted_value = blank %}
+    {% assign font_weighted_style = blank %}
+    {% assign font_weighted_italic_style = blank %}
+  {% endfor %}
+
+  {% comment %}If only one weight, add an empty list to styles{% endcomment %}
+  {% comment %}`length()` reports length of nested list if list only has 1 index{% endcomment %}
+  {% assign font_weights_size = font_weights | split: '|' %}
+  {% if font_weights_size.size == 1 %}
+    {% assign font_styles = font_styles | append: '|()' %}
+    {% assign font_named_styles = font_named_styles | append: '|()' %}
+  {% endif %}
+
+  {{ font_scss_reference }}: {{ font_setting_name }};
+  {{ font_scss_family }}: {{ font_initial.family }}, {{ font_initial.fallback_families }};
+  {{ font_scss_styles }}: ({{ font_styles | split: '|' | join: ', ' }});
+  {{ font_scss_named_styles }}: ({{ font_named_styles | split: '|' | join: ', ' }});
+  {{ font_scss_weights }}: ({{ font_weights | split: '|' | join: ', ' }});
+  {{ font_scss_named_weights }}: ({{ font_named_weights | split: '|' | join: ', ' }});
+
+  {% comment %}Blank used variables to prevent bleeding{% endcomment %}
+  {% assign font_info = blank %}
+  {% assign font_setting_name = blank %}
+  {% assign font_additional_weights = blank %}
+  {% assign font_scss_base = blank %}
+  {% assign font_scss_reference = blank %}
+  {% assign font_scss_family = blank %}
+  {% assign font_scss_styles = blank %}
+  {% assign font_scss_named_styles = blank %}
+  {% assign font_scss_weights = blank %}
+  {% assign font_scss_named_weights = blank %}
+  {% assign font_initial = blank %}
+  {% assign font_italic = blank %}
+  {% assign font_weights = blank %}
+  {% assign font_named_weights = blank %}
+  {% assign font_initial_italic_style = blank %}
+  {% assign font_styles = blank %}
+  {% assign font_named_styles = blank %}
+{% endfor %}
+
+{% assign font_scss_variables = font_scss_variables | remove_first: '|' | split: '|' %}
+
+{% comment %}Build SCSS friendly lists of weights{% endcomment %}
+{% assign font_variable_families = '' %}
+{% assign font_variable_weights = '' %}
+{% assign font_variable_named_weights = '' %}
+{% assign font_variable_styles = '' %}
+{% assign font_variable_named_styles = '' %}
+
+{% for variable in font_scss_variables %}
+  {% assign font_variable_families = font_variable_families | append: ' ' | append: variable | append: '-family' %}
+  {% assign font_variable_weights = font_variable_weights | append: ' ' | append: variable | append: '-weights' %}
+  {% assign font_variable_named_weights = font_variable_named_weights | append: ' ' | append: variable | append: '-named-weights' %}
+  {% assign font_variable_styles = font_variable_styles | append: ' ' | append: variable | append: '-styles' %}
+  {% assign font_variable_named_styles = font_variable_named_styles | append: ' ' | append: variable | append: '-named-styles' %}
+{% endfor %}
+
+$font-variables: ({{ font_scss_variables | join: ' ' }});
+$font-variables-families: ({{ font_variable_families | strip }});
+$font-variables-weights: ({{ font_variable_weights | strip }});
+$font-variables-named-weights: ({{ font_variable_named_weights | strip }});
+$font-variables-styles: ({{ font_variable_styles | strip }});
+$font-variables-named-styles: ({{ font_variable_named_styles | strip }});
+
+// Find the index of the font setting for cross referencing
+@function font-setting-index($font-type) {
+  @return index($font-variables, $font-type);
+}
+
+// Font
+// --------
+// Find the index of a font weight from its relative name
+// - [$font-type]: Variable of font to look up
+// - [$font-weight]: lighter/initial/bolder
+@function font-weight-index($font-type, $font-weight: initial) {
+  $font-setting-index: font-setting-index($font-type);
+
+  // Look up available weights based on index of font setting
+  $named-weights: nth($font-variables-named-weights, $font-setting-index);
+
+  // Try to find index of desired font weight by cross referencing
+  $weight-index: index($named-weights, $font-weight);
+
+  // Return index of named weight, or return initial weight
+  @return if($weight-index, $weight-index, 1);
+}
+
+// Font
+// --------
+// Find the font family for a font setting
+// - [$font-type]: Variable of font to look up
+@function font-family($font-type) {
+  @return nth($font-variables-families, font-setting-index($font-type));
+}
+
+// Font
+// --------
+// Find a font style relative to a font weight
+// - [$font-type]: Variable of font to look up
+// - [$font-style]: initial/italic
+// - [$font-weight]: lighter/initial/bolder
+@function font-style($font-type, $font-style: initial, $font-weight: initial) {
+  $style: null;
+  $styles: null;
+
+  // Find index of font setting
+  $font-setting-index: font-setting-index($font-type);
+
+  // Get styles based on index of font setting
+  $font-styles: nth($font-variables-styles, $font-setting-index);
+  $font-named-styles: nth($font-variables-named-styles, $font-setting-index);
+
+  // Try to find index of desired font weight by cross referencing
+  $weight-named-index: font-weight-index($font-type, $font-weight);
+
+  // Get styles available for $font-weight
+  $named-weight-style: nth($font-styles, $weight-named-index);
+  $named-weight-named-style: nth($font-named-styles, $weight-named-index);
+
+  // Find position of $font-style
+  $style-named-index: index($named-weight-named-style, $font-style);
+
+  @if $style-named-index {
+    @return nth($named-weight-style, $style-named-index);
+  } @else {
+    // Return initial font style
+    @return nth($named-weight-style, 1);
+  }
+}
+
+// Font weight
+// --------
+// Find a font sensitive relative weight
+// - [$font-type]: Variable of font to look up
+// - [$font-weight]: lighter/initial/bolder
+@function font-weight($font-type, $font-weight: initial) {
+  $weight: null;
+
+  // Find index of font setting
+  $font-setting-index: font-setting-index($font-type);
+
+  // Look up available weights based on index of font setting
+  $weights: nth($font-variables-weights, $font-setting-index);
+
+  // Try to find index of desired font weight by cross referencing
+  $weight-index: font-weight-index($font-type, $font-weight);
+
+  // Return numerical weight of font
+  @return nth($weights, $weight-index);
+}
+
+// Font
+// --------
+// Generate complete font styles for a font setting
+// - [$font-type]: Variable of font to look up
+// - [$font-family]: true/false
+// - [$font-size]: unit/false
+// - [$font-style]: initial/italic/false
+// - [$font-weight]: lighter/initial/bolder/false
+@mixin font(
+  $font-type,
+  $font-family: true,
+  $font-size: false,
+  $font-style: initial,
+  $font-weight: initial
+) {
+  @if $font-family { font-family: font-family($font-type); }
+  @if $font-size { font-size: $font-size; }
+  @if $font-style { font-style: font-style($font-type, $font-style: $font-style, $font-weight: $font-weight ); }
+  @if $font-weight { font-weight: font-weight($font-type, $font-weight: $font-weight); }
+}
+
+{% assign font_scss_variables = blank %}
+{% assign font_variable_families = blank %}
+{% assign font_variable_weights = blank %}
+{% assign font_variable_named_weights = blank %}
+{% assign font_variable_styles = blank %}
+{% assign font_variable_named_styles = blank %}
+
+
+//************************************************************************//
+// Prefixer
+//************************************************************************//
+
+// Variable settings for /addons/prefixer.scss
+$prefix-for-webkit:    true !default;
+$prefix-for-mozilla:   true !default;
+$prefix-for-microsoft: true !default;
+$prefix-for-opera:     true !default;
+$prefix-for-spec:      true !default; // required for keyframe mixin
+
+@mixin prefixer ($property, $value, $prefixes) {
+  @each $prefix in $prefixes {
+    @if $prefix == webkit {
+      @if $prefix-for-webkit {
+        -webkit-#{$property}: $value;
+      }
+    }
+    @else if $prefix == moz {
+      @if $prefix-for-mozilla {
+        -moz-#{$property}: $value;
+      }
+    }
+    @else if $prefix == ms {
+      @if $prefix-for-microsoft {
+        -ms-#{$property}: $value;
+      }
+    }
+    @else if $prefix == o {
+      @if $prefix-for-opera {
+        -o-#{$property}: $value;
+      }
+    }
+    @else if $prefix == spec {
+      @if $prefix-for-spec {
+        #{$property}: $value;
+      }
+    }
+    @else  {
+      @warn "Unrecognized prefix: #{$prefix}";
+    }
+  }
+}
+
+@mixin disable-prefix-for-all() {
+  $prefix-for-webkit:    false;
+  $prefix-for-mozilla:   false;
+  $prefix-for-microsoft: false;
+  $prefix-for-opera:     false;
+  $prefix-for-spec:      false;
+}
+
+//************************************************************************//
+// Transitions
+//************************************************************************//
+
+// Shorthand mixin. Supports multiple parentheses-deliminated values for each variable.
+// Example: @include transition (all 2s ease-in-out);
+//          @include transition (opacity 1s ease-in 2s, width 2s ease-out);
+//          @include transition-property (transform, opacity);
+
+@mixin transition ($properties...) {
+  // Fix for vendor-prefix transform property
+  $needs-prefixes: false;
+  $webkit: ();
+  $moz: ();
+  $spec: ();
+
+  // Create lists for vendor-prefixed transform
+  @each $list in $properties {
+    @if nth($list, 1) == "transform" {
+      $needs-prefixes: true;
+      $list1: -webkit-transform;
+      $list2: -moz-transform;
+      $list3: ();
+
+      @each $var in $list {
+        $list3: join($list3, $var);
+
+        @if $var != "transform" {
+          $list1: join($list1, $var);
+          $list2: join($list2, $var);
+        }
+      }
+
+      $webkit: append($webkit, $list1);
+         $moz: append($moz,    $list2);
+        $spec: append($spec,   $list3);
+    }
+
+    // Create lists for non-prefixed transition properties
+    @else {
+      $webkit:  append($webkit, $list, comma);
+      $moz:     append($moz,    $list, comma);
+      $spec:    append($spec,   $list, comma);
+    }
+  }
+
+  @if $needs-prefixes {
+    transition: $spec;
+  }
+  @else {
+    @if length($properties) >= 1 {
+      @include prefixer(transition, $properties, webkit moz spec);
+    }
+
+    @else {
+      $properties: all 0.15s ease-out 0s;
+      @include prefixer(transition, $properties, webkit moz spec);
+    }
+  }
+}
+
+@mixin transition-property ($properties...) {
+   transition-property: transition-property-names($properties, false);
+}
+
+@mixin transition-duration ($times...) {
+  @include prefixer(transition-duration, $times, webkit moz spec);
+}
+
+@mixin transition-timing-function ($motions...) {
+// ease | linear | ease-in | ease-out | ease-in-out | cubic-bezier()
+  @include prefixer(transition-timing-function, $motions, webkit moz spec);
+}
+
+@mixin transition-delay ($times...) {
+  @include prefixer(transition-delay, $times, webkit moz spec);
+}
+
+//************************************************************************//
+// Transforms
+//************************************************************************//
+
+@mixin transform($property: none) {
+//  none | <transform-function>
+  @include prefixer(transform, $property, webkit moz ms o spec);
+}
+
+@mixin transform-origin($axes: 50%) {
+// x-axis - left | center | right  | length | %
+// y-axis - top  | center | bottom | length | %
+// z-axis -                          length
+  @include prefixer(transform-origin, $axes, webkit moz ms o spec);
+}
+
+@mixin transform-style ($style: flat) {
+  @include prefixer(transform-style, $style, webkit moz ms o spec);
+}
+
+//************************************************************************//
+// Animations
+//************************************************************************//
+
+// http://www.w3.org/TR/css3-animations/#the-animation-name-property-
+// Each of these mixins support comma separated lists of values, which allows different transitions for individual properties to be described in a single style rule. Each value in the list corresponds to the value at that same position in the other properties.
+
+// Official animation shorthand property.
+@mixin animation ($animations...) {
+  @include prefixer(animation, $animations, webkit moz spec);
+}
+
+// Individual Animation Properties
+@mixin animation-name ($names...) {
+  @include prefixer(animation-name, $names, webkit moz spec);
+}
+
+
+@mixin animation-duration ($times...) {
+  @include prefixer(animation-duration, $times, webkit moz spec);
+}
+
+
+@mixin animation-timing-function ($motions...) {
+// ease | linear | ease-in | ease-out | ease-in-out
+  @include prefixer(animation-timing-function, $motions, webkit moz spec);
+}
+
+
+@mixin animation-iteration-count ($values...) {
+// infinite | <number>
+  @include prefixer(animation-iteration-count, $values, webkit moz spec);
+}
+
+
+@mixin animation-direction ($directions...) {
+// normal | alternate
+  @include prefixer(animation-direction, $directions, webkit moz spec);
+}
+
+
+@mixin animation-play-state ($states...) {
+// running | paused
+  @include prefixer(animation-play-state, $states, webkit moz spec);
+}
+
+
+@mixin animation-delay ($times...) {
+  @include prefixer(animation-delay, $times, webkit moz spec);
+}
+
+
+@mixin animation-fill-mode ($modes...) {
+// none | forwards | backwards | both
+  @include prefixer(animation-fill-mode, $modes, webkit moz spec);
+}
+
+// Adds keyframes blocks for supported prefixes, removing redundant prefixes in the block's content
+@mixin keyframes($name) {
+  $original-prefix-for-webkit:    $prefix-for-webkit;
+  $original-prefix-for-mozilla:   $prefix-for-mozilla;
+  $original-prefix-for-microsoft: $prefix-for-microsoft;
+  $original-prefix-for-opera:     $prefix-for-opera;
+  $original-prefix-for-spec:      $prefix-for-spec;
+
+  @if $original-prefix-for-webkit {
+    @include disable-prefix-for-all();
+    $prefix-for-webkit: true
+  }
+  @if $original-prefix-for-mozilla {
+    @include disable-prefix-for-all();
+    $prefix-for-mozilla: true
+  }
+
+  $prefix-for-webkit:    $original-prefix-for-webkit;
+  $prefix-for-mozilla:   $original-prefix-for-mozilla;
+  $prefix-for-microsoft: $original-prefix-for-microsoft;
+  $prefix-for-opera:     $original-prefix-for-opera;
+  $prefix-for-spec:      $original-prefix-for-spec;
+
+  @if $original-prefix-for-spec {
+    @keyframes #{$name} {
+      @content;
+    }
+  }
+}
+
+//************************************************************************//
+// Placeholders
+//************************************************************************//
+
+@mixin placeholder {
+  $placeholders: ":-webkit-input" ":-moz" "-moz" "-ms-input";
+  @each $placeholder in $placeholders {
+    &:#{$placeholder}-placeholder {
+      @content;
+    }
+  }
+}
+
+//************************************************************************//
+// Flexbox
+//************************************************************************//
+
+// Custom shorthand notation for flexbox
+@mixin box($orient: inline-axis, $pack: start, $align: stretch) {
+  @include display-box;
+  @include box-orient($orient);
+  @include box-pack($pack);
+  @include box-align($align);
+}
+
+@mixin display-box {
+  display: -ms-flexbox; // IE 10
+  display: box;
+}
+
+@mixin box-orient($orient: inline-axis) {
+// horizontal|vertical|inline-axis|block-axis|inherit
+  @include prefixer(box-orient, $orient, webkit moz spec);
+}
+
+@mixin box-pack($pack: start) {
+// start|end|center|justify
+  @include prefixer(box-pack, $pack, webkit moz spec);
+  -ms-flex-pack: $pack; // IE 10
+}
+
+@mixin box-align($align: stretch) {
+// start|end|center|baseline|stretch
+  @include prefixer(box-align, $align, webkit moz spec);
+  -ms-flex-align: $align; // IE 10
+}
+
+@mixin box-direction($direction: normal) {
+// normal|reverse|inherit
+  @include prefixer(box-direction, $direction, webkit moz spec); // IE 10
+}
+
+@mixin box-lines($lines: single) {
+// single|multiple
+  @include prefixer(box-lines, $lines, webkit moz spec);
+}
+
+@mixin box-ordinal-group($int: 1) {
+  @include prefixer(box-ordinal-group, $int, webkit moz spec);
+  -ms-flex-order: $int; // IE 10
+}
+
+@mixin box-flex($value: 0.0) {
+  @include prefixer(box-flex, $value, webkit moz spec);
+  -ms-flex: $value; // IE 10
+}
+
+@mixin box-flex-group($int: 1) {
+  @include prefixer(box-flex-group, $int, webkit moz spec);
+}
+
+// CSS3 Flexible Box Model and property defaults
+// Unified attributes for 2009, 2011, and 2012 flavours.
+
+// 2009 - display (box | inline-box)
+// 2011 - display (flexbox | inline-flexbox)
+// 2012 - display (flex | inline-flex)
+@mixin display($value) {
+//  flex | inline-flex
+  @if $value == "flex" {
+    // 2009
+    display: -webkit-box;
+    display: -moz-box;
+    display: box;
+
+    // 2012
+    display: -moz-flex; // 2011 (IE 10)
+    display: flex;
+  }
+
+  @elseif $value == "inline-flex" {
+    display: -webkit-inline-box;
+    display: -moz-inline-box;
+    display: inline-box;
+    display: -moz-inline-flex;
+    display: inline-flex;
+  }
+
+  @else {
+    display: $value;
+  }
+}
+
+// 2009 - box-flex (integer)
+// 2011 - flex (decimal | width decimal)
+// 2012 - flex (integer integer width)
+@mixin flex($value) {
+
+  // Grab flex-grow for older browsers.
+  $flex-grow: nth($value, 1);
+
+  // 2009
+  @include prefixer(box-flex, $flex-grow, webkit moz spec);
+
+  // 2011 (IE 10), 2012
+  @include prefixer(flex, $value, webkit moz ms spec);
+}
+
+// 2009 - box-orient ( horizontal | vertical | inline-axis | block-axis)
+//      - box-direction (normal | reverse)
+// 2011 - flex-direction (row | row-reverse | column | column-reverse)
+// 2012 - flex-direction (row | row-reverse | column | column-reverse)
+@mixin flex-direction($value: row) {
+
+  // Alt values.
+  $value-2009: $value;
+  $value-2011: $value;
+  $direction: "normal";
+
+  @if $value == row {
+    $value-2009: horizontal;
+  }
+
+  @elseif $value == "row-reverse" {
+    $value-2009: horizontal;
+    $direction: reverse;
+  }
+
+  @elseif $value == column {
+    $value-2009: vertical;
+  }
+
+  @elseif $value == "column-reverse" {
+    $value-2009: vertical;
+    $direction: reverse;
+  }
+
+  // 2009
+  @include prefixer(box-orient, $value-2009, webkit moz spec);
+  @if $direction == "reverse" {
+      @include prefixer(box-direction, $direction, webkit moz spec);
+  }
+
+  // 2012
+  @include prefixer(flex-direction, $value, webkit moz spec);
+
+  // 2011 (IE 10)
+}
+
+// 2009 - box-lines (single | multiple)
+// 2011 - flex-wrap (nowrap | wrap | wrap-reverse)
+// 2012 - flex-wrap (nowrap | wrap | wrap-reverse)
+@mixin flex-wrap($value: nowrap) {
+
+  // Alt values.
+  $alt-value: $value;
+  @if $value == nowrap {
+    $alt-value: single;
+  }
+
+  @elseif $value == wrap {
+    $alt-value: multiple;
+  }
+
+  @elseif $value == "wrap-reverse" {
+    $alt-value: multiple;
+  }
+
+  @include prefixer(box-lines, $alt-value, webkit moz spec);
+  @include prefixer(flex-wrap, $value, webkit moz ms spec);
+}
+
+// 2009 - TODO: parse values into flex-direction/flex-wrap
+// 2011 - TODO: parse values into flex-direction/flex-wrap
+// 2012 - flex-flow (flex-direction || flex-wrap)
+@mixin flex-flow($value) {
+  @include prefixer(flex-flow, $value, webkit moz spec);
+}
+
+// 2009 - box-ordinal-group (integer)
+// 2011 - flex-order (integer)
+// 2012 - order (integer)
+@mixin order($int: 0) {
+  // 2009
+  @include prefixer(box-ordinal-group, $int, webkit moz spec);
+
+  // 2012
+  @include prefixer(order, $int, webkit moz spec);
+
+  // 2011 (IE 10)
+  -ms-flex-order: $int;
+}
+
+// 2012 - flex-grow (number)
+@mixin flex-grow($number: 0) {
+  @include prefixer(flex-grow, $number, webkit moz spec);
+  -ms-flex-positive: $number;
+}
+
+// 2012 - flex-shrink (number)
+@mixin flex-shrink($number: 1) {
+  @include prefixer(flex-shrink, $number, webkit moz spec);
+  -ms-flex-negative: $number;
+}
+
+// 2012 - flex-basis (number)
+@mixin flex-basis($width: auto) {
+  @include prefixer(flex-basis, $width, webkit moz spec);
+  -ms-flex-preferred-size: $width;
+}
+
+// 2009 - box-pack (start | end | center | justify)
+// 2011 - flex-pack (start | end | center | justify)
+// 2012 - justify-content (flex-start | flex-end | center | space-between | space-around)
+@mixin justify-content($value: flex-start) {
+
+  // Alt values.
+  $alt-value: $value;
+  @if $value == "flex-start" {
+    $alt-value: start;
+  }
+
+  @elseif $value == "flex-end" {
+    $alt-value: end;
+  }
+
+  @elseif $value == "space-between" {
+    $alt-value: justify;
+  }
+
+  @elseif $value == "space-around" {
+    $alt-value: center;
+  }
+
+  // 2009
+  @include prefixer(box-pack, $alt-value, webkit moz spec);
+
+  // 2012
+  @include prefixer(justify-content, $value, webkit moz ms o spec);
+
+  // 2011 (IE 10)
+  -ms-flex-pack: $alt-value;
+}
+
+// 2009 - box-align (start | end | center | baseline | stretch)
+// 2011 - flex-align (start | end | center | baseline | stretch)
+// 2012 - align-items (flex-start | flex-end | center | baseline | stretch)
+@mixin align-items($value: stretch) {
+
+  $alt-value: $value;
+
+  @if $value == "flex-start" {
+    $alt-value: start;
+  }
+
+  @elseif $value == "flex-end" {
+    $alt-value: end;
+  }
+
+  // 2009
+  @include prefixer(box-align, $alt-value, webkit moz spec);
+
+  // 2012
+  @include prefixer(align-items, $value, webkit moz ms o spec);
+
+  // 2011 (IE 10)
+  -ms-flex-align: $alt-value;
+}
+
+// 2011 - flex-item-align (auto | start | end | center | baseline | stretch)
+// 2012 - align-self (auto | flex-start | flex-end | center | baseline | stretch)
+@mixin align-self($value: auto) {
+
+  $value-2011: $value;
+  @if $value == "flex-start" {
+    $value-2011: start;
+  }
+
+  @elseif $value == "flex-end" {
+    $value-2011: end;
+  }
+
+  // 2012
+  @include prefixer(align-self, $value, webkit moz spec);
+
+  // 2011 (IE 10)
+  -ms-flex-item-align: $value-2011;
+}
+
+// 2011 - flex-line-pack (start | end | center | justify | distribute | stretch)
+// 2012 - align-content (flex-start | flex-end | center | space-between | space-around | stretch)
+@mixin align-content($value: stretch) {
+
+  $value-2011: $value;
+  @if $value == "flex-start" {
+    $value-2011: start;
+  }
+
+  @elseif $value == "flex-end" {
+    $value-2011: end;
+  }
+
+  @elseif $value == "space-between" {
+    $value-2011: justify;
+  }
+
+  @elseif $value == "space-around" {
+    $value-2011: distribute;
+  }
+
+  // 2012
+  @include prefixer(align-content, $value, webkit moz spec);
+
+  // 2011 (IE 10)
+  -ms-flex-line-pack: $value-2011;
+}
+
+$min-width: 320px;
+$max-width: 1400px;
+$ease-out-quad: cubic-bezier(0.250, 0.460, 0.450, 0.940);
+
+@mixin breakpoint($point) {
+  @if $point == xl {
+    @media (min-width: 1021px) { @content; }
+  }
+  @else if $point == l {
+    @media (max-width: 1020px) { @content; }
+  }
+  @else if $point == m {
+    @media (max-width: 720px) { @content; }
+  }
+  @else if $point == m-up {
+    @media (min-width: 721px) { @content; }
+  }
+  @else if $point == s {
+    @media (max-width: 540px) { @content; }
+  }
+  @else if $point == s-up {
+    @media (min-width: 541px) { @content; }
+  }
+  @else if $point == xs {
+    @media (max-width: 360px) { @content; }
+  }
+}
+
+@mixin opacity($opacity) {
+  opacity: $opacity;
+  $opacity-ie: $opacity * 100;
+  filter: alpha(opacity=$opacity-ie); //IE8
+}
+
+@mixin icon-font($fontSize: 16px, $lineHeight: 1) {
+  font-family: 'Pacific';
+  font-size: $fontSize;
+  font-weight: 400;
+  line-height: $lineHeight;
+  -webkit-font-smoothing: antialiased;
+}
+
+@function color-luminance($value) {
+  @if $value <= 0.03928 {
+    @return $value / 12.92;
+  } @else {
+    @return ($value + 0.055)/1.055 * ($value + 0.055)/1.055;
+  }
+}
+
+@function luminosity($color) {
+  $r: color-luminance(red($color) / 255);
+  $g: color-luminance(green($color) / 255);
+  $b: color-luminance(blue($color) / 255);
+
+  @return 0.2126 * $r + 0.7152 * $g + 0.0722 * $b;
+}
+
+@function contrast-ratio($c1, $c2) {
+  $l1: luminosity($c1);
+  $l2: luminosity($c2);
+
+  @if $l2 > $l1 {
+    @return $l2 / $l1;
+  } @else {
+    @return $l1 / $l2;
+  }
+}
+
+@function hover($background, $color) {
+
+  $style: '';
+  $hover-color: '';
+  $test-color: '';
+  $color-lightness: abs(lightness($color));
+  $background-lightness: abs(lightness($background));
+  $contrast: abs(contrast-ratio($background, $color));
+
+  @if $color-lightness == 100 {
+    /* White */
+    @if $background-lightness >= 90 {
+      $hover-color: darken($background, 15);
+    } @else {
+      $hover-color: mix($color, $background, 80);
+    }
+  } @else if $color-lightness == 0 {
+    /* Black */
+    @if $background-lightness < 10 {
+      $hover-color: lighten($background, 20);
+    } @else {
+      $hover-color: mix($color, $background, 60);
+    }
+  } @else if $background-lightness < $color-lightness {
+    /* Light text on dark background */
+    $style: 'lighten';
+    @if $color-lightness > 90 {
+      /* Color too light to lighten */
+      $hover-color: darken($color, 20);
+      $style: 'darken';
+    } @else {
+      $hover-color: lighten($color, 20);
+    }
+
+  } @else {
+    /* Dark text on light background */
+    $style: 'darken';
+    @if $color-lightness < 15 {
+      /* Color is too dark to further darken */
+      $hover-color: lighten($color, 20);
+      $style: 'lighten';
+    } @else {
+      $hover-color: darken($color, 20);
+    }
+  }
+
+  /*
+    Sometimes the $hover-color won't have enough contrast
+    with the background. We'll try to fix this below by
+    increasing our darken/lighten range by +/- 5
+  */
+
+  /* Only test if the $color isn't white or black */
+  @if $color-lightness != 0 and $color-lightness != 100 {
+    $new-contrast: contrast-ratio($background, $hover-color);
+    @if $new-contrast < 8 {
+
+      /* Test if we can find a color with a better contrast */
+      @for $i from 15 to 25 {
+        @if $style == 'darken' {
+          $test-color: darken($color, $i);
+        } @else {
+          $test-color: lighten($color, $i);
+        }
+        $test-contrast: contrast-ratio($background, $test-color);
+
+        @if $test-contrast > $new-contrast {
+          $new-contrast: $test-contrast;
+          $hover-color: $test-color;
+        }
+      }
+    }
+  }
+
+  @return $hover-color;
+}
+
+@mixin compliment($color) {
+  @if lightness($color) > 90% {
+    background: darken($color, 3%);
+  } @elseif lightness($color) > 15% {
+    background: darken($color, 2%);
+  } @elseif lightness($color) > 5% {
+    background: lighten($color, 3%);
+  } @else {
+    background: lighten($color, 7%);
+  }
+}
+
+@mixin contrast($color) {
+  @if lightness($color) > 70% {
+    color: black;
+  } @else {
+    color: white;
+  }
+}
+
+@mixin lt-ie9 {
+
+  .lt-ie9 & {
+    @content;
+  }
+}
+
+@mixin lt-ie10 {
+
+  .lt-ie10 & {
+    @content;
+  }
+}
+
+@mixin retina {
+
+  @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    @content;
+  }
+}
+
+@mixin capitalize($capitalize) {
+  @if $capitalize == true {
+    text-transform: uppercase;
+  }
+}
+
+
+.gift-card-template {
+  @include font($font-body);
+  margin: 0;
+
+  a {
+    text-decoration: none;
+  }
+
+  .btn {
+    @include font($font-caption);
+    background-color: #58686f;
+    color: #fff;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 1.5em;
+    font-size: 0.875em;
+    line-height: 1;
+    border-radius: 4px;
+    display: inline-block;
+    vertical-align: baseline;
+    zoom: 1;
+    *display: inline;
+    *vertical-align: auto;
+  }
+
+  .btn:hover {
+    background-color: #414d53;
+  }
+
+  .wrap {
+    width: 95%;
+    max-width: 540px;
+    margin: 0 auto;
+
+    &:after {
+      content: "";
+      display: table;
+      clear: both;
+    }
+  }
+
+  @keyframes slideup {
+    0% {
+      -webkit-transform: translateY(2000px) rotate(10deg);
+      @include opacity(0);
+    }
+
+    60% {
+      -webkit-transform: translateY(-30px);
+      @include opacity(1);
+    }
+
+    80% {
+      -webkit-transform: translateY(10px);
+    }
+
+    100% {
+      -webkit-transform: translateY(0) rotate(0deg);
+    }
+  }
+
+  @keyframes popup {
+    0% {
+      -webkit-transform: translateY(30px);
+      @include opacity(0);
+    }
+
+    60% {
+      -webkit-transform: translateY(-10px);
+      @include opacity(1);
+    }
+
+    80% {
+      -webkit-transform: translateY(2px);
+    }
+
+    100% {
+      -webkit-transform: translateY(0);
+    }
+  }
+
+  @keyframes container-slide {
+    0% {
+      -webkit-transform: rotate(0deg);
+      @include opacity(0);
+    }
+
+    100% {
+      -webkit-transform: rotate(0deg);
+    }
+  }
+
+  @keyframes fadein {
+    0% {
+      @include opacity(0);
+    }
+
+    100% {
+      @include opacity(1);
+    }
+  }
+
+  header {
+    text-align: center;
+    padding: 3em 0;
+    animation:fadein 0.5s ease-in-out both 0.4s
+  }
+
+  .shop-title {
+    @include font($font-heading);
+    font-size: 2.25em;
+    color: #bfbfbf;
+    max-width: 300px;
+    display: block;
+    margin: 0 auto;
+
+    &:hover {
+      color: #999999;
+    }
+
+    img {
+      max-height: 100%;
+      margin: 0 auto;
+    }
+  }
+
+  main {
+    padding-bottom: 3em;
+    animation: slideup 0.8s ease-in-out;
+  }
+
+  .gift-card-outer-container {
+    background-color: #34aadc;
+    border-radius: 4px;
+    box-shadow:0 0 0 1px rgba(0,0,0,0.1) inset;
+    padding: 1em;
+    animation: container-slide 0.8s ease-in-out;
+  }
+
+  .gift-card-inner-container {
+    background-color: #fff;
+    box-shadow: 0 0 0 1px rgba(0,0,0,0.1);
+    border-radius: 2px;
+    animation: cardslide 0.8s ease-in-out;
+
+    &:after {
+      content: "";
+      display: table;
+      clear: both;
+    }
+  }
+
+  .gift-card-header {
+    border-bottom: 1px solid #f2f2f2;
+    padding: 0.75em;
+    display: block;
+    overflow: hidden;
+    position: relative;
+
+    h2 {
+      float: left;
+      margin: 0.12em 0;
+    }
+
+    .tag {
+      float: right;
+    }
+  }
+
+  .tag {
+    background-color: #bfbfbf;
+    padding: 0.5em;
+    padding-bottom: 0.35em;
+    border-radius: 4px;
+    font-size: 0.75em;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #fff;
+    line-height: 1;
+
+    &.light {
+      background: transparent;
+      color: #bfbfbf;
+      border: 1px solid #d9d9d9;
+    }
+  }
+
+  .gift-card-holder {
+    margin: 0.75em;
+    margin-bottom: 1.25em;
+    margin-top: 1.25em;
+    position: relative;
+
+    .corner {
+      display: block;
+      width: 47px;
+      height: 47px;
+      position: absolute;
+      z-index: 2;
+
+      &.top-left {
+        background: url("//cdn.shopify.com/s/assets/gift-card/corner-top-left-1585103bdd46bf1297b88f31bdfce999.png") 0 0 no-repeat;
+        top: -1px;
+        left: -1px;
+      }
+
+      &.bottom-right {
+        background: url("//cdn.shopify.com/s/assets/gift-card/corner-bottom-right-ba899b18631cb91859e186c2cc1c6970.png") 0 0 no-repeat;
+        bottom: -1px;
+        right: -1px;
+      }
+    }
+  }
+
+  .gift-card {
+    position: relative;
+    box-sizing: border-box;
+    position: relative;
+
+    &:before {
+      content:  '';
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      box-shadow: inset 0px 0px 0px 1px rgba(0,0,0,0.1);
+      border-radius: 10px;
+      z-index: 1;
+      pointer-events: none;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      display: block;
+    }
+
+    img {
+      border-radius: 10px;
+      max-width: 100%;
+    }
+  }
+
+  .gift-card-code-outer {
+    position: absolute;
+    bottom: 1em;
+    text-align: center;
+    width: 100%;
+
+    &.medium {
+      font-size: 0.875em;
+    }
+
+    &.small {
+      font-size: 0.75em;
+    }
+  }
+
+  .gift-card-code-inner {
+    display: inline-block;
+    vertical-align: baseline;
+    zoom: 1;
+    *display: inline;
+    *vertical-align: auto;
+    background-color: #fff;
+    padding: 0.5em;
+    border-radius: 4px;
+    max-width: 450px;
+    box-shadow: 0 0 0 1px rgba(0,0,0,0.1);
+
+    strong {
+      @include font($font-body);
+      font-size: 1.875em;
+      text-transform: uppercase;
+      border-radius: 2px;
+      border: 1px dashed #e5e5e5;
+      padding: 0.4em 0.5em;
+      display: inline-block;
+      vertical-align: baseline;
+      zoom: 1;
+      *display: inline;
+      *vertical-align: auto;
+      color: #777;
+      line-height: 1;
+    }
+  }
+
+  .small .gift-card-code-inner {
+    overflow: auto;
+  }
+
+  .disabled .gift-card-code-inner strong {
+    color: #999;
+    text-decoration: line-through;
+  }
+
+  .gift-card-code-inner span+span {
+    margin-left: 0.25em;
+  }
+
+  .gift-card-amount {
+    position: absolute;
+    top: 0;
+    right: 0;
+    color: #fff;
+    font-size: 2.75em;
+    padding: 0.4em 0.5em;
+  }
+
+  .gift-card-amount.medium {
+    font-size: 2.25em;
+  }
+
+  .gift-card-amount strong {
+    text-shadow: 3px 3px 0 rgba(0,0,0,0.1);
+    display: block;
+  }
+
+  .tooltip {
+    position: relative;
+
+    &:hover .tooltip-container {
+      display: block;
+    }
+  }
+
+  .tooltip-container {
+    display: block;
+    position: absolute;
+    top: -100%;
+    right: 50%;
+    z-index: 3;
+    color: #fff;
+    text-align: center;
+    white-space: nowrap;
+    animation: popup 0.5s ease-in-out both 0.7s;
+    top: -50%;
+    margin-top: 0.25em;
+  }
+
+  .tooltip-triangle {
+    content: "";
+    display: block;
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-top: 5px solid #333;
+    border-top: 5px solid rgba(51,51,51,0.9);
+    position: absolute;
+    left: 100%;
+    bottom: 0;
+    margin-left: -5px;
+    margin-bottom: -5px;
+  }
+
+  .tooltip-label {
+    display: block;
+    position: relative;
+    right: -50%;
+    border: none;
+    border-radius: 4px;
+    background: #333;
+    background: rgba(51,51,51,0.9);
+    color: #fff;
+    min-height: 14px;
+    font-size: 0.4em;
+    text-decoration: none;
+    line-height: 16px;
+    text-shadow: none;
+    padding: 0.5em 0.75em;
+    margin-left: 0.25em;
+  }
+
+  .gift-card-instructions {
+    font-size: 0.875em;
+    text-align: center;
+    color: #999;
+    margin: 0 0.75em 1.5em;
+  }
+
+  .gift-card-qr-code{
+    display: block;
+
+    img {
+      padding: 1.25em;
+      border: 1px solid #f2f2f2;
+      border-radius: 10px;
+      margin: 0 auto 1.25em;
+    }
+  }
+
+  .gift-card-actions {
+    border-top: 1px solid #f2f2f2;
+    padding: 1.25em 0.75em;
+    text-align: center;
+    position: relative;
+    display: block;
+    overflow: hidden;
+  }
+
+  .action-link {
+    font-size: 0.875em;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: #bfbfbf;
+    margin-top: 1.75em;
+    position: absolute;
+    left: 1.25em;
+    top: 1.25em;
+
+    &:hover {
+      color: #999;
+
+      .ico-16 {
+        @include opacity(0.4);
+      }
+    }
+  }
+
+  .ico-16 {
+    display: inline-block;
+    vertical-align: baseline;
+    zoom: 1;
+    *display: inline;
+    *vertical-align: auto;
+    width: 17px;
+    height: 17px;
+    vertical-align: bottom;
+    margin-bottom: -1px;
+    background-position: 0 0;
+    background-repeat: no-repeat;
+    margin-right: 0.5em;
+    @include opacity(0.25);
+    @include transition(opacity 0.3s ease-in-out);
+
+    &.print {
+      background-image: url("//cdn.shopify.com/s/assets/gift-card/icon-print-164daa1ae32d10d1f9b83ac21b6f2c70.png");
+    }
+  }
+
+  footer[role='contentinfo'] {
+    padding-bottom: 3em;
+    text-align: center;
+    animation: fadein 0.5s ease-in-out both 0.4s;
+  }
+
+  .gift-card-apple-wallet-badge {
+    display: inline-block;
+  }
+
+  .gift-card-apple-wallet-badge-image {
+    display: block;
+  }
+
+  @media screen and (max-width: 580px){
+    body {
+      font-size: 12px;
+    }
+
+    h2 {
+      font-size: 1.5em;
+    }
+
+    .gift-card-outer-container {
+      padding: 0.5em;
+    }
+
+    .tooltip-container {
+      top: -65%;
+    }
+
+    .gift-card-actions .btn {
+      width: 100%;
+      padding-left: 0
+      ;padding-right: 0;
+      font-size: 1.125em;
+    }
+
+    .action-link {
+      position: relative !important;
+      left: auto !important;
+      right: auto !important;
+      top: auto !important;
+      font-size: 1.125em;
+      display: none;
+    }
+
+    .action-link + .action-link {
+      margin-left: 1.5em;
+    }
+  }
+
+  @media screen and (max-width: 400px){
+    h2 {
+      font-size: 1.25em;
+    }
+
+    .gift-card {
+      font-size: 10px;
+    }
+
+    .gift-card-holder .corner {
+      display: none;
+
+      &.bottom-right {
+        background-position: bottom right !important;
+      }
+    }
+
+    .gift-card-amount strong {
+      text-shadow: 2px 2px 0 rgba(0,0,0,0.1);
+    }
+
+    .tooltip-container {
+      top: -75%;
+    }
+  }
+
+  @media screen and (max-height: 800px){
+    .shop-title {
+      max-height: 100px;
+    }
+  }
+
+  @media screen and (max-height: 750px){
+    .shop-title {
+      max-height: 80px;
+    }
+
+    header {
+      padding: 2em 0;
+    }
+
+    footer[role='contentinfo'],
+    main {
+      padding-bottom: 2em;
+    }
+  }
+
+  @media print{
+    @page {
+      margin: 0.5cm;
+    }
+
+    p,
+    h2,
+    h3 {
+      orphans: 3;
+      widows: 3;
+    }
+
+    h2,
+    h3 {
+      page-break-after: avoid;
+    }
+
+    body {
+      background-color: #fff;
+    }
+
+    .gift-card-actions,
+    .gift-card-holder .corner,
+    .tooltip-container,
+    .gift-card:before {
+      display: none;
+    }
+
+    .gift-card-code-inner strong {
+      color: #555;
+    }
+
+    .gift-card-amount .tooltip {
+      color: #fff !important;
+    }
+
+    .shop-title {
+      color: #58686f;
+    }
+
+    .gift-card-outer-container,
+    .gift-card-inner-container,
+    .gift-card-code-inner,
+    .gift-card:before {
+      box-shadow: none;
+    }
+  }
+}
+
+

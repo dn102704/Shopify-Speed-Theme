@@ -1,0 +1,622 @@
+@font-face {
+  font-family: Roboto;
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  src: url("https://fonts.shopifycdn.com/roboto/roboto_n4.da808834c2315f31dd3910e2ae6b1a895d7f73f5.woff2?h1=dmVyZW5hc3RyZWV0LmNvbQ&h2=dmVyZW5hc3RyZWV0Y29mZmVlLmNvbQ&h3=dmVyZW5hc3RyZWV0Y2FmZS5jb20&hmac=2cbe16fcb7bc5fd0c015700c427f576e830785b3b00475aa94fcad0dafb0dbee") format("woff2"),
+       url("https://fonts.shopifycdn.com/roboto/roboto_n4.a512c7b68cd7f12c72e1a5fd58e7f7315c552e93.woff?h1=dmVyZW5hc3RyZWV0LmNvbQ&h2=dmVyZW5hc3RyZWV0Y29mZmVlLmNvbQ&h3=dmVyZW5hc3RyZWV0Y2FmZS5jb20&hmac=454408757cb609fbd4d8cfd4592e5d023c7d63a0f10785466fa280faeec0d76d") format("woff");
+}
+
+@font-face {
+  font-family: Roboto;
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+  src: url("https://fonts.shopifycdn.com/roboto/roboto_i4.f98951b4b9b6e1096fc799cd05debd098bd422ac.woff2?h1=dmVyZW5hc3RyZWV0LmNvbQ&h2=dmVyZW5hc3RyZWV0Y29mZmVlLmNvbQ&h3=dmVyZW5hc3RyZWV0Y2FmZS5jb20&hmac=66958715ca24bb5ac754216e4af60bdb7c9cec79710a2beadef3c592d773dba2") format("woff2"),
+       url("https://fonts.shopifycdn.com/roboto/roboto_i4.688a26691d45bc4053b6ae24a196cabdeedbc25c.woff?h1=dmVyZW5hc3RyZWV0LmNvbQ&h2=dmVyZW5hc3RyZWV0Y29mZmVlLmNvbQ&h3=dmVyZW5hc3RyZWV0Y2FmZS5jb20&hmac=f8e001f0a7ae982f4a0866a54fbe1bc49fd08357061003c4b49eaf9faa4756ec") format("woff");
+}
+
+@font-face {
+  font-family: Roboto;
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+  src: url("https://fonts.shopifycdn.com/roboto/roboto_n7.51ede27d5b58491d9cf07ad184108da52fef80b4.woff2?h1=dmVyZW5hc3RyZWV0LmNvbQ&h2=dmVyZW5hc3RyZWV0Y29mZmVlLmNvbQ&h3=dmVyZW5hc3RyZWV0Y2FmZS5jb20&hmac=c5dcdf2be49a7fda70a9e31e1e9bf67168eb947f95b14932135cb3e806c2ef14") format("woff2"),
+       url("https://fonts.shopifycdn.com/roboto/roboto_n7.1babbb6a27f91b14216bafa40bf222e08f6999f4.woff?h1=dmVyZW5hc3RyZWV0LmNvbQ&h2=dmVyZW5hc3RyZWV0Y29mZmVlLmNvbQ&h3=dmVyZW5hc3RyZWV0Y2FmZS5jb20&hmac=dc389040024197bd3cc4f97f108b8bba44dff782796be3b351563caac0df88b8") format("woff");
+}
+
+  @font-face {
+  font-family: Roboto;
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+  src: url("https://fonts.shopifycdn.com/roboto/roboto_i7.9c922c35bb84952cfb17e8c1d42e440e75aa8ccf.woff2?h1=dmVyZW5hc3RyZWV0LmNvbQ&h2=dmVyZW5hc3RyZWV0Y29mZmVlLmNvbQ&h3=dmVyZW5hc3RyZWV0Y2FmZS5jb20&hmac=ee1b5554698005e06039fb732c7d661f59b38430f6c01691515fc929a1d26783") format("woff2"),
+       url("https://fonts.shopifycdn.com/roboto/roboto_i7.c50b5683f5731edb8040ff2110a54947108434de.woff?h1=dmVyZW5hc3RyZWV0LmNvbQ&h2=dmVyZW5hc3RyZWV0Y29mZmVlLmNvbQ&h3=dmVyZW5hc3RyZWV0Y2FmZS5jb20&hmac=519b0872f66491452e4c38c3880d768150de12e8ae9f3470e5add7995e1c29cd") format("woff");
+}
+
+@font-face {
+  font-family: "Fjalla One";
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  src: url("https://fonts.shopifycdn.com/fjalla_one/fjallaone_n4.e3b041743e726c1cef3b3ab9921402e93cd8f733.woff2?h1=dmVyZW5hc3RyZWV0LmNvbQ&h2=dmVyZW5hc3RyZWV0Y29mZmVlLmNvbQ&h3=dmVyZW5hc3RyZWV0Y2FmZS5jb20&hmac=e0b74fcfb883fcfe418941ace4bc5a900be037153c3ba94fe7422e7eda4fa05b") format("woff2"),
+       url("https://fonts.shopifycdn.com/fjalla_one/fjallaone_n4.bed9b46f46027aa055f567c064cca454e8db0b22.woff?h1=dmVyZW5hc3RyZWV0LmNvbQ&h2=dmVyZW5hc3RyZWV0Y29mZmVlLmNvbQ&h3=dmVyZW5hc3RyZWV0Y2FmZS5jb20&hmac=398af824dddd3c070eaae6dd87ca33460a439e38c773c82e136ddac003a3a961") format("woff");
+}
+
+
+
+  
+@font-face {
+  font-family: "Avenir Next";
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+  src: url("https://fonts.shopifycdn.com/avenir_next/avenirnext_n5.972a96b7a049f12c89d6d1cd0e1b6c9211f7ba14.woff2?h1=dmVyZW5hc3RyZWV0LmNvbQ&h2=dmVyZW5hc3RyZWV0Y29mZmVlLmNvbQ&h3=dmVyZW5hc3RyZWV0Y2FmZS5jb20&hmac=31bae2d8ebcb234dcf1c85a5a79a0927ee637201ec1a80c98154bcef987976e7") format("woff2"),
+       url("https://fonts.shopifycdn.com/avenir_next/avenirnext_n5.9e88d20fa9eb66ba268ac60ab013006ef69a310a.woff?h1=dmVyZW5hc3RyZWV0LmNvbQ&h2=dmVyZW5hc3RyZWV0Y29mZmVlLmNvbQ&h3=dmVyZW5hc3RyZWV0Y2FmZS5jb20&hmac=052a6b7e4d7c0469cd3dc7623b06820d80d775c236ed5016cd1b4aa99fc3a124") format("woff");
+}
+
+@font-face {
+  font-family: "Avenir Next";
+  font-weight: 500;
+  font-style: italic;
+  font-display: swap;
+  src: url("https://fonts.shopifycdn.com/avenir_next/avenirnext_i5.2d1a6d537e5b485482d6bcca34a56cc10d441a55.woff2?h1=dmVyZW5hc3RyZWV0LmNvbQ&h2=dmVyZW5hc3RyZWV0Y29mZmVlLmNvbQ&h3=dmVyZW5hc3RyZWV0Y2FmZS5jb20&hmac=9a02a8dbce969a7407325d4f0831f3341a925212a4e8a41b337d3a232a66ef11") format("woff2"),
+       url("https://fonts.shopifycdn.com/avenir_next/avenirnext_i5.fcfa37c68ca483c41031623bfae4701d99bb4b95.woff?h1=dmVyZW5hc3RyZWV0LmNvbQ&h2=dmVyZW5hc3RyZWV0Y29mZmVlLmNvbQ&h3=dmVyZW5hc3RyZWV0Y2FmZS5jb20&hmac=30cdc060570c0e0416983f2d6c6aea71dd336640ece3d419e28e50d26fbac36e") format("woff");
+}
+
+@font-face {
+  font-family: "Archivo Narrow";
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+  src: url("https://fonts.shopifycdn.com/archivo_narrow/archivonarrow_n7.5a454828f1b15eb7f722cdb2f2e1b3909f34b3c8.woff2?h1=dmVyZW5hc3RyZWV0LmNvbQ&h2=dmVyZW5hc3RyZWV0Y29mZmVlLmNvbQ&h3=dmVyZW5hc3RyZWV0Y2FmZS5jb20&hmac=a40d49c7c22d4d9b2042c04dfb561d9ff16898033afda9a6adce9a5494ec3360") format("woff2"),
+       url("https://fonts.shopifycdn.com/archivo_narrow/archivonarrow_n7.2302d0d268e852afb8ea084cc2157e4fa8df66de.woff?h1=dmVyZW5hc3RyZWV0LmNvbQ&h2=dmVyZW5hc3RyZWV0Y29mZmVlLmNvbQ&h3=dmVyZW5hc3RyZWV0Y2FmZS5jb20&hmac=a7130312a422fe364bbe8b4cbe8804e74e960dd15dc89d24e83cf77efe33b231") format("woff");
+}
+
+@font-face {
+  font-family: "Archivo Narrow";
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+  src: url("https://fonts.shopifycdn.com/archivo_narrow/archivonarrow_i7.456a65121efc550a0ed932e3925f4160579a36dd.woff2?h1=dmVyZW5hc3RyZWV0LmNvbQ&h2=dmVyZW5hc3RyZWV0Y29mZmVlLmNvbQ&h3=dmVyZW5hc3RyZWV0Y2FmZS5jb20&hmac=940d4bcd824281e22271c77f8c7cee3d05b497bacd81724a19e5dbd777866c4e") format("woff2"),
+       url("https://fonts.shopifycdn.com/archivo_narrow/archivonarrow_i7.c85e75f32760697cf75a9b440abcf0a48ce07074.woff?h1=dmVyZW5hc3RyZWV0LmNvbQ&h2=dmVyZW5hc3RyZWV0Y29mZmVlLmNvbQ&h3=dmVyZW5hc3RyZWV0Y2FmZS5jb20&hmac=d02fda76bb806db706cc8ae075e106b3d810427326f36693f197420410bc911e") format("woff");
+}
+
+@font-face {
+  font-family: "Avenir Next";
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+  src: url("https://fonts.shopifycdn.com/avenir_next/avenirnext_n5.972a96b7a049f12c89d6d1cd0e1b6c9211f7ba14.woff2?h1=dmVyZW5hc3RyZWV0LmNvbQ&h2=dmVyZW5hc3RyZWV0Y29mZmVlLmNvbQ&h3=dmVyZW5hc3RyZWV0Y2FmZS5jb20&hmac=31bae2d8ebcb234dcf1c85a5a79a0927ee637201ec1a80c98154bcef987976e7") format("woff2"),
+       url("https://fonts.shopifycdn.com/avenir_next/avenirnext_n5.9e88d20fa9eb66ba268ac60ab013006ef69a310a.woff?h1=dmVyZW5hc3RyZWV0LmNvbQ&h2=dmVyZW5hc3RyZWV0Y29mZmVlLmNvbQ&h3=dmVyZW5hc3RyZWV0Y2FmZS5jb20&hmac=052a6b7e4d7c0469cd3dc7623b06820d80d775c236ed5016cd1b4aa99fc3a124") format("woff");
+}
+
+@font-face {
+  font-family: "Avenir Next";
+  font-weight: 500;
+  font-style: italic;
+  font-display: swap;
+  src: url("https://fonts.shopifycdn.com/avenir_next/avenirnext_i5.2d1a6d537e5b485482d6bcca34a56cc10d441a55.woff2?h1=dmVyZW5hc3RyZWV0LmNvbQ&h2=dmVyZW5hc3RyZWV0Y29mZmVlLmNvbQ&h3=dmVyZW5hc3RyZWV0Y2FmZS5jb20&hmac=9a02a8dbce969a7407325d4f0831f3341a925212a4e8a41b337d3a232a66ef11") format("woff2"),
+       url("https://fonts.shopifycdn.com/avenir_next/avenirnext_i5.fcfa37c68ca483c41031623bfae4701d99bb4b95.woff?h1=dmVyZW5hc3RyZWV0LmNvbQ&h2=dmVyZW5hc3RyZWV0Y29mZmVlLmNvbQ&h3=dmVyZW5hc3RyZWV0Y2FmZS5jb20&hmac=30cdc060570c0e0416983f2d6c6aea71dd336640ece3d419e28e50d26fbac36e") format("woff");
+}
+
+
+
+    :root {--font-size-heading-1: 2.5rem;--font-size-heading-2: 2.0rem;--font-size-heading-3: 1.5rem;--font-size-heading-4: 1.125rem;--font-size-heading-5: 1.0rem;--font-size-heading-6: 0.875rem;--font-size-heading-1-capitalize: 2.5rem;--font-size-heading-2-capitalize: 2.0rem;--font-size-heading-3-capitalize: 1.5rem;--font-size-heading-4-capitalize: 1.125rem;--font-size-heading-5-capitalize: 1.0rem;--font-size-heading-6-capitalize: 0.875rem;--font-size-body: 1.0rem;--font-size-body-small: 0.875rem;--font-size-body-smaller: 0.75rem;--font-size-body-smallest: 0.625rem;--font-size-body-large: 1.125rem;--font-size-body-large-capitalize: 1.125rem;--font-size-body-menu: 1.0rem;--font-size-body-smaller-caption: 0.6875rem;}@media screen and (max-width: 1020px) {
+      :root {--font-size-heading-1: 2.0rem;}}@media screen and (max-width: 720px) {
+      :root {--font-size-heading-2: 1.5rem;}}@media screen and (max-width: 540px) {
+      :root {--font-size-heading-4: 1.125rem;}}@media screen and (max-width: 1020px) {
+      :root {--font-size-heading-1-capitalize: 2.0rem;}}@media screen and (max-width: 720px) {
+      :root {--font-size-heading-2-capitalize: 1.5rem;}}@media screen and (max-width: 540px) {
+      :root {--font-size-heading-4-capitalize: 1.125rem;}}@media screen and (max-width: 540px) {
+      :root {--font-size-body: 0.875rem;}}@media screen and (max-width: 1020px) {
+      :root {--font-size-body-large: 0.9rem;}}@media screen and (max-width: 1020px) {
+      :root {--font-size-body-large-capitalize: 0.9rem;}}@media screen and (max-width: 540px) {
+      :root {--font-size-body-menu: 0.875rem;}}@media screen and (max-width: 540px) {
+      :root {--font-size-body-smaller-caption: 0.6875rem;}}
+
+/* Spacing */
+.gift-card-template {
+  font-family: Roboto,sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  margin: 0;
+}
+.gift-card-template a {
+  text-decoration: none;
+}
+.gift-card-template .btn {
+  font-family: "Avenir Next",sans-serif;
+  font-style: normal;
+  font-weight: 500;
+  background-color: #58686f;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: 1.5em;
+  font-size: 0.875em;
+  line-height: 1;
+  border-radius: 4px;
+  display: inline-block;
+  vertical-align: baseline;
+  zoom: 1;
+  *display: inline;
+  *vertical-align: auto;
+}
+.gift-card-template .btn:hover {
+  background-color: #414d53;
+}
+.gift-card-template .wrap {
+  width: 95%;
+  max-width: 540px;
+  margin: 0 auto;
+}
+.gift-card-template .wrap:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+@keyframes slideup {
+  0% {
+    -webkit-transform: translateY(2000px) rotate(10deg);
+    opacity: 0;
+  }
+  60% {
+    -webkit-transform: translateY(-30px);
+    opacity: 1;
+  }
+  80% {
+    -webkit-transform: translateY(10px);
+  }
+  100% {
+    -webkit-transform: translateY(0) rotate(0deg);
+  }
+}
+@keyframes popup {
+  0% {
+    -webkit-transform: translateY(30px);
+    opacity: 0;
+  }
+  60% {
+    -webkit-transform: translateY(-10px);
+    opacity: 1;
+  }
+  80% {
+    -webkit-transform: translateY(2px);
+  }
+  100% {
+    -webkit-transform: translateY(0);
+  }
+}
+@keyframes container-slide {
+  0% {
+    -webkit-transform: rotate(0deg);
+    opacity: 0;
+  }
+  100% {
+    -webkit-transform: rotate(0deg);
+  }
+}
+@keyframes fadein {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+.gift-card-template header {
+  text-align: center;
+  padding: 3em 0;
+  animation: fadein 0.5s ease-in-out both 0.4s;
+}
+.gift-card-template .shop-title {
+  font-family: "Fjalla One",sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 2.25em;
+  color: #bfbfbf;
+  max-width: 300px;
+  display: block;
+  margin: 0 auto;
+}
+.gift-card-template .shop-title:hover {
+  color: #999999;
+}
+.gift-card-template .shop-title img {
+  max-height: 100%;
+  margin: 0 auto;
+}
+.gift-card-template main {
+  padding-bottom: 3em;
+  animation: slideup 0.8s ease-in-out;
+}
+.gift-card-template .gift-card-outer-container {
+  background-color: #34aadc;
+  border-radius: 4px;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1) inset;
+  padding: 1em;
+  animation: container-slide 0.8s ease-in-out;
+}
+.gift-card-template .gift-card-inner-container {
+  background-color: #fff;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
+  border-radius: 2px;
+  animation: cardslide 0.8s ease-in-out;
+}
+.gift-card-template .gift-card-inner-container:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+.gift-card-template .gift-card-header {
+  border-bottom: 1px solid #f2f2f2;
+  padding: 0.75em;
+  display: block;
+  overflow: hidden;
+  position: relative;
+}
+.gift-card-template .gift-card-header h2 {
+  float: left;
+  margin: 0.12em 0;
+}
+.gift-card-template .gift-card-header .tag {
+  float: right;
+}
+.gift-card-template .tag {
+  background-color: #bfbfbf;
+  padding: 0.5em;
+  padding-bottom: 0.35em;
+  border-radius: 4px;
+  font-size: 0.75em;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #fff;
+  line-height: 1;
+}
+.gift-card-template .tag.light {
+  background: transparent;
+  color: #bfbfbf;
+  border: 1px solid #d9d9d9;
+}
+.gift-card-template .gift-card-holder {
+  margin: 0.75em;
+  margin-bottom: 1.25em;
+  margin-top: 1.25em;
+  position: relative;
+}
+.gift-card-template .gift-card-holder .corner {
+  display: block;
+  width: 47px;
+  height: 47px;
+  position: absolute;
+  z-index: 2;
+}
+.gift-card-template .gift-card-holder .corner.top-left {
+  background: url("//cdn.shopify.com/s/assets/gift-card/corner-top-left-1585103bdd46bf1297b88f31bdfce999.png") 0 0 no-repeat;
+  top: -1px;
+  left: -1px;
+}
+.gift-card-template .gift-card-holder .corner.bottom-right {
+  background: url("//cdn.shopify.com/s/assets/gift-card/corner-bottom-right-ba899b18631cb91859e186c2cc1c6970.png") 0 0 no-repeat;
+  bottom: -1px;
+  right: -1px;
+}
+.gift-card-template .gift-card {
+  position: relative;
+  box-sizing: border-box;
+  position: relative;
+}
+.gift-card-template .gift-card:before {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  box-shadow: inset 0px 0px 0px 1px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  z-index: 1;
+  pointer-events: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  display: block;
+}
+.gift-card-template .gift-card img {
+  border-radius: 10px;
+  max-width: 100%;
+}
+.gift-card-template .gift-card-code-outer {
+  position: absolute;
+  bottom: 1em;
+  text-align: center;
+  width: 100%;
+}
+.gift-card-template .gift-card-code-outer.medium {
+  font-size: 0.875em;
+}
+.gift-card-template .gift-card-code-outer.small {
+  font-size: 0.75em;
+}
+.gift-card-template .gift-card-code-inner {
+  display: inline-block;
+  vertical-align: baseline;
+  zoom: 1;
+  *display: inline;
+  *vertical-align: auto;
+  background-color: #fff;
+  padding: 0.5em;
+  border-radius: 4px;
+  max-width: 450px;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
+}
+.gift-card-template .gift-card-code-inner strong {
+  font-family: Roboto,sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 1.875em;
+  text-transform: uppercase;
+  border-radius: 2px;
+  border: 1px dashed #e5e5e5;
+  padding: 0.4em 0.5em;
+  display: inline-block;
+  vertical-align: baseline;
+  zoom: 1;
+  *display: inline;
+  *vertical-align: auto;
+  color: #777;
+  line-height: 1;
+}
+.gift-card-template .small .gift-card-code-inner {
+  overflow: auto;
+}
+.gift-card-template .disabled .gift-card-code-inner strong {
+  color: #999;
+  text-decoration: line-through;
+}
+.gift-card-template .gift-card-code-inner span + span {
+  margin-left: 0.25em;
+}
+.gift-card-template .gift-card-amount {
+  position: absolute;
+  top: 0;
+  right: 0;
+  color: #fff;
+  font-size: 2.75em;
+  padding: 0.4em 0.5em;
+}
+.gift-card-template .gift-card-amount.medium {
+  font-size: 2.25em;
+}
+.gift-card-template .gift-card-amount strong {
+  text-shadow: 3px 3px 0 rgba(0, 0, 0, 0.1);
+  display: block;
+}
+.gift-card-template .tooltip {
+  position: relative;
+}
+.gift-card-template .tooltip:hover .tooltip-container {
+  display: block;
+}
+.gift-card-template .tooltip-container {
+  display: block;
+  position: absolute;
+  top: -100%;
+  right: 50%;
+  z-index: 3;
+  color: #fff;
+  text-align: center;
+  white-space: nowrap;
+  animation: popup 0.5s ease-in-out both 0.7s;
+  top: -50%;
+  margin-top: 0.25em;
+}
+.gift-card-template .tooltip-triangle {
+  content: "";
+  display: block;
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-top: 5px solid #333;
+  border-top: 5px solid rgba(51, 51, 51, 0.9);
+  position: absolute;
+  left: 100%;
+  bottom: 0;
+  margin-left: -5px;
+  margin-bottom: -5px;
+}
+.gift-card-template .tooltip-label {
+  display: block;
+  position: relative;
+  right: -50%;
+  border: none;
+  border-radius: 4px;
+  background: #333;
+  background: rgba(51, 51, 51, 0.9);
+  color: #fff;
+  min-height: 14px;
+  font-size: 0.4em;
+  text-decoration: none;
+  line-height: 16px;
+  text-shadow: none;
+  padding: 0.5em 0.75em;
+  margin-left: 0.25em;
+}
+.gift-card-template .gift-card-instructions {
+  font-size: 0.875em;
+  text-align: center;
+  color: #999;
+  margin: 0 0.75em 1.5em;
+}
+.gift-card-template .gift-card-qr-code {
+  display: block;
+}
+.gift-card-template .gift-card-qr-code img {
+  padding: 1.25em;
+  border: 1px solid #f2f2f2;
+  border-radius: 10px;
+  margin: 0 auto 1.25em;
+}
+.gift-card-template .gift-card-actions {
+  border-top: 1px solid #f2f2f2;
+  padding: 1.25em 0.75em;
+  text-align: center;
+  position: relative;
+  display: block;
+  overflow: hidden;
+}
+.gift-card-template .action-link {
+  font-size: 0.875em;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: #bfbfbf;
+  margin-top: 1.75em;
+  position: absolute;
+  left: 1.25em;
+  top: 1.25em;
+}
+.gift-card-template .action-link:hover {
+  color: #999;
+}
+.gift-card-template .action-link:hover .ico-16 {
+  opacity: 0.4;
+}
+.gift-card-template .ico-16 {
+  display: inline-block;
+  vertical-align: baseline;
+  zoom: 1;
+  *display: inline;
+  *vertical-align: auto;
+  width: 17px;
+  height: 17px;
+  vertical-align: bottom;
+  margin-bottom: -1px;
+  background-position: 0 0;
+  background-repeat: no-repeat;
+  margin-right: 0.5em;
+  opacity: 0.25;
+  opacity: 0.3s ease-in-out;
+}
+.gift-card-template .ico-16.print {
+  background-image: url("//cdn.shopify.com/s/assets/gift-card/icon-print-164daa1ae32d10d1f9b83ac21b6f2c70.png");
+}
+.gift-card-template footer[role=contentinfo] {
+  padding-bottom: 3em;
+  text-align: center;
+  animation: fadein 0.5s ease-in-out both 0.4s;
+}
+.gift-card-template .gift-card-apple-wallet-badge {
+  display: inline-block;
+}
+.gift-card-template .gift-card-apple-wallet-badge-image {
+  display: block;
+}
+@media screen and (max-width: 580px) {
+  .gift-card-template body {
+    font-size: 12px;
+  }
+  .gift-card-template h2 {
+    font-size: 1.5em;
+  }
+  .gift-card-template .gift-card-outer-container {
+    padding: 0.5em;
+  }
+  .gift-card-template .tooltip-container {
+    top: -65%;
+  }
+  .gift-card-template .gift-card-actions .btn {
+    width: 100%;
+    padding-left: 0;
+    padding-right: 0;
+    font-size: 1.125em;
+  }
+  .gift-card-template .action-link {
+    position: relative !important;
+    left: auto !important;
+    right: auto !important;
+    top: auto !important;
+    font-size: 1.125em;
+    display: none;
+  }
+  .gift-card-template .action-link + .action-link {
+    margin-left: 1.5em;
+  }
+}
+@media screen and (max-width: 400px) {
+  .gift-card-template h2 {
+    font-size: 1.25em;
+  }
+  .gift-card-template .gift-card {
+    font-size: 10px;
+  }
+  .gift-card-template .gift-card-holder .corner {
+    display: none;
+  }
+  .gift-card-template .gift-card-holder .corner.bottom-right {
+    background-position: bottom right !important;
+  }
+  .gift-card-template .gift-card-amount strong {
+    text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.1);
+  }
+  .gift-card-template .tooltip-container {
+    top: -75%;
+  }
+}
+@media screen and (max-height: 800px) {
+  .gift-card-template .shop-title {
+    max-height: 100px;
+  }
+}
+@media screen and (max-height: 750px) {
+  .gift-card-template .shop-title {
+    max-height: 80px;
+  }
+  .gift-card-template header {
+    padding: 2em 0;
+  }
+  .gift-card-template footer[role=contentinfo],
+.gift-card-template main {
+    padding-bottom: 2em;
+  }
+}
+@media print {
+  @page {
+    .gift-card-template {
+      margin: 0.5cm;
+    }
+  }
+  .gift-card-template p,
+.gift-card-template h2,
+.gift-card-template h3 {
+    orphans: 3;
+    widows: 3;
+  }
+  .gift-card-template h2,
+.gift-card-template h3 {
+    page-break-after: avoid;
+  }
+  .gift-card-template body {
+    background-color: #fff;
+  }
+  .gift-card-template .gift-card-actions,
+.gift-card-template .gift-card-holder .corner,
+.gift-card-template .tooltip-container,
+.gift-card-template .gift-card:before {
+    display: none;
+  }
+  .gift-card-template .gift-card-code-inner strong {
+    color: #555;
+  }
+  .gift-card-template .gift-card-amount .tooltip {
+    color: #fff !important;
+  }
+  .gift-card-template .shop-title {
+    color: #58686f;
+  }
+  .gift-card-template .gift-card-outer-container,
+.gift-card-template .gift-card-inner-container,
+.gift-card-template .gift-card-code-inner,
+.gift-card-template .gift-card:before {
+    box-shadow: none;
+  }
+}

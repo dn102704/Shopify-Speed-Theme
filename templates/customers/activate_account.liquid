@@ -1,0 +1,23 @@
+{% form 'activate_customer_password' %}
+
+  <p>{{ 'customers.activate_account.message' | t }}</p>
+
+  {% if form.errors %}
+    <div class="error-message"><span>{{ form.errors | default_errors }}</span></div>
+  {% endif %}
+
+  <div class="input-wrapper">
+    <label>{{ 'general.general.password' | t }}</label>
+    <input type="password" name="customer[password]" />
+  </div>
+
+  <div class="input-wrapper">
+    <label>{{ 'general.general.repeat_password' | t }}</label>
+    <input type="password" name="customer[password_confirmation]" />
+  </div>
+
+  <input type="submit" value="{{ 'customers.activate_account.submit' | t }}">
+
+  <a href="{{ routes.root_url }}">{{ 'customers.activate_account.decline' | t }}</a>
+
+{% endform %}

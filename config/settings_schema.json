@@ -1,0 +1,501 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "Pacific",
+    "theme_author": "Pixel Union",
+    "theme_version": "5.0.1",
+    "theme_documentation_url": "https://www.pixelunion.net/support/pacific-theme-manual/",
+    "theme_support_url": "https://support.pixelunion.net/hc/en-us/requests/new"
+  },
+  {
+    "name": "Favicon",
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "favicon",
+        "label": "Favicon"
+      }
+    ]
+  },
+  {
+    "name": "Icons",
+    "settings": [
+      {
+        "type": "select",
+        "id": "icon_stroke_width",
+        "label": "Icon thickness",
+        "options": [
+          {
+            "value": "thin",
+            "label": "Thin"
+          },
+          {
+            "value": "normal",
+            "label": "Normal"
+          },
+          {
+            "value": "thick",
+            "label": "Thick"
+          }
+        ],
+        "default": "normal",
+        "info": "Customize the stroke thickness for icons across the theme"
+      }
+    ]
+  },
+  {
+    "name": "Colors",
+    "settings": [
+      {
+        "type": "header",
+        "content": "General"
+      },
+      {
+        "type": "image_picker",
+        "id": "main-background-image",
+        "label": "Background image",
+        "info": "1920 x 1200px .jpg recommended"
+      },
+      {
+        "type": "color",
+        "id": "color_background",
+        "label": "Background",
+        "default": "#ffffff"
+      },
+      {
+        "type": "color",
+        "id": "color_text",
+        "label": "Text",
+        "default": "#777777"
+      },
+      {
+        "type": "color",
+        "id": "color_accent",
+        "label": "Accent",
+        "default": "#466c7e"
+      },
+      {
+        "type": "color",
+        "id": "color_heading",
+        "label": "Heading",
+        "default": "#3b4858"
+      },
+      {
+        "type": "color",
+        "id": "color_caption",
+        "label": "Caption text",
+        "default": "#3b4858"
+      },
+      {
+        "type": "color",
+        "id": "color_error",
+        "label": "Error",
+        "default": "#d60000"
+      },
+      {
+        "type": "color",
+        "id": "color_border",
+        "label": "Border",
+        "default": "#e5e5e5"
+      },
+      {
+        "type": "header",
+        "content": "Buttons"
+      },
+      {
+        "type": "color",
+        "id": "color_button_primary_background",
+        "label": "Primary button background",
+        "default": "#466c7e"
+      },
+      {
+        "type": "color",
+        "id": "color_button_primary_text",
+        "label": "Primary button text",
+        "default": "#ffffff"
+      },
+      {
+        "type": "color",
+        "id": "color_button_secondary_background",
+        "label": "Secondary button background",
+        "default": "#b7bcc2"
+      },
+      {
+        "type": "color",
+        "id": "color_button_secondary_text",
+        "label": "Secondary button text",
+        "default": "#ffffff"
+      },
+      {
+        "type": "color",
+        "id": "color_button_secondary_border",
+        "label": "Secondary button border",
+        "default": "#ffffff"
+      },
+      {
+        "type": "header",
+        "content": "Inputs"
+      },
+      {
+        "type": "color",
+        "id": "color_input_text",
+        "label": "Input text",
+        "default": "#777777"
+      },
+      {
+        "type": "color",
+        "id": "color_input_background",
+        "label": "Input background",
+        "default": "#ffffff"
+      },
+      {
+        "type": "color",
+        "id": "color_input_border",
+        "label": "Input border",
+        "default": "#d0d0d0"
+      },
+      {
+        "type": "header",
+        "content": "Header"
+      },
+      {
+        "type": "color",
+        "id": "color_header_background",
+        "label": "Header background",
+        "default": "#ffffff"
+      },
+      {
+        "type": "color",
+        "id": "color_header_text",
+        "label": "Header text",
+        "default": "#3b4858"
+      }
+    ]
+  },
+  {
+    "name": "Typography",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Global"
+      },
+      {
+        "type": "range",
+        "id": "font_size_base",
+        "min": 15,
+        "max": 18,
+        "step": 1,
+        "unit": "px",
+        "label": "Base font size",
+        "default": 16
+      },
+      {
+        "type": "header",
+        "content": "Body font"
+      },
+      {
+        "type": "font_picker",
+        "label": "Font",
+        "id": "font_body",
+        "default": "avenir_next_n4"
+      },
+      {
+        "type": "header",
+        "content": "Main menu"
+      },
+      {
+        "type": "font_picker",
+        "label": "Font",
+        "id": "font_menu",
+        "default": "avenir_next_n5"
+      },
+      {
+        "type": "checkbox",
+        "id": "font_menu_capitalize",
+        "label": "Uppercase",
+        "default": false
+      },
+      {
+        "type": "range",
+        "id": "font_menu_spacing",
+        "min": -5,
+        "max": 25,
+        "step": 1,
+        "unit": "%",
+        "label": "Letter spacing",
+        "default": 0
+      },
+      {
+        "type": "header",
+        "content": "Headings"
+      },
+      {
+        "type": "font_picker",
+        "label": "Font",
+        "id": "font_heading",
+        "default": "futura_n5"
+      },
+      {
+        "type": "checkbox",
+        "id": "font_heading_capitalize",
+        "label": "Uppercase",
+        "default": false
+      },
+      {
+        "type": "range",
+        "id": "font_heading_spacing",
+        "min": -5,
+        "max": 25,
+        "step": 1,
+        "unit": "%",
+        "label": "Letter spacing",
+        "default": 0
+      },
+      {
+        "type": "header",
+        "content": "Captions"
+      },
+      {
+        "type": "font_picker",
+        "label": "Font",
+        "id": "font_caption",
+        "default": "avenir_next_n5"
+      },
+      {
+        "type": "checkbox",
+        "id": "font_caption_capitalize",
+        "label": "Uppercase",
+        "default": true
+      },
+      {
+        "type": "range",
+        "id": "font_caption_spacing",
+        "min": -5,
+        "max": 25,
+        "step": 1,
+        "unit": "%",
+        "label": "Letter spacing",
+        "default": 8
+      },
+      {
+        "type": "header",
+        "content": "Buttons"
+      },
+      {
+        "type": "font_picker",
+        "label": "Font",
+        "id": "font_button",
+        "default": "futura_n5"
+      },
+      {
+        "type": "checkbox",
+        "id": "font_button_capitalize",
+        "label": "Uppercase",
+        "default": true
+      },
+      {
+        "type": "range",
+        "id": "font_button_spacing",
+        "min": -5,
+        "max": 25,
+        "step": 1,
+        "unit": "%",
+        "label": "Letter spacing",
+        "default": 10
+      }
+    ]
+  },
+  {
+    "name": "Sidebar",
+    "settings": [
+      {
+        "type": "select",
+        "id": "enable-sidebar",
+        "label": "Enable sidebar",
+        "info": "The \"all\" option denotes the Home page, Collections List page, and Collection pages.",
+        "options": [
+          {
+            "value": "all",
+            "label": "All pages"
+          },
+          {
+            "value": "not-home",
+            "label": "All except home page"
+          },
+          {
+            "value": "none",
+            "label": "Disabled"
+          }
+        ],
+        "default": "none"
+      },
+      {
+        "type": "link_list",
+        "id": "sidebar-link-list-1",
+        "label": "Menu 1"
+      },
+      {
+        "type": "link_list",
+        "id": "sidebar-link-list-2",
+        "label": "Menu 2"
+      },
+      {
+        "type": "link_list",
+        "id": "sidebar-link-list-3",
+        "label": "Menu 3"
+      }
+    ]
+  },
+  {
+    "name": "Products",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "enable_cart_redirection",
+        "label": "Enable cart redirection",
+        "info": "Automatically sends users to the Cart page after adding a product.",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "show_payment_button",
+        "label": "Show dynamic checkout button",
+        "info": "Each customer will see their preferred payment method from those available on your store, such as PayPal or Apple Pay. [Learn more](https://help.shopify.com/manual/using-themes/change-the-layout/dynamic-checkout)",
+        "default": true
+      }
+    ]
+  },
+  {
+    "name": "Product grid",
+    "settings": [
+      {
+        "type": "select",
+        "id": "product_text_style",
+        "label": "Product text style",
+        "options": [
+          {
+            "value": "overlay",
+            "label": "Overlay"
+          },
+          {
+            "value": "under",
+            "label": "Under image"
+          }
+        ],
+        "info": "Does not apply to search results.",
+        "default": "overlay"
+      },
+      {
+        "type": "checkbox",
+        "id": "product_image_flip",
+        "label": "Enable product image flip on hover",
+        "default": false
+      }
+    ]
+  },
+  {
+    "name": "Social media",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Accounts"
+      },
+      {
+        "type": "text",
+        "id": "social-facebook-url",
+        "label": "Facebook",
+        "info": "https://www.facebook.com/shopify"
+      },
+      {
+        "type": "text",
+        "id": "social-twitter-url",
+        "label": "Twitter",
+        "info": "https://twitter.com/shopify"
+      },
+      {
+        "type": "text",
+        "id": "social-pinterest-url",
+        "label": "Pinterest",
+        "info": "https://www.pinterest.com/shopify"
+      },
+      {
+        "type": "text",
+        "id": "social-instagram-url",
+        "label": "Instagram",
+        "info": "https://instagram.com/shopify"
+      },
+      {
+        "type": "text",
+        "id": "social-kickstarter-url",
+        "label": "Kickstarter",
+        "info": "https://www.kickstarter.com/projects/user/project"
+      },
+      {
+        "type": "text",
+        "id": "social-vimeo-url",
+        "label": "Vimeo",
+        "info": "https://vimeo.com/shopify"
+      },
+      {
+        "type": "text",
+        "id": "social-youtube-url",
+        "label": "YouTube",
+        "info": "https://www.youtube.com/user/shopify"
+      },
+      {
+        "type": "text",
+        "id": "social-email-address",
+        "label": "Email Address",
+        "info": "support@shopify.com"
+      },
+      {
+        "type": "text",
+        "id": "social-rss-url",
+        "label": "RSS",
+        "info": "http://storefront.myshopify.com/blogs/news.atom"
+      },
+      {
+        "type": "header",
+        "content": "Sharing"
+      },
+      {
+        "type": "checkbox",
+        "id": "blog-show-share-buttons",
+        "label": "Enable blog post sharing",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "share-widget-facebook",
+        "label": "Share on Facebook",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "share-widget-twitter",
+        "label": "Tweet on Twitter",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "share-widget-pinterest",
+        "label": "Pin on Pinterest",
+        "info": "Product page only.",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "share-widget-fancy",
+        "label": "Add to Fancy",
+        "info": "Product page only.",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "share-widget-email",
+        "label": "Send by email",
+        "default": false
+      }
+    ]
+  }
+]
